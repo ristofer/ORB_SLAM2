@@ -1,10 +1,6 @@
 /**
  * This is a modified version of TemplatedVocabulary.h from DBoW2 (see below).
-<<<<<<< HEAD
  * Added functions: Save and Load from text/binary files without using cv::FileStorage.
-=======
- * Added functions: Save and Load from text files without using cv::FileStorage.
->>>>>>> master
  * Date: August 2015
  * Raúl Mur-Artal
  */
@@ -13,11 +9,7 @@
  * File: TemplatedVocabulary.h
  * Date: February 2011
  * Author: Dorian Galvez-Lopez
-<<<<<<< HEAD
  * Description: templated vocabulary
-=======
- * Description: templated vocabulary 
->>>>>>> master
  * License: see the LICENSE.txt file
  *
  */
@@ -50,15 +42,9 @@ namespace DBoW2 {
 template<class TDescriptor, class F>
 /// Generic Vocabulary
 class TemplatedVocabulary
-<<<<<<< HEAD
 {
 public:
 
-=======
-{		
-public:
-  
->>>>>>> master
   /**
    * Initiates an empty vocabulary
    * @param k branching factor
@@ -66,57 +52,33 @@ public:
    * @param weighting weighting type
    * @param scoring scoring type
    */
-<<<<<<< HEAD
   TemplatedVocabulary(int k = 10, int L = 5,
     WeightingType weighting = TF_IDF, ScoringType scoring = L1_NORM);
 
-=======
-  TemplatedVocabulary(int k = 10, int L = 5, 
-    WeightingType weighting = TF_IDF, ScoringType scoring = L1_NORM);
-  
->>>>>>> master
   /**
    * Creates the vocabulary by loading a file
    * @param filename
    */
   TemplatedVocabulary(const std::string &filename);
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   /**
    * Creates the vocabulary by loading a file
    * @param filename
    */
   TemplatedVocabulary(const char *filename);
-<<<<<<< HEAD
 
   /**
-=======
-  
-  /** 
->>>>>>> master
    * Copy constructor
    * @param voc
    */
   TemplatedVocabulary(const TemplatedVocabulary<TDescriptor, F> &voc);
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   /**
    * Destructor
    */
   virtual ~TemplatedVocabulary();
-<<<<<<< HEAD
 
   /**
-=======
-  
-  /** 
->>>>>>> master
    * Assigns the given vocabulary to this by copying its data and removing
    * all the data contained by this vocabulary before
    * @param voc
@@ -124,24 +86,15 @@ public:
    */
   TemplatedVocabulary<TDescriptor, F>& operator=(
     const TemplatedVocabulary<TDescriptor, F> &voc);
-<<<<<<< HEAD
 
   /**
-=======
-  
-  /** 
->>>>>>> master
    * Creates a vocabulary from the training features with the already
    * defined parameters
    * @param training_features
    */
   virtual void create
     (const std::vector<std::vector<TDescriptor> > &training_features);
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   /**
    * Creates a vocabulary from the training features, setting the branching
    * factor and the depth levels of the tree
@@ -150,11 +103,7 @@ public:
    * @param L depth levels
    */
   virtual void create
-<<<<<<< HEAD
     (const std::vector<std::vector<TDescriptor> > &training_features,
-=======
-    (const std::vector<std::vector<TDescriptor> > &training_features, 
->>>>>>> master
       int k, int L);
 
   /**
@@ -171,11 +120,7 @@ public:
    * @return number of words
    */
   virtual inline unsigned int size() const;
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   /**
    * Returns whether the vocabulary is empty (i.e. it has not been trained)
    * @return true iff the vocabulary is empty
@@ -187,15 +132,9 @@ public:
    * @param features
    * @param v (out) bow vector of weighted words
    */
-<<<<<<< HEAD
   virtual void transform(const std::vector<TDescriptor>& features, BowVector &v)
     const;
 
-=======
-  virtual void transform(const std::vector<TDescriptor>& features, BowVector &v) 
-    const;
-  
->>>>>>> master
   /**
    * Transform a set of descriptors into a bow vector and a feature vector
    * @param features
@@ -212,11 +151,7 @@ public:
    * @return word id
    */
   virtual WordId transform(const TDescriptor& feature) const;
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   /**
    * Returns the score of two vectors
    * @param a vector
@@ -225,11 +160,7 @@ public:
    * @note the vectors must be already sorted and normalized if necessary
    */
   inline double score(const BowVector &a, const BowVector &b) const;
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   /**
    * Returns the id of the node that is "levelsup" levels from the word given
    * @param wid word id
@@ -238,11 +169,7 @@ public:
    *   word id
    */
   virtual NodeId getParentNode(WordId wid, int levelsup) const;
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   /**
    * Returns the ids of all the words that are under the given node id,
    * by traversing any of the branches that goes down from the node
@@ -250,96 +177,57 @@ public:
    * @param words ids of words
    */
   void getWordsFromNode(NodeId nid, std::vector<WordId> &words) const;
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   /**
    * Returns the branching factor of the tree (k)
    * @return k
    */
   inline int getBranchingFactor() const { return m_k; }
-<<<<<<< HEAD
 
   /**
-=======
-  
-  /** 
->>>>>>> master
    * Returns the depth levels of the tree (L)
    * @return L
    */
   inline int getDepthLevels() const { return m_L; }
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   /**
    * Returns the real depth levels of the tree on average
    * @return average of depth levels of leaves
    */
   float getEffectiveLevels() const;
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   /**
    * Returns the descriptor of a word
    * @param wid word id
    * @return descriptor
    */
   virtual inline TDescriptor getWord(WordId wid) const;
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   /**
    * Returns the weight of a word
    * @param wid word id
    * @return weight
    */
   virtual inline WordValue getWordWeight(WordId wid) const;
-<<<<<<< HEAD
 
   /**
-=======
-  
-  /** 
->>>>>>> master
    * Returns the weighting method
    * @return weighting method
    */
   inline WeightingType getWeightingType() const { return m_weighting; }
-<<<<<<< HEAD
 
   /**
-=======
-  
-  /** 
->>>>>>> master
    * Returns the scoring method
    * @return scoring method
    */
   inline ScoringType getScoringType() const { return m_scoring; }
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   /**
    * Changes the weighting method
    * @param type new weighting type
    */
   inline void setWeightingType(WeightingType type);
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   /**
    * Changes the scoring method
    * @param type new scoring type
@@ -356,7 +244,6 @@ public:
    * Saves the vocabulary into a text file
    * @param filename
    */
-<<<<<<< HEAD
   void saveToTextFile(const std::string &filename) const;
 
   /**
@@ -371,26 +258,18 @@ public:
    */
   void saveToBinaryFile(const std::string &filename) const;
 
-=======
-  void saveToTextFile(const std::string &filename) const;  
->>>>>>> master
 
   /**
    * Saves the vocabulary into a file
    * @param filename
    */
   void save(const std::string &filename) const;
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   /**
    * Loads the vocabulary from a file
    * @param filename
    */
   void load(const std::string &filename);
-<<<<<<< HEAD
 
   /**
    * Saves the vocabulary to a file storage structure
@@ -399,48 +278,24 @@ public:
   virtual void save(cv::FileStorage &fs,
     const std::string &name = "vocabulary") const;
 
-=======
-  
-  /** 
-   * Saves the vocabulary to a file storage structure
-   * @param fn node in file storage
-   */
-  virtual void save(cv::FileStorage &fs, 
-    const std::string &name = "vocabulary") const;
-  
->>>>>>> master
   /**
    * Loads the vocabulary from a file storage node
    * @param fn first node
    * @param subname name of the child node of fn where the tree is stored.
    *   If not given, the fn node is used instead
-<<<<<<< HEAD
    */
   virtual void load(const cv::FileStorage &fs,
     const std::string &name = "vocabulary");
 
   /**
-=======
-   */  
-  virtual void load(const cv::FileStorage &fs, 
-    const std::string &name = "vocabulary");
-  
-  /** 
->>>>>>> master
    * Stops those words whose weight is below minWeight.
    * Words are stopped by setting their weight to 0. There are not returned
    * later when transforming image features into vectors.
    * Note that when using IDF or TF_IDF, the weight is the idf part, which
    * is equivalent to -log(f), where f is the frequency of the word
-<<<<<<< HEAD
    * (f = Ni/N, Ni: number of training images where the word is present,
    * N: number of training images).
    * Note that the old weight is forgotten, and subsequent calls to this
-=======
-   * (f = Ni/N, Ni: number of training images where the word is present, 
-   * N: number of training images).
-   * Note that the old weight is forgotten, and subsequent calls to this 
->>>>>>> master
    * function with a lower minWeight have no effect.
    * @return number of words stopped now
    */
@@ -452,21 +307,13 @@ protected:
   typedef const TDescriptor *pDescriptor;
 
   /// Tree node
-<<<<<<< HEAD
   struct Node
-=======
-  struct Node 
->>>>>>> master
   {
     /// Node id
     NodeId id;
     /// Weight if the node is a word
     WordValue weight;
-<<<<<<< HEAD
     /// Children
-=======
-    /// Children 
->>>>>>> master
     vector<NodeId> children;
     /// Parent node (undefined in case of root)
     NodeId parent;
@@ -480,11 +327,7 @@ protected:
      * Empty constructor
      */
     Node(): id(0), weight(0), parent(0), word_id(0){}
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> master
     /**
      * Constructor
      * @param _id node id
@@ -505,21 +348,13 @@ protected:
    */
   void createScoringObject();
 
-<<<<<<< HEAD
   /**
-=======
-  /** 
->>>>>>> master
    * Returns a set of pointers to descriptores
    * @param training_features all the features
    * @param features (out) pointers to the training features
    */
   void getFeatures(
-<<<<<<< HEAD
     const vector<vector<TDescriptor> > &training_features,
-=======
-    const vector<vector<TDescriptor> > &training_features, 
->>>>>>> master
     vector<pDescriptor> &features) const;
 
   /**
@@ -530,11 +365,7 @@ protected:
    * @param nid (out) if given, id of the node "levelsup" levels up
    * @param levelsup
    */
-<<<<<<< HEAD
   virtual void transform(const TDescriptor &feature,
-=======
-  virtual void transform(const TDescriptor &feature, 
->>>>>>> master
     WordId &id, WordValue &weight, NodeId* nid = NULL, int levelsup = 0) const;
 
   /**
@@ -543,11 +374,7 @@ protected:
    * @param id (out) word id
    */
   virtual void transform(const TDescriptor &feature, WordId &id) const;
-<<<<<<< HEAD
 
-=======
-      
->>>>>>> master
   /**
    * Creates a level in the tree, under the parent, by running kmeans with
    * a descriptor set, and recursively creates the subsequent levels too
@@ -555,11 +382,7 @@ protected:
    * @param descriptors descriptors to run the kmeans on
    * @param current_level current level in the tree
    */
-<<<<<<< HEAD
   void HKmeansStep(NodeId parent_id, const vector<pDescriptor> &descriptors,
-=======
-  void HKmeansStep(NodeId parent_id, const vector<pDescriptor> &descriptors, 
->>>>>>> master
     int current_level);
 
   /**
@@ -569,7 +392,6 @@ protected:
    */
   virtual void initiateClusters(const vector<pDescriptor> &descriptors,
     vector<TDescriptor> &clusters) const;
-<<<<<<< HEAD
 
   /**
    * Creates k clusters from the given descriptor sets by running the
@@ -580,27 +402,11 @@ protected:
   void initiateClustersKMpp(const vector<pDescriptor> &descriptors,
     vector<TDescriptor> &clusters) const;
 
-=======
-  
-  /**
-   * Creates k clusters from the given descriptor sets by running the
-   * initial step of kmeans++
-   * @param descriptors 
-   * @param clusters resulting clusters
-   */
-  void initiateClustersKMpp(const vector<pDescriptor> &descriptors, 
-    vector<TDescriptor> &clusters) const;
-  
->>>>>>> master
   /**
    * Create the words of the vocabulary once the tree has been built
    */
   void createWords();
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   /**
    * Sets the weights of the nodes of tree according to the given features.
    * Before calling this function, the nodes and the words must be already
@@ -608,16 +414,11 @@ protected:
    * @param features
    */
   void setNodeWeights(const vector<vector<TDescriptor> > &features);
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
 protected:
 
   /// Branching factor
   int m_k;
-<<<<<<< HEAD
 
   /// Depth levels
   int m_L;
@@ -638,28 +439,6 @@ protected:
   /// this condition holds: m_words[wid]->word_id == wid
   std::vector<Node*> m_words;
 
-=======
-  
-  /// Depth levels 
-  int m_L;
-  
-  /// Weighting method
-  WeightingType m_weighting;
-  
-  /// Scoring method
-  ScoringType m_scoring;
-  
-  /// Object for computing scores
-  GeneralScoring* m_scoring_object;
-  
-  /// Tree nodes
-  std::vector<Node> m_nodes;
-  
-  /// Words of the vocabulary (tree leaves)
-  /// this condition holds: m_words[wid]->word_id == wid
-  std::vector<Node*> m_words;
-  
->>>>>>> master
 };
 
 // --------------------------------------------------------------------------
@@ -698,7 +477,6 @@ void TemplatedVocabulary<TDescriptor,F>::createScoringObject()
 {
   delete m_scoring_object;
   m_scoring_object = NULL;
-<<<<<<< HEAD
 
   switch(m_scoring)
   {
@@ -726,35 +504,6 @@ void TemplatedVocabulary<TDescriptor,F>::createScoringObject()
       m_scoring_object = new DotProductScoring;
       break;
 
-=======
-  
-  switch(m_scoring)
-  {
-    case L1_NORM: 
-      m_scoring_object = new L1Scoring;
-      break;
-      
-    case L2_NORM:
-      m_scoring_object = new L2Scoring;
-      break;
-    
-    case CHI_SQUARE:
-      m_scoring_object = new ChiSquareScoring;
-      break;
-      
-    case KL:
-      m_scoring_object = new KLScoring;
-      break;
-      
-    case BHATTACHARYYA:
-      m_scoring_object = new BhattacharyyaScoring;
-      break;
-      
-    case DOT_PRODUCT:
-      m_scoring_object = new DotProductScoring;
-      break;
-    
->>>>>>> master
   }
 }
 
@@ -796,24 +545,16 @@ TemplatedVocabulary<TDescriptor,F>::~TemplatedVocabulary()
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-<<<<<<< HEAD
 TemplatedVocabulary<TDescriptor, F>&
 TemplatedVocabulary<TDescriptor,F>::operator=
   (const TemplatedVocabulary<TDescriptor, F> &voc)
 {
-=======
-TemplatedVocabulary<TDescriptor, F>& 
-TemplatedVocabulary<TDescriptor,F>::operator=
-  (const TemplatedVocabulary<TDescriptor, F> &voc)
-{  
->>>>>>> master
   this->m_k = voc.m_k;
   this->m_L = voc.m_L;
   this->m_scoring = voc.m_scoring;
   this->m_weighting = voc.m_weighting;
 
   this->createScoringObject();
-<<<<<<< HEAD
 
   this->m_nodes.clear();
   this->m_words.clear();
@@ -821,15 +562,6 @@ TemplatedVocabulary<TDescriptor,F>::operator=
   this->m_nodes = voc.m_nodes;
   this->createWords();
 
-=======
-  
-  this->m_nodes.clear();
-  this->m_words.clear();
-  
-  this->m_nodes = voc.m_nodes;
-  this->createWords();
-  
->>>>>>> master
   return *this;
 }
 
@@ -841,7 +573,6 @@ void TemplatedVocabulary<TDescriptor,F>::create(
 {
   m_nodes.clear();
   m_words.clear();
-<<<<<<< HEAD
 
   // expected_nodes = Sum_{i=0..L} ( k^i )
 	int expected_nodes =
@@ -850,29 +581,13 @@ void TemplatedVocabulary<TDescriptor,F>::create(
   m_nodes.reserve(expected_nodes); // avoid allocations when creating the tree
 
 
-=======
-  
-  // expected_nodes = Sum_{i=0..L} ( k^i )
-	int expected_nodes = 
-		(int)((pow((double)m_k, (double)m_L + 1) - 1)/(m_k - 1));
-
-  m_nodes.reserve(expected_nodes); // avoid allocations when creating the tree
-  
-  
->>>>>>> master
   vector<pDescriptor> features;
   getFeatures(training_features, features);
 
 
-<<<<<<< HEAD
   // create root
   m_nodes.push_back(Node(0)); // root
 
-=======
-  // create root  
-  m_nodes.push_back(Node(0)); // root
-  
->>>>>>> master
   // create the tree
   HKmeansStep(0, features, 1);
 
@@ -881,11 +596,7 @@ void TemplatedVocabulary<TDescriptor,F>::create(
 
   // and set the weight of each node of the tree
   setNodeWeights(training_features);
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
 }
 
 // --------------------------------------------------------------------------
@@ -897,11 +608,7 @@ void TemplatedVocabulary<TDescriptor,F>::create(
 {
   m_k = k;
   m_L = L;
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   create(training_features);
 }
 
@@ -917,11 +624,7 @@ void TemplatedVocabulary<TDescriptor,F>::create(
   m_weighting = weighting;
   m_scoring = scoring;
   createScoringObject();
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   create(training_features);
 }
 
@@ -929,19 +632,11 @@ void TemplatedVocabulary<TDescriptor,F>::create(
 
 template<class TDescriptor, class F>
 void TemplatedVocabulary<TDescriptor,F>::getFeatures(
-<<<<<<< HEAD
   const vector<vector<TDescriptor> > &training_features,
   vector<pDescriptor> &features) const
 {
   features.resize(0);
 
-=======
-  const vector<vector<TDescriptor> > &training_features, 
-  vector<pDescriptor> &features) const
-{
-  features.resize(0);
-  
->>>>>>> master
   typename vector<vector<TDescriptor> >::const_iterator vvit;
   typename vector<TDescriptor>::const_iterator vit;
   for(vvit = training_features.begin(); vvit != training_features.end(); ++vvit)
@@ -957,19 +652,11 @@ void TemplatedVocabulary<TDescriptor,F>::getFeatures(
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-<<<<<<< HEAD
 void TemplatedVocabulary<TDescriptor,F>::HKmeansStep(NodeId parent_id,
   const vector<pDescriptor> &descriptors, int current_level)
 {
   if(descriptors.empty()) return;
 
-=======
-void TemplatedVocabulary<TDescriptor,F>::HKmeansStep(NodeId parent_id, 
-  const vector<pDescriptor> &descriptors, int current_level)
-{
-  if(descriptors.empty()) return;
-        
->>>>>>> master
   // features associated to each cluster
   vector<TDescriptor> clusters;
 	vector<vector<unsigned int> > groups; // groups[i] = [j1, j2, ...]
@@ -977,21 +664,12 @@ void TemplatedVocabulary<TDescriptor,F>::HKmeansStep(NodeId parent_id,
 
   clusters.reserve(m_k);
 	groups.reserve(m_k);
-<<<<<<< HEAD
 
   //const int msizes[] = { m_k, descriptors.size() };
   //cv::SparseMat assoc(2, msizes, CV_8U);
   //cv::SparseMat last_assoc(2, msizes, CV_8U);
   //// assoc.row(cluster_idx).col(descriptor_idx) = 1 iif associated
 
-=======
-  
-  //const int msizes[] = { m_k, descriptors.size() };
-  //cv::SparseMat assoc(2, msizes, CV_8U);
-  //cv::SparseMat last_assoc(2, msizes, CV_8U);  
-  //// assoc.row(cluster_idx).col(descriptor_idx) = 1 iif associated
-  
->>>>>>> master
   if((int)descriptors.size() <= m_k)
   {
     // trivial case: one cluster per feature
@@ -1006,17 +684,10 @@ void TemplatedVocabulary<TDescriptor,F>::HKmeansStep(NodeId parent_id,
   else
   {
     // select clusters and groups with kmeans
-<<<<<<< HEAD
 
     bool first_time = true;
     bool goon = true;
 
-=======
-    
-    bool first_time = true;
-    bool goon = true;
-    
->>>>>>> master
     // to check if clusters move after iterations
     vector<int> last_association, current_association;
 
@@ -1026,11 +697,7 @@ void TemplatedVocabulary<TDescriptor,F>::HKmeansStep(NodeId parent_id,
 
 			if(first_time)
 			{
-<<<<<<< HEAD
         // random sample
-=======
-        // random sample 
->>>>>>> master
         initiateClusters(descriptors, clusters);
       }
       else
@@ -1041,11 +708,7 @@ void TemplatedVocabulary<TDescriptor,F>::HKmeansStep(NodeId parent_id,
         {
           vector<pDescriptor> cluster_descriptors;
           cluster_descriptors.reserve(groups[c].size());
-<<<<<<< HEAD
 
-=======
-          
->>>>>>> master
           /*
           for(unsigned int d = 0; d < descriptors.size(); ++d)
           {
@@ -1055,29 +718,17 @@ void TemplatedVocabulary<TDescriptor,F>::HKmeansStep(NodeId parent_id,
             }
           }
           */
-<<<<<<< HEAD
 
-=======
-          
->>>>>>> master
           vector<unsigned int>::const_iterator vit;
           for(vit = groups[c].begin(); vit != groups[c].end(); ++vit)
           {
             cluster_descriptors.push_back(descriptors[*vit]);
           }
-<<<<<<< HEAD
 
 
           F::meanValue(cluster_descriptors, clusters[c]);
         }
 
-=======
-          
-          
-          F::meanValue(cluster_descriptors, clusters[c]);
-        }
-        
->>>>>>> master
       } // if(!first_time)
 
       // 2. Associate features with clusters
@@ -1095,11 +746,7 @@ void TemplatedVocabulary<TDescriptor,F>::HKmeansStep(NodeId parent_id,
       {
         double best_dist = F::distance(*(*fit), clusters[0]);
         unsigned int icluster = 0;
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> master
         for(unsigned int c = 1; c < clusters.size(); ++c)
         {
           double dist = F::distance(*(*fit), clusters[c]);
@@ -1115,11 +762,7 @@ void TemplatedVocabulary<TDescriptor,F>::HKmeansStep(NodeId parent_id,
         groups[icluster].push_back(fit - descriptors.begin());
         current_association[ fit - descriptors.begin() ] = icluster;
       }
-<<<<<<< HEAD
 
-=======
-      
->>>>>>> master
       // kmeans++ ensures all the clusters has any feature associated with them
 
       // 3. check convergence
@@ -1130,11 +773,7 @@ void TemplatedVocabulary<TDescriptor,F>::HKmeansStep(NodeId parent_id,
       else
       {
         //goon = !eqUChar(last_assoc, assoc);
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> master
         goon = false;
         for(unsigned int i = 0; i < current_association.size(); i++)
         {
@@ -1151,19 +790,11 @@ void TemplatedVocabulary<TDescriptor,F>::HKmeansStep(NodeId parent_id,
 				last_association = current_association;
 				//last_assoc = assoc.clone();
 			}
-<<<<<<< HEAD
 
 		} // while(goon)
 
   } // if must run kmeans
 
-=======
-			
-		} // while(goon)
-    
-  } // if must run kmeans
-  
->>>>>>> master
   // create nodes
   for(unsigned int i = 0; i < clusters.size(); ++i)
   {
@@ -1173,11 +804,7 @@ void TemplatedVocabulary<TDescriptor,F>::HKmeansStep(NodeId parent_id,
     m_nodes.back().parent = parent_id;
     m_nodes[parent_id].children.push_back(id);
   }
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   // go on with the next level
   if(current_level < m_L)
   {
@@ -1210,11 +837,7 @@ template<class TDescriptor, class F>
 void TemplatedVocabulary<TDescriptor, F>::initiateClusters
   (const vector<pDescriptor> &descriptors, vector<TDescriptor> &clusters) const
 {
-<<<<<<< HEAD
   initiateClustersKMpp(descriptors, clusters);
-=======
-  initiateClustersKMpp(descriptors, clusters);  
->>>>>>> master
 }
 
 // --------------------------------------------------------------------------
@@ -1226,21 +849,12 @@ void TemplatedVocabulary<TDescriptor,F>::initiateClustersKMpp(
   // Implements kmeans++ seeding algorithm
   // Algorithm:
   // 1. Choose one center uniformly at random from among the data points.
-<<<<<<< HEAD
   // 2. For each data point x, compute D(x), the distance between x and the nearest
   //    center that has already been chosen.
   // 3. Add one new data point as a center. Each point x is chosen with probability
   //    proportional to D(x)^2.
   // 4. Repeat Steps 2 and 3 until k centers have been chosen.
   // 5. Now that the initial centers have been chosen, proceed using standard k-means
-=======
-  // 2. For each data point x, compute D(x), the distance between x and the nearest 
-  //    center that has already been chosen.
-  // 3. Add one new data point as a center. Each point x is chosen with probability 
-  //    proportional to D(x)^2.
-  // 4. Repeat Steps 2 and 3 until k centers have been chosen.
-  // 5. Now that the initial centers have been chosen, proceed using standard k-means 
->>>>>>> master
   //    clustering.
 
   DUtils::Random::SeedRandOnce();
@@ -1248,19 +862,11 @@ void TemplatedVocabulary<TDescriptor,F>::initiateClustersKMpp(
   clusters.resize(0);
   clusters.reserve(m_k);
   vector<double> min_dists(pfeatures.size(), std::numeric_limits<double>::max());
-<<<<<<< HEAD
 
   // 1.
 
   int ifeature = DUtils::Random::RandomInt(0, pfeatures.size()-1);
 
-=======
-  
-  // 1.
-  
-  int ifeature = DUtils::Random::RandomInt(0, pfeatures.size()-1);
-  
->>>>>>> master
   // create first cluster
   clusters.push_back(*pfeatures[ifeature]);
 
@@ -1271,11 +877,7 @@ void TemplatedVocabulary<TDescriptor,F>::initiateClustersKMpp(
   for(fit = pfeatures.begin(); fit != pfeatures.end(); ++fit, ++dit)
   {
     *dit = F::distance(*(*fit), clusters.back());
-<<<<<<< HEAD
   }
-=======
-  }  
->>>>>>> master
 
   while((int)clusters.size() < m_k)
   {
@@ -1289,11 +891,7 @@ void TemplatedVocabulary<TDescriptor,F>::initiateClustersKMpp(
         if(dist < *dit) *dit = dist;
       }
     }
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> master
     // 3.
     double dist_sum = std::accumulate(min_dists.begin(), min_dists.end(), 0.0);
 
@@ -1311,31 +909,18 @@ void TemplatedVocabulary<TDescriptor,F>::initiateClustersKMpp(
         d_up_now += *dit;
         if(d_up_now >= cut_d) break;
       }
-<<<<<<< HEAD
 
       if(dit == min_dists.end())
         ifeature = pfeatures.size()-1;
       else
         ifeature = dit - min_dists.begin();
 
-=======
-      
-      if(dit == min_dists.end()) 
-        ifeature = pfeatures.size()-1;
-      else
-        ifeature = dit - min_dists.begin();
-      
->>>>>>> master
       clusters.push_back(*pfeatures[ifeature]);
 
     } // if dist_sum > 0
     else
       break;
-<<<<<<< HEAD
 
-=======
-      
->>>>>>> master
   } // while(used_clusters < m_k)
 
 }
@@ -1346,21 +931,13 @@ template<class TDescriptor, class F>
 void TemplatedVocabulary<TDescriptor,F>::createWords()
 {
   m_words.resize(0);
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   if(!m_nodes.empty())
   {
     m_words.reserve( (int)pow((double)m_k, (double)m_L) );
 
     typename vector<Node>::iterator nit;
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> master
     nit = m_nodes.begin(); // ignore root
     for(++nit; nit != m_nodes.end(); ++nit)
     {
@@ -1397,11 +974,7 @@ void TemplatedVocabulary<TDescriptor,F>::setNodeWeights
 
     vector<unsigned int> Ni(NWords, 0);
     vector<bool> counted(NWords, false);
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> master
     typename vector<vector<TDescriptor> >::const_iterator mit;
     typename vector<TDescriptor>::const_iterator fit;
 
@@ -1430,11 +1003,7 @@ void TemplatedVocabulary<TDescriptor,F>::setNodeWeights
         m_words[i]->weight = log((double)NDocs / (double)Ni[i]);
       }// else // This cannot occur if using kmeans++
     }
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   }
 
 }
@@ -1465,17 +1034,10 @@ float TemplatedVocabulary<TDescriptor,F>::getEffectiveLevels() const
   for(wit = m_words.begin(); wit != m_words.end(); ++wit)
   {
     const Node *p = *wit;
-<<<<<<< HEAD
 
     for(; p->id != 0; sum++) p = &m_nodes[p->parent];
   }
 
-=======
-    
-    for(; p->id != 0; sum++) p = &m_nodes[p->parent];
-  }
-  
->>>>>>> master
   return (float)((double)sum / (double)m_words.size());
 }
 
@@ -1505,11 +1067,7 @@ WordId TemplatedVocabulary<TDescriptor, F>::transform
   {
     return 0;
   }
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   WordId wid;
   transform(feature, wid);
   return wid;
@@ -1522,21 +1080,13 @@ void TemplatedVocabulary<TDescriptor,F>::transform(
   const std::vector<TDescriptor>& features, BowVector &v) const
 {
   v.clear();
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   if(empty())
   {
     return;
   }
 
-<<<<<<< HEAD
   // normalize
-=======
-  // normalize 
->>>>>>> master
   LNorm norm;
   bool must = m_scoring_object->mustNormalize(norm);
 
@@ -1547,7 +1097,6 @@ void TemplatedVocabulary<TDescriptor,F>::transform(
     for(fit = features.begin(); fit < features.end(); ++fit)
     {
       WordId id;
-<<<<<<< HEAD
       WordValue w;
       // w is the idf value if TF_IDF, 1 if TF
 
@@ -1557,32 +1106,14 @@ void TemplatedVocabulary<TDescriptor,F>::transform(
       if(w > 0) v.addWeight(id, w);
     }
 
-=======
-      WordValue w; 
-      // w is the idf value if TF_IDF, 1 if TF
-      
-      transform(*fit, id, w);
-      
-      // not stopped
-      if(w > 0) v.addWeight(id, w);
-    }
-    
->>>>>>> master
     if(!v.empty() && !must)
     {
       // unnecessary when normalizing
       const double nd = v.size();
-<<<<<<< HEAD
       for(BowVector::iterator vit = v.begin(); vit != v.end(); vit++)
         vit->second /= nd;
     }
 
-=======
-      for(BowVector::iterator vit = v.begin(); vit != v.end(); vit++) 
-        vit->second /= nd;
-    }
-    
->>>>>>> master
   }
   else // IDF || BINARY
   {
@@ -1591,7 +1122,6 @@ void TemplatedVocabulary<TDescriptor,F>::transform(
       WordId id;
       WordValue w;
       // w is idf if IDF, or 1 if BINARY
-<<<<<<< HEAD
 
       transform(*fit, id, w);
 
@@ -1601,43 +1131,23 @@ void TemplatedVocabulary<TDescriptor,F>::transform(
     } // if add_features
   } // if m_weighting == ...
 
-=======
-      
-      transform(*fit, id, w);
-      
-      // not stopped
-      if(w > 0) v.addIfNotExist(id, w);
-      
-    } // if add_features
-  } // if m_weighting == ...
-  
->>>>>>> master
   if(must) v.normalize(norm);
 }
 
 // --------------------------------------------------------------------------
 
-<<<<<<< HEAD
 template<class TDescriptor, class F>
-=======
-template<class TDescriptor, class F> 
->>>>>>> master
 void TemplatedVocabulary<TDescriptor,F>::transform(
   const std::vector<TDescriptor>& features,
   BowVector &v, FeatureVector &fv, int levelsup) const
 {
   v.clear();
   fv.clear();
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   if(empty()) // safe for subclasses
   {
     return;
   }
-<<<<<<< HEAD
 
   // normalize
   LNorm norm;
@@ -1645,15 +1155,6 @@ void TemplatedVocabulary<TDescriptor,F>::transform(
 
   typename vector<TDescriptor>::const_iterator fit;
 
-=======
-  
-  // normalize 
-  LNorm norm;
-  bool must = m_scoring_object->mustNormalize(norm);
-  
-  typename vector<TDescriptor>::const_iterator fit;
-  
->>>>>>> master
   if(m_weighting == TF || m_weighting == TF_IDF)
   {
     unsigned int i_feature = 0;
@@ -1661,7 +1162,6 @@ void TemplatedVocabulary<TDescriptor,F>::transform(
     {
       WordId id;
       NodeId nid;
-<<<<<<< HEAD
       WordValue w;
       // w is the idf value if TF_IDF, 1 if TF
 
@@ -1669,39 +1169,19 @@ void TemplatedVocabulary<TDescriptor,F>::transform(
 
       if(w > 0) // not stopped
       {
-=======
-      WordValue w; 
-      // w is the idf value if TF_IDF, 1 if TF
-      
-      transform(*fit, id, w, &nid, levelsup);
-      
-      if(w > 0) // not stopped
-      { 
->>>>>>> master
         v.addWeight(id, w);
         fv.addFeature(nid, i_feature);
       }
     }
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> master
     if(!v.empty() && !must)
     {
       // unnecessary when normalizing
       const double nd = v.size();
-<<<<<<< HEAD
       for(BowVector::iterator vit = v.begin(); vit != v.end(); vit++)
         vit->second /= nd;
     }
 
-=======
-      for(BowVector::iterator vit = v.begin(); vit != v.end(); vit++) 
-        vit->second /= nd;
-    }
-  
->>>>>>> master
   }
   else // IDF || BINARY
   {
@@ -1712,15 +1192,9 @@ void TemplatedVocabulary<TDescriptor,F>::transform(
       NodeId nid;
       WordValue w;
       // w is idf if IDF, or 1 if BINARY
-<<<<<<< HEAD
 
       transform(*fit, id, w, &nid, levelsup);
 
-=======
-      
-      transform(*fit, id, w, &nid, levelsup);
-      
->>>>>>> master
       if(w > 0) // not stopped
       {
         v.addIfNotExist(id, w);
@@ -1728,21 +1202,13 @@ void TemplatedVocabulary<TDescriptor,F>::transform(
       }
     }
   } // if m_weighting == ...
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   if(must) v.normalize(norm);
 }
 
 // --------------------------------------------------------------------------
 
-<<<<<<< HEAD
 template<class TDescriptor, class F>
-=======
-template<class TDescriptor, class F> 
->>>>>>> master
 inline double TemplatedVocabulary<TDescriptor,F>::score
   (const BowVector &v1, const BowVector &v2) const
 {
@@ -1762,15 +1228,9 @@ void TemplatedVocabulary<TDescriptor,F>::transform
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-<<<<<<< HEAD
 void TemplatedVocabulary<TDescriptor,F>::transform(const TDescriptor &feature,
   WordId &word_id, WordValue &weight, NodeId *nid, int levelsup) const
 {
-=======
-void TemplatedVocabulary<TDescriptor,F>::transform(const TDescriptor &feature, 
-  WordId &word_id, WordValue &weight, NodeId *nid, int levelsup) const
-{ 
->>>>>>> master
   // propagate the feature down the tree
   vector<NodeId> nodes;
   typename vector<NodeId>::const_iterator nit;
@@ -1787,11 +1247,7 @@ void TemplatedVocabulary<TDescriptor,F>::transform(const TDescriptor &feature,
     ++current_level;
     nodes = m_nodes[final_id].children;
     final_id = nodes[0];
-<<<<<<< HEAD
 
-=======
- 
->>>>>>> master
     double best_d = F::distance(feature, m_nodes[final_id].descriptor);
 
     for(nit = nodes.begin() + 1; nit != nodes.end(); ++nit)
@@ -1804,17 +1260,10 @@ void TemplatedVocabulary<TDescriptor,F>::transform(const TDescriptor &feature,
         final_id = id;
       }
     }
-<<<<<<< HEAD
 
     if(nid != NULL && current_level == nid_level)
       *nid = final_id;
 
-=======
-    
-    if(nid != NULL && current_level == nid_level)
-      *nid = final_id;
-    
->>>>>>> master
   } while( !m_nodes[final_id].isLeaf() );
 
   // turn node id into word id
@@ -1844,11 +1293,7 @@ void TemplatedVocabulary<TDescriptor,F>::getWordsFromNode
   (NodeId nid, std::vector<WordId> &words) const
 {
   words.clear();
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   if(m_nodes[nid].isLeaf())
   {
     words.push_back(m_nodes[nid].word_id);
@@ -1856,22 +1301,14 @@ void TemplatedVocabulary<TDescriptor,F>::getWordsFromNode
   else
   {
     words.reserve(m_k); // ^1, ^2, ...
-<<<<<<< HEAD
 
     vector<NodeId> parents;
     parents.push_back(nid);
 
-=======
-    
-    vector<NodeId> parents;
-    parents.push_back(nid);
-    
->>>>>>> master
     while(!parents.empty())
     {
       NodeId parentid = parents.back();
       parents.pop_back();
-<<<<<<< HEAD
 
       const vector<NodeId> &child_ids = m_nodes[parentid].children;
       vector<NodeId>::const_iterator cit;
@@ -1880,25 +1317,11 @@ void TemplatedVocabulary<TDescriptor,F>::getWordsFromNode
       {
         const Node &child_node = m_nodes[*cit];
 
-=======
-      
-      const vector<NodeId> &child_ids = m_nodes[parentid].children;
-      vector<NodeId>::const_iterator cit;
-      
-      for(cit = child_ids.begin(); cit != child_ids.end(); ++cit)
-      {
-        const Node &child_node = m_nodes[*cit];
-        
->>>>>>> master
         if(child_node.isLeaf())
           words.push_back(child_node.word_id);
         else
           parents.push_back(*cit);
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> master
       } // for each child
     } // while !parents.empty
   }
@@ -1929,11 +1352,7 @@ bool TemplatedVocabulary<TDescriptor,F>::loadFromTextFile(const std::string &fil
 {
     ifstream f;
     f.open(filename.c_str());
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> master
     if(f.eof())
 	return false;
 
@@ -1955,11 +1374,7 @@ bool TemplatedVocabulary<TDescriptor,F>::loadFromTextFile(const std::string &fil
         std::cerr << "Vocabulary loading failure: This is not a correct text file!" << endl;
 	return false;
     }
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> master
     m_scoring = (ScoringType)n1;
     m_weighting = (WeightingType)n2;
     createScoringObject();
@@ -1983,11 +1398,7 @@ bool TemplatedVocabulary<TDescriptor,F>::loadFromTextFile(const std::string &fil
         int nid = m_nodes.size();
         m_nodes.resize(m_nodes.size()+1);
 	m_nodes[nid].id = nid;
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> master
         int pid ;
         ssnode >> pid;
         m_nodes[nid].parent = pid;
@@ -2053,7 +1464,6 @@ void TemplatedVocabulary<TDescriptor,F>::saveToTextFile(const std::string &filen
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-<<<<<<< HEAD
 bool TemplatedVocabulary<TDescriptor,F>::loadFromBinaryFile(const std::string &filename) {
   fstream f;
   f.open(filename.c_str(), ios_base::in|ios::binary);
@@ -2129,17 +1539,11 @@ void TemplatedVocabulary<TDescriptor,F>::saveToBinaryFile(const std::string &fil
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-=======
->>>>>>> master
 void TemplatedVocabulary<TDescriptor,F>::save(const std::string &filename) const
 {
   cv::FileStorage fs(filename.c_str(), cv::FileStorage::WRITE);
   if(!fs.isOpened()) throw string("Could not open file ") + filename;
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   save(fs);
 }
 
@@ -2150,11 +1554,7 @@ void TemplatedVocabulary<TDescriptor,F>::load(const std::string &filename)
 {
   cv::FileStorage fs(filename.c_str(), cv::FileStorage::READ);
   if(!fs.isOpened()) throw string("Could not open file ") + filename;
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   this->load(fs);
 }
 
@@ -2165,31 +1565,19 @@ void TemplatedVocabulary<TDescriptor,F>::save(cv::FileStorage &f,
   const std::string &name) const
 {
   // Format YAML:
-<<<<<<< HEAD
   // vocabulary
-=======
-  // vocabulary 
->>>>>>> master
   // {
   //   k:
   //   L:
   //   scoringType:
   //   weightingType:
-<<<<<<< HEAD
   //   nodes
-=======
-  //   nodes 
->>>>>>> master
   //   [
   //     {
   //       nodeId:
   //       parentId:
   //       weight:
-<<<<<<< HEAD
   //       descriptor:
-=======
-  //       descriptor: 
->>>>>>> master
   //     }
   //   ]
   //   words
@@ -2203,24 +1591,14 @@ void TemplatedVocabulary<TDescriptor,F>::save(cv::FileStorage &f,
   //
   // The root node (index 0) is not included in the node vector
   //
-<<<<<<< HEAD
 
   f << name << "{";
 
-=======
-  
-  f << name << "{";
-  
->>>>>>> master
   f << "k" << m_k;
   f << "L" << m_L;
   f << "scoringType" << m_scoring;
   f << "weightingType" << m_weighting;
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   // tree
   f << "nodes" << "[";
   vector<NodeId> parents, children;
@@ -2247,11 +1625,7 @@ void TemplatedVocabulary<TDescriptor,F>::save(cv::FileStorage &f,
       f << "weight" << (double)child.weight;
       f << "descriptor" << F::toString(child.descriptor);
       f << "}";
-<<<<<<< HEAD
 
-=======
-      
->>>>>>> master
       // add to parent list
       if(!child.isLeaf())
       {
@@ -2259,20 +1633,12 @@ void TemplatedVocabulary<TDescriptor,F>::save(cv::FileStorage &f,
       }
     }
   }
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   f << "]"; // nodes
 
   // words
   f << "words" << "[";
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   typename vector<Node*>::const_iterator wit;
   for(wit = m_words.begin(); wit != m_words.end(); wit++)
   {
@@ -2282,11 +1648,7 @@ void TemplatedVocabulary<TDescriptor,F>::save(cv::FileStorage &f,
     f << "nodeId" << (int)(*wit)->id;
     f << "}";
   }
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   f << "]"; // words
 
   f << "}";
@@ -2301,24 +1663,14 @@ void TemplatedVocabulary<TDescriptor,F>::load(const cv::FileStorage &fs,
 {
   m_words.clear();
   m_nodes.clear();
-<<<<<<< HEAD
 
   cv::FileNode fvoc = fs[name];
 
-=======
-  
-  cv::FileNode fvoc = fs[name];
-  
->>>>>>> master
   m_k = (int)fvoc["k"];
   m_L = (int)fvoc["L"];
   m_scoring = (ScoringType)((int)fvoc["scoringType"]);
   m_weighting = (WeightingType)((int)fvoc["weightingType"]);
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   createScoringObject();
 
   // nodes
@@ -2333,16 +1685,11 @@ void TemplatedVocabulary<TDescriptor,F>::load(const cv::FileStorage &fs,
     NodeId pid = (int)fn[i]["parentId"];
     WordValue weight = (WordValue)fn[i]["weight"];
     string d = (string)fn[i]["descriptor"];
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> master
     m_nodes[nid].id = nid;
     m_nodes[nid].parent = pid;
     m_nodes[nid].weight = weight;
     m_nodes[pid].children.push_back(nid);
-<<<<<<< HEAD
 
     F::fromString(m_nodes[nid].descriptor, d);
   }
@@ -2350,26 +1697,13 @@ void TemplatedVocabulary<TDescriptor,F>::load(const cv::FileStorage &fs,
   // words
   fn = fvoc["words"];
 
-=======
-    
-    F::fromString(m_nodes[nid].descriptor, d);
-  }
-  
-  // words
-  fn = fvoc["words"];
-  
->>>>>>> master
   m_words.resize(fn.size());
 
   for(unsigned int i = 0; i < fn.size(); ++i)
   {
     NodeId wid = (int)fn[i]["wordId"];
     NodeId nid = (int)fn[i]["nodeId"];
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> master
     m_nodes[nid].word_id = wid;
     m_words[wid] = &m_nodes[nid];
   }
@@ -2383,17 +1717,10 @@ void TemplatedVocabulary<TDescriptor,F>::load(const cv::FileStorage &fs,
  * @param voc
  */
 template<class TDescriptor, class F>
-<<<<<<< HEAD
 std::ostream& operator<<(std::ostream &os,
   const TemplatedVocabulary<TDescriptor,F> &voc)
 {
   os << "Vocabulary: k = " << voc.getBranchingFactor()
-=======
-std::ostream& operator<<(std::ostream &os, 
-  const TemplatedVocabulary<TDescriptor,F> &voc)
-{
-  os << "Vocabulary: k = " << voc.getBranchingFactor() 
->>>>>>> master
     << ", L = " << voc.getDepthLevels()
     << ", Weighting = ";
 
@@ -2415,11 +1742,7 @@ std::ostream& operator<<(std::ostream &os,
     case BHATTACHARYYA: os << "Bhattacharyya coefficient"; break;
     case DOT_PRODUCT: os << "Dot product"; break;
   }
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> master
   os << ", Number of words = " << voc.size();
 
   return os;
