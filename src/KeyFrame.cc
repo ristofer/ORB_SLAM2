@@ -19,8 +19,9 @@
 */
 
 #include "KeyFrame.h"
+
 #include "ORBmatcher.h"
-#include<mutex>
+#include <mutex>
 
 namespace ORB_SLAM2
 {
@@ -54,6 +55,7 @@ KeyFrame::KeyFrame(Frame &F, Map *pMap, KeyFrameDatabase *pKFDB):
 
     SetPose(F.mTcw);    
     SetOdomPose(F.mTf_w_c);
+
 }
 
 void KeyFrame::ComputeBoW()
@@ -83,11 +85,13 @@ void KeyFrame::SetPose(const cv::Mat &Tcw_)
     Cw = Twc*center;
 }
 
+
 void KeyFrame::SetOdomPose(const g2o::SE3Quat &TF_w_c)
 {
     unique_lock<mutex> lock(mMutexPose);
     mTF_w_c = TF_w_c;
 }
+
 
 
 cv::Mat KeyFrame::GetPose()
@@ -96,11 +100,13 @@ cv::Mat KeyFrame::GetPose()
     return Tcw.clone();
 }
 
+
 g2o::SE3Quat KeyFrame::GetOdomPose()
 {
     unique_lock<mutex> lock(mMutexPose);
     return mTF_w_c;
 }
+
 
 cv::Mat KeyFrame::GetPoseInverse()
 {
@@ -134,6 +140,7 @@ cv::Mat KeyFrame::GetTranslation()
     unique_lock<mutex> lock(mMutexPose);
     return Tcw.rowRange(0,3).col(3).clone();
 }
+
 
 void KeyFrame::UpdateTranslation(float s)
 {
@@ -589,6 +596,7 @@ void KeyFrame::SetBadFlag()
 
     mpPreviousKeyFrame->mpNextKeyFrame = mpNextKeyFrame;
     mpNextKeyFrame->mpPreviousKeyFrame = mpPreviousKeyFrame;
+
 
     mpMap->EraseKeyFrame(this);
     mpKeyFrameDB->erase(this);

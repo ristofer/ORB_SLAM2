@@ -81,6 +81,7 @@ private:
 
     bool mbStopped;
     bool mbStopRequested;
+
     bool mbReuseMap;
 
     std::mutex mMutexStop;

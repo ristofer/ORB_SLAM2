@@ -80,11 +80,13 @@ public:
 
     bool isFinished();
 
+	bool loop_detected;
+
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
 protected:
-    int useOdometry;
 
+    int useOdometry;
     bool CheckNewKeyFrames();
 
     bool DetectLoop();
@@ -145,6 +147,7 @@ protected:
 
 
     int mnFullBAIdx;
+
 };
 
 } //namespace ORB_SLAM

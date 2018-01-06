@@ -29,6 +29,7 @@
 namespace ORB_SLAM2
 {
 
+<<<<<<< HEAD
 FrameDrawer::FrameDrawer(Map* pMap, bool bReuseMap):mpMap(pMap)
 {
     if (bReuseMap)

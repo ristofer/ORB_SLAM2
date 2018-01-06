@@ -38,6 +38,7 @@ namespace ORB_SLAM2
 {
 
 
+
 void Optimizer::GlobalBundleAdjustemnt(Map* pMap, int nIterations, bool* pbStopFlag, const unsigned long nLoopKF, const bool bRobust, bool useOdometry)
 {
     vector<KeyFrame*> vpKFs = pMap->GetAllKeyFrames();
@@ -50,6 +51,7 @@ void Optimizer::GlobalBundleAdjustemnt(Map* pMap, int nIterations, bool* pbStopF
 
 void Optimizer::BundleAdjustment(const vector<KeyFrame *> &vpKFs, const vector<MapPoint *> &vpMP, Map *pMap,
                                  int nIterations, bool* pbStopFlag, const unsigned long nLoopKF, const bool bRobust, bool useOdometry)
+
 {
     vector<bool> vbNotIncludedMP;
     vbNotIncludedMP.resize(vpMP.size());
@@ -87,6 +89,7 @@ void Optimizer::BundleAdjustment(const vector<KeyFrame *> &vpKFs, const vector<M
     const float thHuber2D = sqrt(5.99);
     const float thHuber3D = sqrt(7.815);
     const float thHuber6D = sqrt(12.59);
+
 
     // Set MapPoint vertices
     for(size_t i=0; i<vpMP.size(); i++)
@@ -186,6 +189,7 @@ void Optimizer::BundleAdjustment(const vector<KeyFrame *> &vpKFs, const vector<M
         }
     }
 
+
     // Set odometry measurements
     // Iterated from the first keyframe all the way to the KF which has no pointer
     // to a next KF (and thus is the last). This is forward iteration, thus relative
@@ -224,6 +228,7 @@ void Optimizer::BundleAdjustment(const vector<KeyFrame *> &vpKFs, const vector<M
             }
         }
     }
+
 
     // Optimize!
     optimizer.initializeOptimization();
@@ -493,6 +498,7 @@ int Optimizer::PoseOptimization(Frame *pFrame)
 }
 
 void Optimizer::LocalBundleAdjustment(KeyFrame *pKF, bool* pbStopFlag, Map* pMap, bool useOdometry)
+
 {    
     // Local KeyFrames: First Breath Search from Current Keyframe
     list<KeyFrame*> lLocalKeyFrames;
@@ -613,6 +619,7 @@ void Optimizer::LocalBundleAdjustment(KeyFrame *pKF, bool* pbStopFlag, Map* pMap
     const float thHuber6D = sqrt(12.59);
 
     // add map points
+
     for(list<MapPoint*>::iterator lit=lLocalMapPoints.begin(), lend=lLocalMapPoints.end(); lit!=lend; lit++)
     {
         MapPoint* pMP = *lit;

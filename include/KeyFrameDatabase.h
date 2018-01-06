@@ -32,6 +32,7 @@
 #include<mutex>
 #include "BoostArchiver.h"
 
+
 namespace ORB_SLAM2
 {
 
@@ -42,6 +43,7 @@ class Frame;
 class KeyFrameDatabase
 {
 public:
+
 
     KeyFrameDatabase(ORBVocabulary *voc);
 
@@ -71,6 +73,7 @@ protected:
 
   // Associated vocabulary
   ORBVocabulary* mpVoc;
+
 
   // Inverted file
   std::vector<list<KeyFrame*> > mvInvertedFile;

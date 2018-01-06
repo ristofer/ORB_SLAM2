@@ -53,6 +53,7 @@ public:
     static std::vector<float> toQuaternion(const cv::Mat &M);
     static cv::Mat Normalize(const cv::Mat &R);
 
+
 };
 
 }// namespace ORB_SLAM

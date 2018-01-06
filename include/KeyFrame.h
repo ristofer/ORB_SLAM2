@@ -32,6 +32,7 @@
 #include <mutex>
 #include "BoostArchiver.h"
 
+
 namespace ORB_SLAM2
 {
 
@@ -53,6 +54,7 @@ public:
     cv::Mat GetPose();
     cv::Mat GetPoseInverse();
     g2o::SE3Quat GetOdomPose();
+
     cv::Mat GetCameraCenter();
     cv::Mat GetStereoCenter();
     cv::Mat GetRotation();
@@ -98,6 +100,7 @@ public:
     std::vector<size_t> GetFeaturesInArea(const float &x, const float  &y, const float  &r) const;
     cv::Mat UnprojectStereo(int i);
 
+
     // neighbouring KF functions
     KeyFrame* GetPreviousKF();
     KeyFrame* GetNextKF();
@@ -126,6 +129,7 @@ public:
         return pKF1->mnId<pKF2->mnId;
     }
 
+
 public:
     // for serialization
     KeyFrame(); // Default constructor for serialization, need to deal with const member
@@ -135,6 +139,7 @@ private:
     friend class boost::serialization::access;
     template<class Archive>
     void serialize(Archive &ar, const unsigned int version);
+
 
     // The following variables are accesed from only 1 thread or never change (no mutex needed).
 public:
@@ -207,6 +212,7 @@ public:
     const int mnMaxY;
     const cv::Mat mK;
 
+
     bool isWorldFrame = false;
 
 
@@ -219,7 +225,6 @@ protected:
     cv::Mat Ow;
 
     cv::Mat Cw; // Stereo middel point. Only for visualization
-
 
 
     // MapPoints associated to keypoints
@@ -257,11 +262,12 @@ protected:
 
 
     // SE3 Odometry Pose
-      g2o::SE3Quat mTF_w_c;
+    g2o::SE3Quat mTF_w_c;
 
-      // pointers to neighbouring keyframes in trajectory
-      KeyFrame *mpPreviousKeyFrame;
-      KeyFrame *mpNextKeyFrame;
+    // pointers to neighbouring keyframes in trajectory
+    KeyFrame *mpPreviousKeyFrame;
+    KeyFrame *mpNextKeyFrame;
+
 };
 
 } //namespace ORB_SLAM

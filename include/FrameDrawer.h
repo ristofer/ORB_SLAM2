@@ -42,6 +42,7 @@ class FrameDrawer
 public:
     FrameDrawer(Map* pMap, bool bReuseMap=false);
 
+
     // Update info from the last processed frame.
     void Update(Tracking *pTracker);
 

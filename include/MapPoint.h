@@ -27,7 +27,9 @@
 
 #include<opencv2/core/core.hpp>
 #include<mutex>
+
 #include "BoostArchiver.h"
+
 
 namespace ORB_SLAM2
 {
@@ -45,6 +47,7 @@ public:
 
     void SetWorldPos(const cv::Mat &Pos);
     cv::Mat GetWorldPos();
+
     void UpdateWorldPos(float s);
     cv::Mat GetNormal();
     KeyFrame* GetReferenceKeyFrame();
@@ -92,6 +95,7 @@ private:
     void serialize(Archive &ar, const unsigned int version);
 
 public:
+
     long unsigned int mnId;
     static long unsigned int nNextId;
     long int mnFirstKFid;

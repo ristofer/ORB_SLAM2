@@ -70,7 +70,6 @@ bool VertexSE3Expmap::write(std::ostream& os) const {
 }
 
 
-
 EdgeSE3Odometry::EdgeSE3Odometry() : BaseBinaryEdge<6, SE3Quat, VertexSE3Expmap, VertexSE3Expmap>() {
 }
 

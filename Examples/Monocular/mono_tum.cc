@@ -50,7 +50,9 @@ int main(int argc, char **argv)
     int nImages = vstrImageFilenames.size();
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
+
     ORB_SLAM2::System SLAM(argv[1],argv[2],ORB_SLAM2::System::MONOCULAR,true, (bool)atoi(argv[4]));
+
 
     // Vector for tracking time statistics
     vector<float> vTimesTrack;
@@ -102,8 +104,10 @@ int main(int argc, char **argv)
             T = tframe-vTimestamps[ni-1];
 
         if(ttrack<T)
+
             std::this_thread::sleep_for(std::chrono::microseconds(static_cast<size_t>((T-ttrack)*1e6)));
     }
+
 
     // Stop all threads
     SLAM.Shutdown();
@@ -119,8 +123,13 @@ int main(int argc, char **argv)
     cout << "median tracking time: " << vTimesTrack[nImages/2] << endl;
     cout << "mean tracking time: " << totaltime/nImages << endl;
 
-    // Save camera trajectory
-    SLAM.SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
+
+	// Save 3D points
+	SLAM.getMap()->Save("tum_map_pts_out.obj");
+	SLAM.getMap()->SaveWithTimestamps("tum_map_pts_and_keyframes.txt");
+	// Save camera trajectory
+    SLAM.SaveKeyFrameTrajectoryTUM("tum_key_frame_trajectory.txt");
+
 
     return 0;
 }

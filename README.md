@@ -1,8 +1,22 @@
+
+Documentation is avalable at:
+    <b>https://github.com/abhineet123/ORB_SLAM2/blob/master/2d-grid-mapping.pdf</b>
+
+Some examples could be found at:
+    <b>https://github.com/abhineet123/ORB_SLAM2/blob/master/steps</b>
+
+Demos of KITTI seq 00 Odometry Dataset:
+    <b>https://www.youtube.com/watch?v=FCd6p25131I</b>
+
+Demos of indoor scene:
+   <b>https://www.youtube.com/watch?v=FCd6p25131I</b>
+_____________________________________________________________________________
+_____________________________________________________________________________
+
 # ORB-SLAM2
 **Authors:** [Raul Mur-Artal](http://webdiis.unizar.es/~raulmur/), [Juan D. Tardos](http://webdiis.unizar.es/~jdtardos/), [J. M. M. Montiel](http://webdiis.unizar.es/~josemari/) and [Dorian Galvez-Lopez](http://doriangalvez.com/) ([DBoW2](https://github.com/dorian3d/DBoW2))
 
-**14 Jul 2017**: Binary format ORB vocabulary and Map save/load are now supported(See section 10 and 11).
-
+>>>>>>> master
 **13 Jan 2017**: OpenCV 3 and Eigen 3.3 are now supported.
 
 **22 Dec 2016**: Added AR demo (see section 7).
@@ -17,7 +31,9 @@ alt="ORB-SLAM2" width="240" height="180" border="10" /></a>
 alt="ORB-SLAM2" width="240" height="180" border="10" /></a>
 
 
+
 ### Related Publications:
+
 
 [Monocular] Raúl Mur-Artal, J. M. M. Montiel and Juan D. Tardós. **ORB-SLAM: A Versatile and Accurate Monocular SLAM System**. *IEEE Transactions on Robotics,* vol. 31, no. 5, pp. 1147-1163, 2015. (**2015 IEEE Transactions on Robotics Best Paper Award**). **[PDF](http://webdiis.unizar.es/~raulmur/MurMontielTardosTRO15.pdf)**.
 
@@ -25,7 +41,9 @@ alt="ORB-SLAM2" width="240" height="180" border="10" /></a>
 
 [DBoW2 Place Recognizer] Dorian Gálvez-López and Juan D. Tardós. **Bags of Binary Words for Fast Place Recognition in Image Sequences**. *IEEE Transactions on Robotics,* vol. 28, no. 5, pp.  1188-1197, 2012. **[PDF](http://doriangalvez.com/php/dl.php?dlp=GalvezTRO12.pdf)**
 
+
 # 1. License
+
 
 ORB-SLAM2 is released under a [GPLv3 license](https://github.com/raulmur/ORB_SLAM2/blob/master/License-gpl.txt). For a list of all code/library dependencies (and associated licenses), please see [Dependencies.md](https://github.com/raulmur/ORB_SLAM2/blob/master/Dependencies.md).
 
@@ -53,7 +71,9 @@ if you use ORB-SLAM2 (Stereo or RGB-D) in an academic work, please cite:
       year={2016}
      }
 
-# 2. Prerequisites
+
+#2. Prerequisites
+
 We have tested the library in **Ubuntu 12.04**, **14.04** and **16.04**, but it should be easy to compile in other platforms. A powerful computer (e.g. i7) will ensure real-time performance and provide more stable and accurate results.
 
 ## C++11 or C++0x Compiler
@@ -74,6 +94,7 @@ We use modified versions of the [DBoW2](https://github.com/dorian3d/DBoW2) libra
 ## ROS (optional)
 We provide some examples to process the live input of a monocular, stereo or RGB-D camera using [ROS](ros.org). Building these examples is optional. In case you want to use ROS, a version Hydro or newer is needed.
 
+
 ## Boost(optional)
 
 Map save/load feature needs boost library and more specifically the`libboost_serialization` library.
@@ -81,6 +102,7 @@ Map save/load feature needs boost library and more specifically the`libboost_ser
 See section 11
 
 # 3. Building ORB-SLAM2 library and examples
+
 
 Clone the repository:
 ```
@@ -96,7 +118,9 @@ chmod +x build.sh
 
 This will create **libORB_SLAM2.so**  at *lib* folder and the executables **mono_tum**, **mono_kitti**, **rgbd_tum**, **stereo_kitti**, **mono_euroc** and **stereo_euroc** in *Examples* folder.
 
-# 4. Monocular Examples
+
+#4. Monocular Examples
+
 
 ## TUM Dataset
 
@@ -129,7 +153,9 @@ This will create **libORB_SLAM2.so**  at *lib* folder and the executables **mono
 ./Examples/Monocular/mono_euroc Vocabulary/ORBvoc.txt Examples/Monocular/EuRoC.yaml PATH_TO_SEQUENCE/cam0/data Examples/Monocular/EuRoC_TimeStamps/SEQUENCE.txt 
 ```
 
-# 5. Stereo Examples
+
+#5. Stereo Examples
+
 
 ## KITTI Dataset
 
@@ -152,7 +178,8 @@ This will create **libORB_SLAM2.so**  at *lib* folder and the executables **mono
 ./Examples/Stereo/stereo_euroc Vocabulary/ORBvoc.txt Examples/Stereo/EuRoC.yaml PATH_TO_SEQUENCE/cam0/data PATH_TO_SEQUENCE/cam1/data Examples/Stereo/EuRoC_TimeStamps/SEQUENCE.txt
 ```
 
-# 6. RGB-D Example
+#6. RGB-D Example
+
 
 ## TUM Dataset
 
@@ -170,7 +197,7 @@ This will create **libORB_SLAM2.so**  at *lib* folder and the executables **mono
   ./Examples/RGB-D/rgbd_tum Vocabulary/ORBvoc.txt Examples/RGB-D/TUMX.yaml PATH_TO_SEQUENCE_FOLDER ASSOCIATIONS_FILE
   ```
 
-# 7. ROS Examples
+#7. ROS Examples
 
 ### Building the nodes for mono, monoAR, stereo and RGB-D
 1. Add the path including *Examples/ROS/ORB_SLAM2* to the ROS_PACKAGE_PATH environment variable. Open .bashrc file and add at the end the following line. Replace PATH by the folder where you cloned ORB_SLAM2:
@@ -179,6 +206,7 @@ This will create **libORB_SLAM2.so**  at *lib* folder and the executables **mono
   export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:PATH/ORB_SLAM2/Examples/ROS
   ```
 
+  
 2. Execute `build_ros.sh` script:
 
   ```
@@ -186,6 +214,7 @@ This will create **libORB_SLAM2.so**  at *lib* folder and the executables **mono
   ./build_ros.sh
   ```
 
+  
 ### Running Monocular Node
 For a monocular input from topic `/camera/image_raw` run node ORB_SLAM2/Mono. You will need to provide the vocabulary file and a settings file. See the monocular examples above.
 
@@ -193,6 +222,7 @@ For a monocular input from topic `/camera/image_raw` run node ORB_SLAM2/Mono. Yo
   rosrun ORB_SLAM2 Mono PATH_TO_VOCABULARY PATH_TO_SETTINGS_FILE
   ```
 
+  
 ### Running Monocular Augmented Reality Demo
 This is a demo of augmented reality where you can use an interface to insert virtual cubes in planar regions of the scene.
 The node reads images from topic `/camera/image_raw`.
@@ -211,7 +241,7 @@ For a stereo input from topic `/camera/left/image_raw` and `/camera/right/image_
 **Example**: Download a rosbag (e.g. V1_01_easy.bag) from the EuRoC dataset (http://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisualinertialdatasets). Open 3 tabs on the terminal and run the following command at each tab:
   ```
   roscore
-  ```
+
 
   ```
   rosrun ORB_SLAM2 Stereo Vocabulary/ORBvoc.txt Examples/Stereo/EuRoC.yaml true
@@ -230,10 +260,12 @@ For an RGB-D input from topics `/camera/rgb/image_raw` and `/camera/depth_regist
   rosrun ORB_SLAM2 RGBD PATH_TO_VOCABULARY PATH_TO_SETTINGS_FILE
   ```
 
-# 8. Processing your own sequences
+  
+#8. Processing your own sequences
 You will need to create a settings file with the calibration of your camera. See the settings file provided for the TUM and KITTI datasets for monocular, stereo and RGB-D cameras. We use the calibration model of OpenCV. See the examples to learn how to create a program that makes use of the ORB-SLAM2 library and how to pass images to the SLAM system. Stereo input must be synchronized and rectified. RGB-D input must be synchronized and depth registered.
 
-# 9. SLAM and Localization Modes
+#9. SLAM and Localization Modes
+
 You can change between the *SLAM* and *Localization mode* using the GUI of the map viewer.
 
 ### SLAM Mode
@@ -275,3 +307,4 @@ mono_tum has been updated as a simple example of this functionality. An extra co
 I use boost_serialization library to serialize `Map`, `MapPoint`, `KeyFrame`,`KeyFrameDatabase`, `cv::Mat`, `DBoW2::BowVector`, `DBoW2::FeatureVector`. In brief, only the `ORBVector` isn't serialized.
 
 This feature is tested with boost 1.64 and it works fine mostly. There is still some occasional segmentfault to dig in.
+

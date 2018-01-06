@@ -23,7 +23,7 @@
 #include "ORBmatcher.h"
 #include "Optimizer.h"
 
-#include<mutex>
+#include <mutex>
 
 //using namespace Eigen;
 
@@ -39,6 +39,7 @@ LocalMapping::LocalMapping(Map *pMap, const string &strSettingPath,  const float
     float temp = fsSettings["Initializer.KeyFrames"];
     NumOfKeyFrames = (unsigned long) temp;
     useOdometry = fsSettings["Initializer.UseOdometry"];
+
 }
 
 void LocalMapping::SetLoopCloser(LoopClosing* pLoopCloser)
@@ -53,6 +54,7 @@ void LocalMapping::SetTracker(Tracking *pTracker)
 
 void LocalMapping::Run()
 {
+
     mbFinished = false;
 
     while(1)
@@ -83,6 +85,7 @@ void LocalMapping::Run()
             if(!CheckNewKeyFrames() && !stopRequested())
             {
 
+
                 // Local BA
                 if(useOdometry && mpMap->KeyFramesInMap()>NumOfKeyFrames && !mpMap->IsMapScaled)
                     MapScaling();
@@ -94,6 +97,7 @@ void LocalMapping::Run()
                         else if(!useOdometry)
                         Optimizer::LocalBundleAdjustment(mpCurrentKeyFrame,&mbAbortBA, mpMap, false);
                 }
+
                 // Check redundant local Keyframes
                 KeyFrameCulling();
             }
@@ -106,6 +110,7 @@ void LocalMapping::Run()
             while(isStopped() && !CheckFinish())
             {
                 std::this_thread::sleep_for(std::chrono::microseconds(3000));
+
             }
             if(CheckFinish())
                 break;
@@ -120,6 +125,7 @@ void LocalMapping::Run()
             break;
 
         std::this_thread::sleep_for(std::chrono::microseconds(3000));
+
     }
 
     SetFinish();
@@ -731,6 +737,7 @@ void LocalMapping::RequestReset()
                 break;
         }
         std::this_thread::sleep_for(std::chrono::microseconds(3000));
+
     }
 }
 
@@ -770,6 +777,7 @@ bool LocalMapping::isFinished()
     unique_lock<mutex> lock(mMutexFinish);
     return mbFinished;
 }
+
 
 void LocalMapping::MapScaling()
 {

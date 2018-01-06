@@ -7,8 +7,10 @@ ENDIF()
 
 MESSAGE("Build type: " ${CMAKE_BUILD_TYPE})
 
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall  -O3 -march=native ")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall   -O3 -march=native")
+
 
 # Check C++11 or C++0x support
 include(CheckCXXCompilerFlag)
@@ -28,6 +30,7 @@ endif()
 
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
+<<<<<<< HEAD
 find_package(OpenCV 2.4.8 QUIET)
 if(NOT OpenCV_FOUND)
 	message(FATAL_ERROR "OpenCV > 2.4.8 not found.")
@@ -59,6 +62,7 @@ ${HEADER_FILES}
 )
 
 
+
 target_link_libraries(${PROJECT_NAME}
 ${OpenCV_LIBS}
 ${EIGEN3_LIBS}
@@ -67,6 +71,7 @@ ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
 ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
 )
 
+<<<<<<< HEAD
 
 message(STATUS "Compile With map save/load function")
 find_library(BOOST_SERIALIZATION boost_serialization)
@@ -125,3 +130,4 @@ if(USE_EXAMPLE_WEBCAM)
     target_include_directories(mono_android_ipcam_ar PUBLIC Examples/AR/)
     target_link_libraries(mono_android_ipcam_ar ${PROJECT_NAME} ${CURL_LIBRARIES})
 endif()
+
