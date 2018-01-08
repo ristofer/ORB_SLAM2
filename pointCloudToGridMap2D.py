@@ -54,11 +54,11 @@ def get_line_bresenham(start, end):
     return points
 
 
-seq_name = 'kitti_00'
+seq_name = 'cam'
 # seq_name = 'tum'
 # inverse of cell size
-scale_factor = 3
-resize_factor = 5
+scale_factor = 5
+resize_factor = 10
 filter_ground_points = 0
 load_counters = 0
 
@@ -275,7 +275,7 @@ if not counters_loaded:
 # occupied_counter[occupied_counter_zeros] = 2 * visit_counter[occupied_counter_zeros]
 # grid_map = visit_counter.astype(np.float32) / occupied_counter.astype(np.float32)
 
-free_thresh = 0.55
+free_thresh = 0.70
 occupied_thresh = 0.50
 
 grid_map = np.zeros(grid_res, dtype=np.float32)
