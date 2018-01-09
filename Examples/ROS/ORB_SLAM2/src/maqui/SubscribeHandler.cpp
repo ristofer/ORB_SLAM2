@@ -25,7 +25,7 @@ mbReferenceWorldFrame(false)
       int queueSize = (int) fsSettings["Topic.QueueSize"];
       baseFrameTopic = (std::string) fsSettings["Topic.BaseFrame"];
 
-      mpSLAM = new ORB_SLAM2::System(strVocFile, strSettingsFile, ORB_SLAM2::System::MONOCULAR,true);
+      mpSLAM = new ORB_SLAM2::System(strVocFile, strSettingsFile, ORB_SLAM2::System::MONOCULAR,true,true);
 
       broadCastTopic = cameraFrameTopic + "_ORB";
 
@@ -227,6 +227,7 @@ void SubscribeHandler::Shutdown(){
 
 	std::cout << "ROS shutdown" << std::endl;
 	ros::shutdown();
+    mpSLAM->Shutdown();
 }
 
 
