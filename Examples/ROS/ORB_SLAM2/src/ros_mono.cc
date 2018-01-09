@@ -74,6 +74,7 @@ int main(int argc, char **argv)
 	// Save 3D points and timestamps of all keyframes they are visible in
 	SLAM.getMap()->SaveWithTimestamps("cam_map_pts_and_keyframes.txt");
 	// Save camera trajectory
+    SLAM.getMap()->SaveWithPose("asfdasdfasfdasdf.txt")
 	SLAM.SaveKeyFrameTrajectoryTUM("cam_key_frame_trajectory.txt");
 
     ros::shutdown();
