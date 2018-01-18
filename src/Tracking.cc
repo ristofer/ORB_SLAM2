@@ -309,6 +309,7 @@ cv::Mat Tracking::GrabImageMonocular(const cv::Mat &im, const double &timestamp,
     mCurrentFrame.SetOdomPose(TF_w_c);
     Track();
 
+
     return mCurrentFrame.mTcw.clone();
 
 
@@ -699,7 +700,6 @@ void Tracking::CreateInitialMapMonocular()
     // Create KeyFrames
     KeyFrame* pKFini = new KeyFrame(mInitialFrame,mpMap,mpKeyFrameDB);
     KeyFrame* pKFcur = new KeyFrame(mCurrentFrame,mpMap,mpKeyFrameDB);
-
     if(mpSystem->useOdometry)
     {
         // correct for origin of TF world
@@ -708,6 +708,8 @@ void Tracking::CreateInitialMapMonocular()
         g2o::SE3Quat T_w_c = mCurrentFrame.GetOdomPose();
         pKFcur->SetOdomPose(mO_w_c.inverse() * T_w_c);
     }
+    // set the initial keyframe in the map
+    mpMap->SetInitialPose(mO_w_c);
 
     pKFini->SetPreviousKF(NULL);
     pKFini->SetNextKF(pKFcur);
@@ -1147,8 +1149,18 @@ void Tracking::CreateNewKeyFrame()
         pKF->SetOdomPose(mO_w_c.inverse() * currentOdomPose);
     }
 
-    pKF->SetPreviousKF(mpLastKeyFrame);
-    mpLastKeyFrame->SetNextKF(pKF);
+    if(mpLastKeyFrame==NULL)
+    {
+//        std::cout << "no previous KF, RED ALERT" << std::endl;
+        pKF->SetPrevNeighbour(false);
+    }
+
+    if(pKF->HasPrevNeighbour())
+    {
+//        std::cout << "previous neighbour present, adding" << std::endl;
+        pKF->SetPreviousKF(mpLastKeyFrame);
+        mpLastKeyFrame->SetNextKF(pKF);
+    }
 
     mpReferenceKF = pKF;
     mCurrentFrame.mpReferenceKF = pKF;

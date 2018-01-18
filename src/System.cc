@@ -131,7 +131,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     mptLocalMapping = new thread(&ORB_SLAM2::LocalMapping::Run,mpLocalMapper);
 
     //Initialize the Loop Closing thread and launch
-    mpLoopCloser = new LoopClosing(mpMap, mpKeyFrameDatabase, mpVocabulary, mSensor!=MONOCULAR);
+    mpLoopCloser = new LoopClosing(mpMap, mpKeyFrameDatabase, mpVocabulary, true);
     mptLoopClosing = new thread(&ORB_SLAM2::LoopClosing::Run, mpLoopCloser);
 
     //Initialize the Viewer thread and launch
@@ -309,7 +309,19 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
 
-    return Tcw;
+    if(!Tcw.empty())
+    {
+        // convert from orb world frame to maqui world frame
+        g2o::SE3Quat O_w_c = mpMap->GetInitialPose();
+        g2o::SE3Quat mT_c_w = Converter::toSE3Quat(Tcw.clone());
+
+        cv::Mat mT_w_c = Converter::toCvMat(O_w_c.inverse() * mT_c_w.inverse());
+        return mT_w_c;
+    }
+    else
+    {
+        return Tcw;
+    }
 }
 
 void System::ActivateLocalizationMode()

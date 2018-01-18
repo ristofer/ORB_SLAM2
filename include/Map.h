@@ -61,6 +61,8 @@ public:
     void SetReferenceMapPoints(const std::vector<MapPoint*> &vpMPs);
     void InformNewBigChange();
     int GetLastBigChangeIdx();
+    void SetInitialPose(g2o::SE3Quat O_w_c);
+    g2o::SE3Quat GetInitialPose();
 
     std::vector<KeyFrame*> GetAllKeyFrames();
     std::vector<MapPoint*> GetAllMapPoints();
@@ -97,7 +99,7 @@ protected:
     std::set<KeyFrame*> mspKeyFrames;
 
     std::vector<MapPoint*> mvpReferenceMapPoints;
-
+    g2o::SE3Quat mpO_w_c;
     long unsigned int mnMaxKFid;
 
     // Index related to a big change in the map (loop closure, global BA)
