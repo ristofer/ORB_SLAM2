@@ -1412,7 +1412,7 @@ void Tracking::UpdateLocalKeyFrames()
 
 bool Tracking::Relocalization()
 {
-    std::cout << "relocalizing" << std::endl;
+    //std::cout << "relocalizing" << std::endl;
     // Compute Bag of Words Vector
     mCurrentFrame.ComputeBoW();
 
