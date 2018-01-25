@@ -192,6 +192,7 @@ private:
     std::mutex mMutexState;
 
 
+    cv::Mat InvertcvMat(cv::Mat Tcw);
 };
 
 }// namespace ORB_SLAM
