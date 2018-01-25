@@ -544,13 +544,6 @@ void Tracking::Track()
         mlFrameTimes.push_back(mlFrameTimes.back());
         mlbLost.push_back(mState==LOST);
     }
-    if(mState == OK && !mpSystem->mbIsMapTransformUpdated)
-    {
-        g2o::SE3Quat Tc_wo = Converter::toSE3Quat(mCurrentFrame.mTcw);
-        g2o::SE3Quat Twm_c = mCurrentFrame.GetOdomPose();
-        mpMap->SetInitialPose(Twm_c * Tc_wo);
-        mpSystem->mbIsMapTransformUpdated = true;
-    }
 
 }
 
@@ -1570,6 +1563,15 @@ bool Tracking::Relocalization()
     else
     {
         mnLastRelocFrameId = mCurrentFrame.mnId;
+       
+        if(!mpSystem->mbIsMapTransformUpdated)
+        {
+            g2o::SE3Quat Tc_wo = Converter::toSE3Quat(mCurrentFrame.mTcw);
+            g2o::SE3Quat Twm_c = mCurrentFrame.GetOdomPose();
+            mpMap->SetInitialPose(Twm_c * Tc_wo);
+            mpSystem->mbIsMapTransformUpdated = true;
+        }
+
         return true;
     }
 
