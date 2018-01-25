@@ -91,6 +91,8 @@ public:
     // since last call to this function
     bool MapChanged();
 
+    bool mbIsMapTransformUpdated;
+
     // Reset the system (clear map)
     void Reset();
 

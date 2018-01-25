@@ -105,6 +105,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     if (!mapfile.empty() && LoadMap(mapfile))
     {
         bReuseMap = true;
+        mbIsMapTransformUpdated = false;
     }
     else
     {
@@ -312,7 +313,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
 
-    if(!Tcw.empty())
+    if(!Tcw.empty() && mbIsMapTransformUpdated)
     {
 
         // convert from orb world frame to maqui world frame
@@ -325,7 +326,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
     }
     else
     {
-        return Tcw;
+        return Tcw.inv();
     }
 //    return Tcw;
 }
