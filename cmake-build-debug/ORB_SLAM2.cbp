@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="ORB_SLAM2"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\usr\;CMake Files\..\..\..\usr\share\;CMake Files\..\..\..\usr\share\OpenCV\;CMake Files\..\Pangolin\;CMake Files\..\Pangolin\build\;CMake Files\..\Pangolin\build\src\;CMake Files\cmake_modules\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/robotica/ORB_SLAM2/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/robotica/ORB_SLAM2/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/robotica/ORB_SLAM2/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="bin_vocabulary">
+				<Option output="/home/robotica/ORB_SLAM2/Vocabulary/bin_vocabulary" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/robotica/ORB_SLAM2/Vocabulary"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCOMPILEDWITHC11"/>
+					<Add directory="/usr/include/opencv"/>
+					<Add directory="/home/robotica/ORB_SLAM2"/>
+					<Add directory="/home/robotica/ORB_SLAM2/include"/>
+					<Add directory="/usr/include/eigen3"/>
+					<Add directory="/home/robotica/Pangolin/include"/>
+					<Add directory="/home/robotica/Pangolin/build/src/include"/>
+					<Add directory="/usr/include/c++/4.8"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/4.8"/>
+					<Add directory="/usr/include/c++/4.8/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 bin_vocabulary"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="bin_vocabulary/fast">
+				<Option output="/home/robotica/ORB_SLAM2/Vocabulary/bin_vocabulary" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/robotica/ORB_SLAM2/Vocabulary"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCOMPILEDWITHC11"/>
+					<Add directory="/usr/include/opencv"/>
+					<Add directory="/home/robotica/ORB_SLAM2"/>
+					<Add directory="/home/robotica/ORB_SLAM2/include"/>
+					<Add directory="/usr/include/eigen3"/>
+					<Add directory="/home/robotica/Pangolin/include"/>
+					<Add directory="/home/robotica/Pangolin/build/src/include"/>
+					<Add directory="/usr/include/c++/4.8"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/4.8"/>
+					<Add directory="/usr/include/c++/4.8/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 bin_vocabulary/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ORB_SLAM2">
+				<Option output="/home/robotica/ORB_SLAM2/lib/libORB_SLAM2.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/robotica/ORB_SLAM2/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCOMPILEDWITHC11"/>
+					<Add directory="/usr/include/opencv"/>
+					<Add directory="/home/robotica/ORB_SLAM2"/>
+					<Add directory="/home/robotica/ORB_SLAM2/include"/>
+					<Add directory="/usr/include/eigen3"/>
+					<Add directory="/home/robotica/Pangolin/include"/>
+					<Add directory="/home/robotica/Pangolin/build/src/include"/>
+					<Add directory="/usr/include/c++/4.8"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/4.8"/>
+					<Add directory="/usr/include/c++/4.8/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 ORB_SLAM2"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ORB_SLAM2/fast">
+				<Option output="/home/robotica/ORB_SLAM2/lib/libORB_SLAM2.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/robotica/ORB_SLAM2/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCOMPILEDWITHC11"/>
+					<Add directory="/usr/include/opencv"/>
+					<Add directory="/home/robotica/ORB_SLAM2"/>
+					<Add directory="/home/robotica/ORB_SLAM2/include"/>
+					<Add directory="/usr/include/eigen3"/>
+					<Add directory="/home/robotica/Pangolin/include"/>
+					<Add directory="/home/robotica/Pangolin/build/src/include"/>
+					<Add directory="/usr/include/c++/4.8"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/4.8"/>
+					<Add directory="/usr/include/c++/4.8/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 ORB_SLAM2/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/robotica/ORB_SLAM2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/robotica/ORB_SLAM2/Vocabulary/bin_vocabulary.cpp">
+			<Option target="bin_vocabulary"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/BoostArchiver.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/Converter.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/Frame.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/FrameDrawer.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/Initializer.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/KeyFrame.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/KeyFrameDatabase.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/LocalMapping.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/LoopClosing.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/Map.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/MapDrawer.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/MapPoint.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/ORBVocabulary.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/ORBextractor.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/ORBmatcher.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/Optimizer.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/PnPsolver.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/Sim3Solver.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/System.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/Tracking.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/include/Viewer.h">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/Converter.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/Frame.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/FrameDrawer.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/Initializer.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/KeyFrame.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/KeyFrameDatabase.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/LocalMapping.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/LoopClosing.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/Map.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/MapDrawer.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/MapPoint.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/ORBextractor.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/ORBmatcher.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/Optimizer.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/PnPsolver.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/Sim3Solver.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/System.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/Tracking.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/src/Viewer.cc">
+			<Option target="ORB_SLAM2"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/../../../usr/share/OpenCV/OpenCVConfig-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\usr\share\OpenCV\"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/../../../usr/share/OpenCV/OpenCVConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\usr\share\OpenCV\"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/../../../usr/share/OpenCV/OpenCVModules.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\usr\share\OpenCV\"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/../../../usr/share/OpenCV/OpenCVModules-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\usr\share\OpenCV\"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/../Pangolin/build/src/PangolinConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\Pangolin\build\src\"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/../Pangolin/build/src/PangolinConfig.cmake">
+			<Option virtualFolder="CMake Files\..\Pangolin\build\src\"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/../Pangolin/build/src/PangolinTargets.cmake">
+			<Option virtualFolder="CMake Files\..\Pangolin\build\src\"/>
+		</Unit>
+		<Unit filename="/home/robotica/ORB_SLAM2/cmake_modules/FindEigen3.cmake">
+			<Option virtualFolder="CMake Files\cmake_modules\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

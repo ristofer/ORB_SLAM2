@@ -288,8 +288,6 @@ cv::Mat Tracking::GrabImageMonocular(const cv::Mat &im, const double &timestamp,
     mCurrentFrame.SetOdomPose(TF_w_c);
     Track();
 
-//    std::cout << " oTwc = " << mCurrentFrame.GetOdomPose() << std::endl;
-//    std::cout << " Tcw = " << mCurrentFrame.mTcw.clone() << std::endl;
     return mCurrentFrame.mTcw.clone();
 
 }
@@ -299,65 +297,15 @@ void Tracking::Track()
 
     if(MapReloaded)
     {
-//        SetLastKF();
         mState = LOST;
         MapReloaded = false;
     }
 
-//    if(mState==NO_IMAGES_YET)
-//    {
-//        mState = NOT_INITIALIZED;
-//    }
-
-//    mLastProcessedState=mState;
-
-//    // Get Map Mutex -> Map cannot be changed
-//    unique_lock<mutex> lock(mpMap->mMutexMapUpdate);
-
-//    if(mState==NOT_INITIALIZED)
-//    {
-//        if(mSensor==System::STEREO || mSensor==System::RGBD)
-//            StereoInitialization();
-//        else
-//            MonocularInitialization();
-
-
-//        if(mState!=OK)
-//            return;
-//    }
-//    else
     {
         // System is initialized. Track Frame.
         bool bOK;
 
-//        // Initial camera pose estimation using motion model or relocalization (if tracking is lost)
-//        if(!mbOnlyTracking)
-//        {
-//            // Local Mapping is activated. This is the normal behaviour, unless
-//            // you explicitly activate the "only tracking" mode.
 
-//            if(mState==OK)
-//            {
-//                // Local Mapping might have changed some MapPoints tracked in last frame
-//                CheckReplacedInLastFrame();
-
-//                if(mVelocity.empty() || mCurrentFrame.mnId<mnLastRelocFrameId+2)
-//                {
-//                    bOK = TrackReferenceKeyFrame();
-//                }
-//                else
-//                {
-//                    bOK = TrackWithMotionModel();
-//                    if(!bOK)
-//                        bOK = TrackReferenceKeyFrame();
-//                }
-//            }
-//            else
-//            {
-//                bOK = Relocalization();
-//            }
-//        }
-//        else
         {
             // Localization Mode: Local Mapping is deactivated
 
@@ -428,6 +376,7 @@ void Tracking::Track()
                 }
             }
         }
+
 
         mCurrentFrame.mpReferenceKF = mpReferenceKF;
 
@@ -513,6 +462,13 @@ void Tracking::Track()
                 mpReferenceKF = mpLastKeyFrame;
             }
             mCurrentFrame.mpReferenceKF = mpReferenceKF;
+        }
+        if(!mpSystem->mbMapTransformUpdated && mState == OK)
+        {
+            g2o::SE3Quat Tc_wo = Converter::toSE3Quat(mCurrentFrame.mTcw);
+            g2o::SE3Quat Twm2_c = mCurrentFrame.GetOdomPose();
+            mpMap->SetInitialPose(Twm2_c * Tc_wo);
+            mpSystem->mbMapTransformUpdated = true;
         }
         mLastFrame = Frame(mCurrentFrame);
     }

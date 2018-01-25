@@ -121,7 +121,8 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     if(bReuseMap)
     {
         mpTracker->MapReloaded= true;
-        std::cout << " T_wm_wo = " << mpMap->GetInitialPose() << std::endl;
+//        std::cout << " T_wm_wo = " << mpMap->GetInitialPose() << std::endl;
+        mbMapTransformUpdated = false;
     }
 
     //Initialize the Local Mapping thread and launch
@@ -239,7 +240,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
 
-    if(!Tcw.empty())
+    if(!Tcw.empty() && mbMapTransformUpdated)
     {
         // convert from orb world frame to maqui world frame
         g2o::SE3Quat T_wm_wo = mpMap->GetInitialPose();
@@ -250,23 +251,10 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
     }
     else
     {
-        return Tcw;
+        return Tcw.inv();
     }
 }
 
-
-bool System::MapChanged()
-{
-    static int n=0;
-    int curn = mpMap->GetLastBigChangeIdx();
-    if(n<curn)
-    {
-        n=curn;
-        return true;
-    }
-    else
-        return false;
-}
 
 void System::Reset()
 {

@@ -79,9 +79,8 @@ public:
 //    cv::Mat TrackMonocular(const cv::Mat &im, const double &timestamp, cv::Mat &tf);
     cv::Mat TrackMonocular(const cv::Mat &im, const double &timestamp);
 
-    // Returns true if there have been a big map change (loop closure, global BA)
-    // since last call to this function
-    bool MapChanged();
+    // indicates whether new transform is found if map is reused.
+    bool mbMapTransformUpdated;
 
     // Reset the system (clear map)
     void Reset();
@@ -141,6 +140,7 @@ private:
     // Reset flag
     std::mutex mMutexReset;
     bool mbReset;
+
 
 
     // Tracking state
