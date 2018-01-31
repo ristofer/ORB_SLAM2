@@ -20,12 +20,13 @@ mbReferenceWorldFrame(false)
       cv::FileStorage fsSettings(strSettingsFile, cv::FileStorage::READ);
       cameraTopic = (std::string) fsSettings["Topic.Camera"];
       cameraFrameTopic = (std::string) fsSettings["Topic.CameraFrame"];
-      worldFrameTopic = (std::string) fsSettings["Topic.WorldFrame"];
+      odomFrameTopic = (std::string) fsSettings["Topic.OdomFrame"];
       tfTopic =(std::string) fsSettings["Topic.TF"];
       int queueSize = (int) fsSettings["Topic.QueueSize"];
       baseFrameTopic = (std::string) fsSettings["Topic.BaseFrame"];
       useBaseFrame = (int) fsSettings["Initializer.baseFrame"];
       cameraFrameNameToPublish = (std::string) fsSettings["Topic.CameraFrameNameToPublish"];
+      worldFrameNameToPublish = (std::string) fsSettings["Topic.WorldFrameNameToPublish"];
 
       mpSLAM = new ORB_SLAM2::System(strVocFile, strSettingsFile, ORB_SLAM2::System::MONOCULAR,true,true);
 
@@ -56,21 +57,21 @@ void SubscribeHandler::GrabImage(const sensor_msgs::ImageConstPtr& msg)
     }
     try
     {
-        mpTFlistener->waitForTransform(worldFrameTopic, cameraFrameTopic, ros::Time(0), ros::Duration(0.0001));
-        mpTFlistener->lookupTransform(worldFrameTopic, cameraFrameTopic,ros::Time(0), T_w_c);
+        mpTFlistener->waitForTransform(odomFrameTopic, cameraFrameTopic, ros::Time(0), ros::Duration(0.0001));
+        mpTFlistener->lookupTransform(odomFrameTopic, cameraFrameTopic,ros::Time(0), T_o_c);
     }
     catch(tf::TransformException& e)
     {
         ROS_WARN("TF exception while grabbing camera transform \n %s", e.what());
     }
 
-    cvT_w_c = tfToMat(T_w_c);
-    mpSLAM->SetOdomPose(cvT_w_c);
+    cvT_o_c = tfToMat(T_o_c);
+    mpSLAM->SetOdomPose(cvT_o_c);
     Twc = mpSLAM->TrackMonocular(cv_ptr->image, cv_ptr->header.stamp.toSec());
 
     if(!Twc.empty())
     {
-        SubscribeHandler::Publish_Orientation(Twc.clone(), T_w_c);
+        SubscribeHandler::Publish_Orientation(Twc.clone(), T_o_c);
     }
 }
 

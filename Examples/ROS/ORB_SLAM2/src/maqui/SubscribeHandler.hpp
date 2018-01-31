@@ -45,7 +45,7 @@ public:
                      tf::TransformListener *pTFlistener, tf::TransformBroadcaster *pTFbroadcaster);
 
     // transform world and camera with grabbed image
-    tf::StampedTransform T_w_c;
+    tf::StampedTransform T_o_c;
     // transform between base and camera with image
     tf::StampedTransform T_b_c;
     cv::Mat cvT_w_c;
@@ -85,6 +85,7 @@ private:
     std::string broadCastTopic;
     std::string baseFrameTopic;
     std::string cameraFrameNameToPublish;
+    std::string worldFrameNameToPublish;
 
     // flags
     bool mbReferenceWorldFrame;
