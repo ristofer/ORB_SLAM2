@@ -48,7 +48,7 @@ public:
     tf::StampedTransform T_o_c;
     // transform between base and camera with image
     tf::StampedTransform T_b_c;
-    cv::Mat cvT_w_c;
+    cv::Mat cvT_o_c;
     cv_bridge::CvImageConstPtr cv_ptr;
     cv::Mat Twc;
 
@@ -81,7 +81,7 @@ private:
     std::string cameraTopic;
     std::string tfTopic;
     std::string cameraFrameTopic;
-    std::string worldFrameTopic;
+    std::string odomFrameTopic;
     std::string broadCastTopic;
     std::string baseFrameTopic;
     std::string cameraFrameNameToPublish;

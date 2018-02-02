@@ -77,7 +77,7 @@ void SubscribeHandler::GrabImage(const sensor_msgs::ImageConstPtr& msg)
 
 
 
-void SubscribeHandler::Publish_Orientation(cv::Mat Tcw, tf::StampedTransform T_w_c)
+void SubscribeHandler::Publish_Orientation(cv::Mat Tcw, tf::StampedTransform T_o_c)
 {
 
 
@@ -100,7 +100,7 @@ void SubscribeHandler::Publish_Orientation(cv::Mat Tcw, tf::StampedTransform T_w
     geometry_msgs::PoseStamped orientation_msg;
 
     orientation_msg.header.frame_id = "CameraTop_optical_frame";
-    orientation_msg.header.stamp.sec = T_w_c.stamp_.sec;
+    orientation_msg.header.stamp.sec = T_o_c.stamp_.sec;
     orientation_msg.pose.position.x = Tcw.at<float>(0,3);
     orientation_msg.pose.position.y = Tcw.at<float>(1,3);
     orientation_msg.pose.position.z = Tcw.at<float>(2,3);
@@ -111,7 +111,8 @@ void SubscribeHandler::Publish_Orientation(cv::Mat Tcw, tf::StampedTransform T_w
 
 
 
-    mpTFbroadcaster->sendTransform(tf::StampedTransform(TForientation, T_w_c.stamp_, worldFrameTopic, broadCastTopic));
+    mpTFbroadcaster->sendTransform(tf::StampedTransform(TForientation, T_o_c.stamp_, worldFrameNameToPublish
+            , broadCastTopic));
 
     maqui_orientation.publish(orientation_msg);
 
