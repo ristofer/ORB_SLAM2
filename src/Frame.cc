@@ -700,4 +700,18 @@ cv::Mat Frame::UnprojectStereo(const int &i)
         return cv::Mat();
 }
 
+g2o::SE3Quat Frame::GetRobotOdometryFrom(Frame &other)
+{
+    //SE3WithUncertainty dT = other.mrT_c_w.Compound(mrT_w_c);
+    SE3WithUncertainty dT = (other.mRobotState.mT_w_c.Invert()).Compound(mRobotState.mT_w_c);
+    return dT;
+}
+
+g2o::SE3Quat Frame::GetRobotOdometryFrom(KeyFrame &other)
+{
+    //SE3WithUncertainty dT = other.RobotGetCameraToWorld().Compound(mrT_w_c);
+    SE3WithUncertainty dT = other.RobotGetCameraToWorld().Compound(mRobotState.mT_w_c);
+    return dT;
+}
+
 } //namespace ORB_SLAM

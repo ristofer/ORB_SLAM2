@@ -320,7 +320,6 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
         // convert from orb world frame to maqui world frame
         g2o::SE3Quat O_wm_wo = mpMap->GetInitialPose();
         g2o::SE3Quat mT_c_w = Converter::toSE3Quat(Tcw.clone());
-        std::cout << "que wa" << mbIsMapTransformUpdated << std::endl;
         cv::Mat mTcw = Converter::toCvMat(mT_c_w  * O_wm_wo.inverse());
 
         return mTcw.inv();
@@ -332,7 +331,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
             cv::Mat Twc = InvertcvMat(Tcw.clone());
         //    g2o::SE3Quat mTcw = Converter::toSE3Quat(Tcw.clone());
         //    cv::Mat Twc = Converter::toCvMat(mTcw.inverse());
-        std::cout << "no pasa na" << mbIsMapTransformUpdated << std::endl;
+        std::cout << "the map is not scaled yet" << mbIsMapTransformUpdated << std::endl;
             return Twc.clone();
         }
         else
