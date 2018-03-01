@@ -527,7 +527,7 @@ void Tracking::Track()
             {
                 //std::cout << "--> Predicting pose when lost using last keyframe" << std::endl;
                 cv::Mat deltaT;
-                deltaT = (mCurrentFrame.GetRobotOdometryFrom(*mpLastKeyFrame).Invert()).GetTransformation();
+                deltaT = Converter::toCvMat(mCurrentFrame.GetRobotOdometryFrom(*mpLastKeyFrame));
                 mCurrentFrame.SetPose(deltaT*mpLastKeyFrame->GetPose());
 
                 if(mpMapDrawer)

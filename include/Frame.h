@@ -105,6 +105,9 @@ public:
     // Backprojects a keypoint (if stereo/depth info available) into 3D world coordinates.
     cv::Mat UnprojectStereo(const int &i);
 
+    g2o::SE3Quat GetRobotOdometryFrom(Frame &other);
+    g2o::SE3Quat GetRobotOdometryFrom(KeyFrame &other);
+
 public:
     // Vocabulary used for relocalization.
     ORBVocabulary* mpORBvocabulary;
