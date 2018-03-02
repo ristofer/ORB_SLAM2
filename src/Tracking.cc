@@ -32,6 +32,7 @@
 
 #include"Optimizer.h"
 #include"PnPsolver.h"
+#include "../include/Tracking.h"
 
 #include<iostream>
 
@@ -520,16 +521,25 @@ void Tracking::Track()
             }
         }
 
-        if(mState==LOST)
+        if(mState==LOST && mpMap->IsMapScaled)
         {
             // update depending on visual only case, or kinematic case
-            if(mpMap->IsMapScaled)
+            if(mpLastKeyFrame!=0)
             {
-                //std::cout << "--> Predicting pose when lost using last keyframe" << std::endl;
+                std::cout << "--> Predicting pose when lost using last keyframe" << std::endl;
                 cv::Mat deltaT;
-                deltaT = Converter::toCvMat(mCurrentFrame.GetRobotOdometryFrom(*mpLastKeyFrame));
+                deltaT = Converter::toCvMat(mCurrentFrame.GetRobotOdometryFrom(*mpLastKeyFrame).inverse());
                 mCurrentFrame.SetPose(deltaT*mpLastKeyFrame->GetPose());
 
+                if(mpMapDrawer)
+                    mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.mTcw);
+            }
+            else if (!mLastFrameBeforeLost.mTcw.empty())
+            {
+                cv::Mat deltaT;
+                deltaT = Converter::toCvMat(mCurrentFrame.GetRobotOdometryFrom(mLastFrameBeforeLost).inverse());
+                mCurrentFrame.SetPose(deltaT*mLastFrameBeforeLost.mTcw);
+                std::cout << "--> Predicting pose when lost using last frame" << std::endl;
                 if(mpMapDrawer)
                     mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.mTcw);
             }
@@ -539,6 +549,8 @@ void Tracking::Track()
             mCurrentFrame.mpReferenceKF = mpReferenceKF;
 
         mLastFrame = Frame(mCurrentFrame);
+        if(mState==OK)
+            mLastFrameBeforeLost = mLastFrame;
     }
 
     // Store frame pose information to retrieve the complete camera trajectory afterwards.

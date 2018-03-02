@@ -219,6 +219,7 @@ protected:
     //Last Frame, KeyFrame and Relocalisation Info
     KeyFrame* mpLastKeyFrame;
     Frame mLastFrame;
+    Frame mLastFrameBeforeLost;
     unsigned int mnLastKeyFrameId;
     unsigned int mnLastRelocFrameId;
 
