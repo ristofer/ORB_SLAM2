@@ -526,7 +526,7 @@ void Tracking::Track()
             // update depending on visual only case, or kinematic case
             if(mpLastKeyFrame!=0)
             {
-                std::cout << "--> Predicting pose when lost using last keyframe" << std::endl;
+                //std::cout << "--> Predicting pose when lost using last keyframe" << std::endl;
                 cv::Mat deltaT;
                 deltaT = Converter::toCvMat(mCurrentFrame.GetRobotOdometryFrom(*mpLastKeyFrame).inverse());
                 mCurrentFrame.SetPose(deltaT*mpLastKeyFrame->GetPose());
@@ -539,7 +539,7 @@ void Tracking::Track()
                 cv::Mat deltaT;
                 deltaT = Converter::toCvMat(mCurrentFrame.GetRobotOdometryFrom(mLastFrameBeforeLost).inverse());
                 mCurrentFrame.SetPose(deltaT*mLastFrameBeforeLost.mTcw);
-                std::cout << "--> Predicting pose when lost using last frame" << std::endl;
+                //std::cout << "--> Predicting pose when lost using last frame" << std::endl;
                 if(mpMapDrawer)
                     mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.mTcw);
             }
