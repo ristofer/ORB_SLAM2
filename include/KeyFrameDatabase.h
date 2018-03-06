@@ -44,7 +44,6 @@ class KeyFrameDatabase
 {
 public:
 
-
     KeyFrameDatabase(ORBVocabulary *voc);
 
    void add(KeyFrame* pKF);
@@ -73,7 +72,6 @@ protected:
 
   // Associated vocabulary
   ORBVocabulary* mpVoc;
-
 
   // Inverted file
   std::vector<list<KeyFrame*> > mvInvertedFile;

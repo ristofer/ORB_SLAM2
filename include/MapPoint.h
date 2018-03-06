@@ -27,6 +27,7 @@
 
 #include<opencv2/core/core.hpp>
 #include<mutex>
+#include "BoostArchiver.h"
 
 #include "BoostArchiver.h"
 

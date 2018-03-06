@@ -85,6 +85,7 @@ public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
 protected:
+    int useOdometry;
 
     int useOdometry;
     bool CheckNewKeyFrames();
@@ -147,7 +148,6 @@ protected:
 
 
     int mnFullBAIdx;
-
 };
 
 } //namespace ORB_SLAM

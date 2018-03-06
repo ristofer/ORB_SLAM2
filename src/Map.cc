@@ -116,15 +116,16 @@ long unsigned int Map::GetMaxKFid()
     return mnMaxKFid;
 }
 
-void Map::SetInitialPose(g2o::SE3Quat O_w_c)
+void Map::SetInitialPose(g2o::SE3Quat T_wm_wo)
 {
     unique_lock<mutex> lock(mMutexMap);
-    mpO_w_c = O_w_c;
+    mT_wm_wo = T_wm_wo;
 }
+
 g2o::SE3Quat Map::GetInitialPose()
 {
     unique_lock<mutex> lock(mMutexMap);
-    return mpO_w_c;
+    return mT_wm_wo;
 }
 
 void Map::clear()
@@ -214,6 +215,8 @@ void Map::_WriteMapPointObj(ofstream &f, MapPoint* mp,
 	f << wp.at<float>(2) << end_marker; // pos z: float
 }
 
+
+
 template<class Archive>
 void Map::serialize(Archive &ar, const unsigned int version)
 {
@@ -223,9 +226,10 @@ void Map::serialize(Archive &ar, const unsigned int version)
     ar & mspKeyFrames;
     ar & mvpReferenceMapPoints;
     ar & mnMaxKFid & mnBigChangeIdx;
+    ar & IsMapScaled;
+    ar & mT_wm_wo;
 }
 template void Map::serialize(boost::archive::binary_iarchive&, const unsigned int);
 template void Map::serialize(boost::archive::binary_oarchive&, const unsigned int);
-
 
 } //namespace ORB_SLAM

@@ -78,7 +78,6 @@ void LoopClosing::Run()
             }
         }
 
-
         ResetIfRequested();
 
         if(CheckFinish())
@@ -431,7 +430,6 @@ void LoopClosing::CorrectLoop()
     while(!mpLocalMapper->isStopped())
     {
         std::this_thread::sleep_for(std::chrono::microseconds(1000));
-
     }
 
     // Ensure current keyframe is updated
@@ -634,7 +632,6 @@ void LoopClosing::RequestReset()
             break;
         }
         std::this_thread::sleep_for(std::chrono::microseconds(5000));
-
     }
 }
 
@@ -658,7 +655,6 @@ void LoopClosing::RunGlobalBundleAdjustment(unsigned long nLoopKF)
     int idx =  mnFullBAIdx;
     Optimizer::GlobalBundleAdjustemnt(mpMap,10,&mbStopGBA,nLoopKF,false, useOdometry? true : false);
 
-
     // Update all MapPoints and KeyFrames
     // Local Mapping was active during BA, that means that there might be new keyframes
     // not included in the Global BA and they are not consistent with the updated map.
@@ -677,9 +673,7 @@ void LoopClosing::RunGlobalBundleAdjustment(unsigned long nLoopKF)
 
             while(!mpLocalMapper->isStopped() && !mpLocalMapper->isFinished())
             {
-
                 std::this_thread::sleep_for(std::chrono::microseconds(1000));
-
             }
 
             // Get Map Mutex
@@ -742,9 +736,7 @@ void LoopClosing::RunGlobalBundleAdjustment(unsigned long nLoopKF)
                     // Backproject using corrected camera
                     cv::Mat Twc = pRefKF->GetPoseInverse();
                     cv::Mat Rwc = Twc.rowRange(0,3).colRange(0,3);
-
                     cv::Mat twc = Twc.rowRange(0,3).col(3);
-
 
                     pMP->SetWorldPos(Rwc*Xc+twc);
                 }

@@ -25,14 +25,13 @@
 #include <thread>
 #include <pangolin/pangolin.h>
 #include <iomanip>
-
+#include <boost/variant/detail/backup_holder.hpp>
 static bool has_suffix(const std::string &str, const std::string &suffix)
 {
     std::size_t index = str.find(suffix, str.size() - suffix.size());
     return (index != std::string::npos);
 }
 
-#include <boost/variant/detail/backup_holder.hpp>
 
 
 namespace ORB_SLAM2
@@ -109,6 +108,8 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     if (!mapfile.empty() && LoadMap(mapfile))
     {
         bReuseMap = true;
+        mbIsMapTransformUpdated = false;
+
     }
     else
     {
@@ -125,6 +126,14 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     mpTracker = new Tracking(this, mpVocabulary, mpFrameDrawer, mpMapDrawer,
                              mpMap, mpKeyFrameDatabase, strSettingsFile, mSensor, bReuseMap);
 
+    if(bReuseMap) {
+        mpTracker->MapReloaded = true;
+//        g2o::SE3Quat T_wo_wm = mpMap->GetInitialPose();
+        //std::cout << "initial map pose" << Converter::toCvMat(T_wo_wm) << std::endl;
+    }
+    else
+        mpTracker->MapReloaded = false;
+
     // **** TODO **** Now scale is fixed in loop closing for odometry mode, change!
     //Initialize the Local Mapping thread and launch
     mpLocalMapper = new LocalMapping(mpMap, strSettingsFile, mSensor==MONOCULAR);
@@ -137,7 +146,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     //Initialize the Viewer thread and launch
     if(bUseViewer)
     {
-        mpViewer = new Viewer(this, mpFrameDrawer,mpMapDrawer,mpTracker,strSettingsFile, bReuseMap);
+        mpViewer = new Viewer(this, mpFrameDrawer,mpMapDrawer,mpTracker,mpMap, strSettingsFile, bReuseMap);
         mptViewer = new thread(&Viewer::Run, mpViewer);
         mpTracker->SetViewer(mpViewer);
     }
@@ -309,19 +318,33 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
 
-    if(!Tcw.empty())
+    if(!Tcw.empty() && mbIsMapTransformUpdated)
     {
-        // convert from orb world frame to maqui world frame
-        g2o::SE3Quat O_w_c = mpMap->GetInitialPose();
-        g2o::SE3Quat mT_c_w = Converter::toSE3Quat(Tcw.clone());
 
-        cv::Mat mT_w_c = Converter::toCvMat(O_w_c.inverse() * mT_c_w.inverse());
-        return mT_w_c;
+        // convert from orb world frame to maqui world frame
+        g2o::SE3Quat O_wm_wo = mpMap->GetInitialPose();
+        g2o::SE3Quat mT_c_w = Converter::toSE3Quat(Tcw.clone());
+        cv::Mat mTcw = Converter::toCvMat(mT_c_w  * O_wm_wo.inverse());
+
+        return mTcw.inv();
     }
-    else
+    else 
     {
-        return Tcw;
+       if(!Tcw.empty())
+       {
+            cv::Mat Twc = InvertcvMat(Tcw.clone());
+        //    g2o::SE3Quat mTcw = Converter::toSE3Quat(Tcw.clone());
+        //    cv::Mat Twc = Converter::toCvMat(mTcw.inverse());
+        std::cout << "the map is not scaled yet" << mbIsMapTransformUpdated << std::endl;
+            return Twc.clone();
+        }
+        else
+        {
+            return Tcw;
+        }
+    
     }
+//    return Tcw;
 }
 
 void System::ActivateLocalizationMode()
@@ -530,6 +553,7 @@ void System::SaveTrajectoryKITTI(const string &filename)
     f.close();
     cout << endl << "trajectory saved!" << endl;
 }
+<<<<<<< HEAD
 void System::SaveGridMapTUM(const string &filename)
 {
 
@@ -684,7 +708,6 @@ void System::Save2dMapPointsTUM(const string &filename, const int x, const int y
 {
     cout << endl << "Saving 2d map points to " << filename << " ..." << endl;
     cout << endl << "x = " << x << ", y = " << y << endl;
-
     vector<MapPoint*> vpMPs = mpMap->GetAllMapPoints();
 
     // Transform all keyframes so that the first keyframe is at the origin.
@@ -707,6 +730,20 @@ void System::Save2dMapPointsTUM(const string &filename, const int x, const int y
 
     f.close();
     cout << endl << "2d Map Points saved!" << endl;
+}
+cv::Mat System::InvertcvMat(cv::Mat Tcw_)
+{
+    cv::Mat Tcw;
+    Tcw_.copyTo(Tcw);
+    cv::Mat Rcw = Tcw.rowRange(0,3).colRange(0,3).clone();
+    cv::Mat tcw = Tcw.rowRange(0,3).col(3).clone();
+    cv::Mat Rwc = Rcw.t();
+    cv::Mat Ow = -Rwc*tcw;
+
+    cv::Mat Twc = cv::Mat::eye(4,4,Tcw.type());
+    Rwc.copyTo(Twc.rowRange(0,3).colRange(0,3));
+    Ow.copyTo(Twc.rowRange(0,3).col(3));
+    return Twc.clone();
 }
 int System::GetTrackingState()
 {
@@ -770,6 +807,9 @@ bool System::LoadMap(const string &filename)
             mnFrameId = it->mnFrameId;
     }
     Frame::nNextId = mnFrameId;
+
+    mpMap->IsMapScaled = true;
+
     cout << " ...done" << endl;
     in.close();
     return true;

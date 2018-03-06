@@ -27,6 +27,7 @@
 
 //using namespace Eigen;
 
+
 namespace ORB_SLAM2
 {
 
@@ -39,7 +40,6 @@ LocalMapping::LocalMapping(Map *pMap, const string &strSettingPath,  const float
     float temp = fsSettings["Initializer.KeyFrames"];
     NumOfKeyFrames = (unsigned long) temp;
     useOdometry = fsSettings["Initializer.UseOdometry"];
-
 }
 
 void LocalMapping::SetLoopCloser(LoopClosing* pLoopCloser)
@@ -54,7 +54,6 @@ void LocalMapping::SetTracker(Tracking *pTracker)
 
 void LocalMapping::Run()
 {
-
     mbFinished = false;
 
     while(1)
@@ -85,19 +84,20 @@ void LocalMapping::Run()
             if(!CheckNewKeyFrames() && !stopRequested())
             {
 
-
                 // Local BA
                 if(useOdometry && mpMap->KeyFramesInMap()>NumOfKeyFrames && !mpMap->IsMapScaled)
+                {
                     MapScaling();
-
+                    Optimizer::GlobalBundleAdjustemnt(mpMap,5);
+                }
                 if(mpMap->KeyFramesInMap()>2)
                 {
                     if(useOdometry && mpMap->IsMapScaled)
                         Optimizer::LocalBundleAdjustment(mpCurrentKeyFrame,&mbAbortBA, mpMap, true);
-                        else if(!useOdometry)
+
+                    else if(!useOdometry)
                         Optimizer::LocalBundleAdjustment(mpCurrentKeyFrame,&mbAbortBA, mpMap, false);
                 }
-
                 // Check redundant local Keyframes
                 KeyFrameCulling();
             }
@@ -110,7 +110,6 @@ void LocalMapping::Run()
             while(isStopped() && !CheckFinish())
             {
                 std::this_thread::sleep_for(std::chrono::microseconds(3000));
-
             }
             if(CheckFinish())
                 break;
@@ -737,7 +736,6 @@ void LocalMapping::RequestReset()
                 break;
         }
         std::this_thread::sleep_for(std::chrono::microseconds(3000));
-
     }
 }
 
@@ -778,7 +776,6 @@ bool LocalMapping::isFinished()
     return mbFinished;
 }
 
-
 void LocalMapping::MapScaling()
 {
     float scale = ScaleRecovery();
@@ -798,28 +795,41 @@ void LocalMapping::MapScaling()
 
     mpMap->IsMapScaled = true;
 }
+
 float LocalMapping::ScaleRecovery()
 {
     cout <<"Scale obtaining started " <<endl;
 
-    cv::Mat tTf_w_c, C_w, Tf_w_c, A, B, scale;
+    cv::Mat A, B, scale;
+
 
     vector<KeyFrame*> MapKeyFrames = mpMap->GetAllKeyFrames();
     for(vector<KeyFrame*>::const_iterator itKF=MapKeyFrames.begin(), itEndKF=MapKeyFrames.end(); itKF!=itEndKF; itKF++)
     {
         KeyFrame* pKF = *itKF;
+        KeyFrame* pKFprev = pKF->GetPreviousKF();
+        if(pKFprev)
+        {
+            // Camera pose & odometry pose
+            cv::Mat Cw = pKF->GetCameraCenter();
+            cv::Mat Cw_prev = pKFprev->GetCameraCenter();
+            cv::Mat dCw = Cw.clone() - Cw_prev.clone();
 
-        // Camera pose & odometry pose
-        C_w = pKF->GetCameraCenter();
-        Tf_w_c = Converter::toCvMat(pKF->GetOdomPose());
-        tTf_w_c = Tf_w_c.rowRange(0,3).col(3).clone();
+            cv::Mat oTwc = Converter::toCvMat(pKF->GetOdomPose());
+            cv::Mat oTwc_prev = Converter::toCvMat(pKFprev->GetOdomPose());
+            cv::Mat temp =oTwc_prev.inv() * oTwc;
+            cv::Mat doTwc = temp.rowRange(0,3).col(3).clone();
 
-        // see if odometry and camera movement prediction match up to order of magnitude
-//        std::cout << "tTf_w_c = " << tTf_w_c.clone()
-//                  << "\n C_w = "  << C_w.clone() << std::endl;
+//             std::cout << "Camera orb frame (Tcw) = \n" << pKF->GetPose() << std::endl;
+//             std::cout << "prev Camera orb frame (Tcw) = \n" << pKFprev->GetPose() << std::endl;
+//             std::cout << " odometry frame (oTwc) = \n" << oTwc << std::endl;
+//             std::cout << "prev odometry frame (oTwc) = \n" << oTwc_prev << std::endl;
 
-        A.push_back(C_w);
-        B.push_back(tTf_w_c);
+            // A = orb frames
+            // B = odometry frames
+            A.push_back(dCw);
+            B.push_back(doTwc);
+        }
     }
 
 
@@ -830,8 +840,6 @@ float LocalMapping::ScaleRecovery()
 
     std::cout <<"Scale obtained as " << scale.at<double>(0) <<std::endl;
     float s = (float) scale.at<double>(0);
-//    std::cout << "Scale: " <<  s << std::endl;
     return s;
 }
-
 } //namespace ORB_SLAM

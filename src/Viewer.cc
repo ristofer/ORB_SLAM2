@@ -20,15 +20,15 @@
 
 #include "Viewer.h"
 #include <pangolin/pangolin.h>
-
+#include "Optimizer.h"
 #include <mutex>
 
 namespace ORB_SLAM2
 {
 
-Viewer::Viewer(System* pSystem, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer, Tracking *pTracking, const string &strSettingPath, bool mbReuseMap_):
+Viewer::Viewer(System* pSystem, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer, Tracking *pTracking, Map *pMap, const string &strSettingPath, bool mbReuseMap_):
     mpSystem(pSystem), mpFrameDrawer(pFrameDrawer),mpMapDrawer(pMapDrawer), mpTracker(pTracking),
-    mbFinishRequested(false), mbFinished(true), mbStopped(true), mbStopRequested(false), mbReuseMap(mbReuseMap_)
+    mbFinishRequested(false), mbFinished(true), mbStopped(true), mbStopRequested(false), mbReuseMap(mbReuseMap_), mpMap(pMap)
 
 {
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
@@ -45,6 +45,7 @@ Viewer::Viewer(System* pSystem, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer
         mImageWidth = 640;
         mImageHeight = 480;
     }
+    hadReset = false;
 
     mViewpointX = fSettings["Viewer.ViewpointX"];
     mViewpointY = fSettings["Viewer.ViewpointY"];
@@ -72,8 +73,10 @@ void Viewer::Run()
     pangolin::Var<bool> menuShowKeyFrames("menu.Show KeyFrames",true,true);
     pangolin::Var<bool> menuShowGraph("menu.Show Graph",true,true);
     pangolin::Var<bool> menuLocalizationMode("menu.Localization Mode",mbReuseMap,true);
-
     pangolin::Var<bool> menuReset("menu.Reset",false,false);
+    pangolin::Var<bool> menuGlobalBA("menu.Global BA",false,false);
+    pangolin::Var<bool> menuResetTrajectoryView("menu.Reset Trajectory View",false,false);
+
 
     // Define Camera Render Object (for view / scene browsing)
     pangolin::OpenGlRenderState s_cam(
@@ -126,6 +129,23 @@ void Viewer::Run()
             bLocalizationMode = false;
         }
 
+        if(menuResetTrajectoryView)
+        {
+            mpMapDrawer->ResetTrajectoryView();
+            hadReset = true;
+        }
+        if(hadReset && menuResetTrajectoryView)
+        {
+            mpMapDrawer->SetFullTrajectoryView();
+            hadReset = false;
+        }
+
+        if(menuGlobalBA)
+        {
+            Optimizer::GlobalBundleAdjustemnt(mpMap, 20);
+            menuGlobalBA = false;
+        }
+
         d_cam.Activate(s_cam);
         glClearColor(1.0f,1.0f,1.0f,1.0f);
         mpMapDrawer->DrawCurrentCamera(Twc);
@@ -160,7 +180,6 @@ void Viewer::Run()
             while(isStopped())
             {
                 std::this_thread::sleep_for(std::chrono::microseconds(3000));
-
             }
         }
 

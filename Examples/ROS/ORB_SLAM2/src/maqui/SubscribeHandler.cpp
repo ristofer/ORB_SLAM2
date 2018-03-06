@@ -20,14 +20,20 @@ mbReferenceWorldFrame(false)
       cv::FileStorage fsSettings(strSettingsFile, cv::FileStorage::READ);
       cameraTopic = (std::string) fsSettings["Topic.Camera"];
       cameraFrameTopic = (std::string) fsSettings["Topic.CameraFrame"];
-      worldFrameTopic = (std::string) fsSettings["Topic.WorldFrame"];
+      odomFrameTopic = (std::string) fsSettings["Topic.OdomFrame"];
       tfTopic =(std::string) fsSettings["Topic.TF"];
       int queueSize = (int) fsSettings["Topic.QueueSize"];
       baseFrameTopic = (std::string) fsSettings["Topic.BaseFrame"];
+      useBaseFrame = (int) fsSettings["Initializer.baseFrame"];
+      cameraFrameNameToPublish = (std::string) fsSettings["Topic.CameraFrameNameToPublish"];
+      worldFrameNameToPublish = (std::string) fsSettings["Topic.WorldFrameNameToPublish"];
 
       mpSLAM = new ORB_SLAM2::System(strVocFile, strSettingsFile, ORB_SLAM2::System::MONOCULAR,true,true);
 
-      broadCastTopic = cameraFrameTopic + "_ORB";
+      if(useBaseFrame)
+          broadCastTopic = baseFrameTopic + "_ORB";
+      else
+          broadCastTopic = cameraFrameNameToPublish;
 
       subImage = mpNodeHandler->subscribe(cameraTopic, 1, &SubscribeHandler::GrabImage, this);
       maqui_orientation = mpNodeHandler->advertise<geometry_msgs::PoseStamped>("/maqui/odom_ORB", queueSize);
@@ -51,88 +57,67 @@ void SubscribeHandler::GrabImage(const sensor_msgs::ImageConstPtr& msg)
     }
     try
     {
-        mpTFlistener->waitForTransform(worldFrameTopic, cameraFrameTopic, ros::Time(0), ros::Duration(0.0001));
-        mpTFlistener->lookupTransform(worldFrameTopic, cameraFrameTopic,ros::Time(0), T_w_c);
+        mpTFlistener->waitForTransform(odomFrameTopic, cameraFrameTopic, ros::Time(0), ros::Duration(0.0001));
+        mpTFlistener->lookupTransform(odomFrameTopic, cameraFrameTopic,ros::Time(0), T_o_c);
     }
     catch(tf::TransformException& e)
     {
         ROS_WARN("TF exception while grabbing camera transform \n %s", e.what());
     }
-    // TF look up transform between head and base link
-    try
-    {
-        mpTFlistener->waitForTransform(worldFrameTopic, cameraFrameTopic, ros::Time(0), ros::Duration(0.0001));
-        mpTFlistener->lookupTransform(worldFrameTopic, cameraFrameTopic,ros::Time(0), T_b_c);
-    }
-    catch(tf::TransformException& e)
-    {
-        ROS_WARN("TF exception while grabbing camera transform \n %s", e.what());
-    }
-    cvT_w_c = tfToMat(T_w_c);
-    mpSLAM->SetOdomPose(cvT_w_c);
-    Tcw = mpSLAM->TrackMonocular(cv_ptr->image, cv_ptr->header.stamp.toSec());
 
-    if(!Tcw.empty())
+    cvT_o_c = tfToMat(T_o_c);
+    mpSLAM->SetOdomPose(cvT_o_c);
+    Twc = mpSLAM->TrackMonocular(cv_ptr->image, cv_ptr->header.stamp.toSec());
+
+    if(!Twc.empty())
     {
-        SubscribeHandler::Publish_Orientation(Tcw.clone(), T_w_c, T_b_c);
+        SubscribeHandler::Publish_Orientation(Twc.clone(), T_o_c);
     }
 }
 
 
 
-void SubscribeHandler::Publish_Orientation(cv::Mat Tcw, tf::StampedTransform T_w_c , tf::StampedTransform T_b_c)
-{
-    cv::Mat Tbw;
-    Tbw = CameraToBaseFrame(Tcw, T_b_c);
 
-    Eigen::Matrix<double, 3, 3> Tbw_eig = SubscribeHandler::toMatrix3d(Tbw.clone());
-    std::vector<float> q = SubscribeHandler::toQuaternion(Tbw_eig);
+void SubscribeHandler::Publish_Orientation(cv::Mat Tcw, tf::StampedTransform T_o_c)
+{
+
+
+    Eigen::Matrix<double, 3, 3> Tcw_eig = SubscribeHandler::toMatrix3d(Tcw.clone());
+    std::vector<float> q = SubscribeHandler::toQuaternion(Tcw_eig);
 
     // TF fill broadcast message
     tf::Transform TForientation;
 
-    TForientation.setOrigin(tf::Vector3(Tbw.at<float>(0,3), Tbw.at<float>(1,3),Tbw.at<float>(2,3)));
+    TForientation.setOrigin(tf::Vector3(Tcw.at<float>(0,3), Tcw.at<float>(1,3),Tcw.at<float>(2,3)));
 
     tf::Quaternion quatTF;
-    quatTF.setW(q[0]);
-    quatTF.setX(q[1]);
-    quatTF.setY(q[2]);
-    quatTF.setZ(q[3]);
+    quatTF.setX(q[0]);
+    quatTF.setY(q[1]);
+    quatTF.setZ(q[2]);
+    quatTF.setW(q[3]);
+
     TForientation.setRotation(quatTF);
 
     // publish geometry message
     geometry_msgs::PoseStamped orientation_msg;
-    orientation_msg.header.frame_id = "odom_ORB";
-    // TODO implement message count and child frame id name
-    //    orientation_msg.header.seq = count;
-    //    orientation_msg.child_frame_id = "base_link";
-    orientation_msg.header.stamp.sec = T_w_c.stamp_.sec;
+
+    orientation_msg.header.frame_id = "CameraTop_optical_frame";
+    orientation_msg.header.stamp.sec = T_o_c.stamp_.sec;
+    orientation_msg.pose.position.x = Tcw.at<float>(0,3);
+    orientation_msg.pose.position.y = Tcw.at<float>(1,3);
+    orientation_msg.pose.position.z = Tcw.at<float>(2,3);
+    orientation_msg.pose.orientation.x = q[0];
+    orientation_msg.pose.orientation.y = q[1];
+    orientation_msg.pose.orientation.z = q[2];
+    orientation_msg.pose.orientation.w = q[3];
+
+    mpTFbroadcaster->sendTransform(tf::StampedTransform(TForientation, T_o_c.stamp_, worldFrameNameToPublish
+            , broadCastTopic));
 
 
-    orientation_msg.pose.position.x = Tbw.at<float>(0,3);
-    orientation_msg.pose.position.y = Tbw.at<float>(1,3);
-    orientation_msg.pose.position.z = Tbw.at<float>(2,3);
-    orientation_msg.pose.orientation.w = q[0];
-    orientation_msg.pose.orientation.x = q[1];
-    orientation_msg.pose.orientation.y = q[2];
-    orientation_msg.pose.orientation.z = q[3];
-
-
-
-    mpTFbroadcaster->sendTransform(tf::StampedTransform(TForientation, T_w_c.stamp_, worldFrameTopic, broadCastTopic));
     maqui_orientation.publish(orientation_msg);
 
 }
-
-cv::Mat SubscribeHandler::CameraToBaseFrame(cv::Mat Tcw, tf::StampedTransform T_b_c)
-{
-    cv::Mat temp = SubscribeHandler::tfToMat(T_b_c);
-    g2o::SE3Quat Temp_cw = SubscribeHandler::toSE3Quat(Tcw);
-    g2o::SE3Quat Temp_bc = SubscribeHandler::toSE3Quat(temp);
-    g2o::SE3Quat T_b_w = Temp_bc * Temp_cw;
-    return SubscribeHandler::toCvMat(T_b_w);
-}
-
 
 
 cv::Mat SubscribeHandler::tfToMat(const tf::StampedTransform& tfT)

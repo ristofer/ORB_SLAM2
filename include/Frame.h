@@ -30,8 +30,6 @@
 #include "KeyFrame.h"
 #include "ORBextractor.h"
 #include "Converter.h"
-
-
 #include <opencv2/opencv.hpp>
 
 namespace ORB_SLAM2
@@ -46,7 +44,6 @@ class Frame
 {
 public:
     Frame();
-
     // Copy constructor.
     Frame(const Frame &frame);
 
@@ -57,7 +54,6 @@ public:
     Frame(const cv::Mat &imGray, const cv::Mat &imDepth, const double &timeStamp, ORBextractor* extractor,ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth);
 
     // Constructor for Monocular cameras.
-
     Frame(const cv::Mat &imGray, const double &timeStamp, ORBextractor* extractor, ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth);
 
 
@@ -71,6 +67,11 @@ public:
     void SetPose(cv::Mat Tcw);
     void SetOdomPose(g2o::SE3Quat &TF_w_c);
     g2o::SE3Quat GetOdomPose();
+
+    // Indicates whether the frame became a KF
+    void EvolvedInKF(KeyFrame *pKF);
+    bool becameKF;
+    KeyFrame* mpKFEvolve;
 
 
     // Computes rotation, translation and camera center matrices from the camera pose.
@@ -104,6 +105,9 @@ public:
 
     // Backprojects a keypoint (if stereo/depth info available) into 3D world coordinates.
     cv::Mat UnprojectStereo(const int &i);
+
+    g2o::SE3Quat GetRobotOdometryFrom(Frame &other);
+    g2o::SE3Quat GetRobotOdometryFrom(KeyFrame &other);
 
 public:
 
@@ -139,6 +143,7 @@ public:
 
     // Number of KeyPoints.
     int N;
+
 
     // Vector of keypoints (original for visualization) and undistorted (actually used by the system).
     // In the stereo case, mvKeysUn is redundant as images must be rectified.
@@ -199,8 +204,6 @@ public:
 
     //Odometry pose
     g2o::SE3Quat mTf_w_c;
-
-
 
 private:
 

@@ -74,6 +74,8 @@ Viewer.ViewpointF: 500
 
 Initializer.KeyFrames: 20
 Initializer.UseOdometry: 1
+Initializer.baseFrame: 1
+
 
 
 #--------------------------------------------------------------------------------------------
@@ -88,4 +90,5 @@ Topic.WorldFrame: "/map"
 Topic.TF: "tf"
 Topic.BaseFrame: "/base_link"
 
-Map.mapfile: map.bin
+Map.mapfile: /maps/electro.bin
+

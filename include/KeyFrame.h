@@ -32,7 +32,6 @@
 #include <mutex>
 #include "BoostArchiver.h"
 
-
 namespace ORB_SLAM2
 {
 
@@ -54,7 +53,6 @@ public:
     cv::Mat GetPose();
     cv::Mat GetPoseInverse();
     g2o::SE3Quat GetOdomPose();
-
     cv::Mat GetCameraCenter();
     cv::Mat GetStereoCenter();
     cv::Mat GetRotation();
@@ -82,6 +80,8 @@ public:
     KeyFrame* GetParent();
     bool hasChild(KeyFrame* pKF);
 
+    bool GetCurrentSession();
+    void SetCurrentSession(bool session);
     // Loop Edges
     void AddLoopEdge(KeyFrame* pKF);
     std::set<KeyFrame*> GetLoopEdges();
@@ -99,8 +99,6 @@ public:
     // KeyPoint functions
     std::vector<size_t> GetFeaturesInArea(const float &x, const float  &y, const float  &r) const;
     cv::Mat UnprojectStereo(int i);
-
-
     // neighbouring KF functions
     KeyFrame* GetPreviousKF();
     KeyFrame* GetNextKF();
@@ -119,8 +117,8 @@ public:
     bool isBad();
 
     //flag if the KF has a previous KeyFrame
-    void SetPrevNeighbour(bool KFNeighbour);
-    bool HasPrevNeighbour();
+    void SetPrevNeighbour(bool KFNeighbour);//
+    bool HasPrevNeighbour();//
     // Compute Scene Depth (q=2 median). Used in monocular.
     float ComputeSceneMedianDepth(const int q);
 
@@ -132,6 +130,18 @@ public:
         return pKF1->mnId<pKF2->mnId;
     }
 
+public:
+    // for serialization
+    KeyFrame(); // Default constructor for serialization, need to deal with const member
+    void SetORBvocabulary(ORBVocabulary *porbv) {mpORBvocabulary=porbv;}
+private:
+    // serialize is recommended to be private
+    friend class boost::serialization::access;
+    template<class Archive>
+    void load(Archive &ar, const unsigned int version);
+    template <class Archive>
+    void save(Archive &ar, const unsigned int version) const;
+    BOOST_SERIALIZATION_SPLIT_MEMBER()
 
 public:
     // for serialization
@@ -215,6 +225,8 @@ public:
     const int mnMaxY;
     const cv::Mat mK;
 
+    bool isWorldFrame = false;
+
 
     bool isWorldFrame = false;
 
@@ -228,6 +240,8 @@ protected:
     cv::Mat Ow;
 
     cv::Mat Cw; // Stereo middel point. Only for visualization
+
+    bool mbIsCurrentSession;
 
 
     // MapPoints associated to keypoints
@@ -261,9 +275,9 @@ protected:
 
     Map* mpMap;
 
-    std::mutex mMutexPose;
-    std::mutex mMutexConnections;
-    std::mutex mMutexFeatures;
+    std::mutex mutable mMutexPose ;
+    std::mutex mutable mMutexConnections;
+    std::mutex mutable mMutexFeatures;
 
 
     // SE3 Odometry Pose
@@ -272,8 +286,7 @@ protected:
     // pointers to neighbouring keyframes in trajectory
     KeyFrame *mpPreviousKeyFrame;
     KeyFrame *mpNextKeyFrame;
-
-};
+    };
 
 } //namespace ORB_SLAM
 

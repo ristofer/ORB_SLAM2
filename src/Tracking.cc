@@ -32,6 +32,7 @@
 
 #include"Optimizer.h"
 #include"PnPsolver.h"
+#include "../include/Tracking.h"
 
 #include<iostream>
 
@@ -46,7 +47,6 @@ using namespace std;
 namespace ORB_SLAM2
 {
 
-
 Tracking::Tracking(System *pSys, ORBVocabulary* pVoc, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer, Map *pMap, KeyFrameDatabase* pKFDB, const string &strSettingPath, const int sensor, bool bReuseMap):
     mState(NO_IMAGES_YET), mSensor(sensor), mbOnlyTracking(false), mbVO(false), mpORBVocabulary(pVoc),
     mpKeyFrameDB(pKFDB), mpInitializer(static_cast<Initializer*>(NULL)), mpSystem(pSys), mpViewer(NULL),
@@ -60,6 +60,7 @@ Tracking::Tracking(System *pSys, ORBVocabulary* pVoc, FrameDrawer *pFrameDrawer,
     float fy = fSettings["Camera.fy"];
     float cx = fSettings["Camera.cx"];
     float cy = fSettings["Camera.cy"];
+    useOdometry = fSettings["Initializer.UseOdometry"];
 
     useOdometry = fSettings["Initializer.UseOdometry"];
 
@@ -315,12 +316,14 @@ cv::Mat Tracking::GrabImageMonocular(const cv::Mat &im, const double &timestamp,
 
 }
 
+
 void Tracking::Track()
 {
-    if(mState==NO_IMAGES_YET)
+    if(mState==NO_IMAGES_YET && !MapReloaded)
     {
         mState = NOT_INITIALIZED;
     }
+
 
     mLastProcessedState=mState;
 
@@ -537,10 +540,36 @@ void Tracking::Track()
             }
         }
 
+        if(mState==LOST && mpMap->IsMapScaled)
+        {
+            // update depending on visual only case, or kinematic case
+            if(mpLastKeyFrame!=0 && 0)
+            {
+                std::cout << "--> Predicting pose when lost using last keyframe" << std::endl;
+                cv::Mat deltaT;
+                deltaT = Converter::toCvMat(mCurrentFrame.GetRobotOdometryFrom(*mpLastKeyFrame).inverse());
+                mCurrentFrame.SetPose(deltaT*mpLastKeyFrame->GetPose());
+
+                if(mpMapDrawer)
+                    mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.mTcw);
+            }
+            else if (!mLastFrameBeforeLost.mTcw.empty())
+            {
+                cv::Mat deltaT;
+                deltaT = Converter::toCvMat(mCurrentFrame.GetRobotOdometryFrom(mLastFrameBeforeLost).inverse());
+                mCurrentFrame.SetPose(deltaT*mLastFrameBeforeLost.mTcw);
+                std::cout << "--> Predicting pose when lost using last frame" << std::endl;
+                if(mpMapDrawer)
+                    mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.mTcw);
+            }
+        }
+
         if(!mCurrentFrame.mpReferenceKF)
             mCurrentFrame.mpReferenceKF = mpReferenceKF;
 
         mLastFrame = Frame(mCurrentFrame);
+        if(mState==OK)
+            mLastFrameBeforeLost = mLastFrame;
     }
 
     // Store frame pose information to retrieve the complete camera trajectory afterwards.
@@ -555,10 +584,8 @@ void Tracking::Track()
     else
     {
         // This can happen if tracking is lost
-
         if (!mlRelativeFramePoses.empty())
             mlRelativeFramePoses.push_back(mlRelativeFramePoses.back());
-
         mlpReferences.push_back(mlpReferences.back());
         mlFrameTimes.push_back(mlFrameTimes.back());
         mlbLost.push_back(mState==LOST);
@@ -715,6 +742,15 @@ void Tracking::CreateInitialMapMonocular()
     pKFini->SetNextKF(pKFcur);
     pKFcur->SetPreviousKF(pKFini);
 
+    g2o::SE3Quat T_wm_wo = mInitialFrame.GetOdomPose();
+
+
+    // set the world orb frame (wo) wrt world maqui frame (wm) in the map
+    mpMap->SetInitialPose(T_wm_wo);
+
+    pKFini->SetPreviousKF(NULL);
+    pKFini->SetNextKF(pKFcur);
+    pKFcur->SetPreviousKF(pKFini);
 
     pKFini->ComputeBoW();
     pKFcur->ComputeBoW();
@@ -1006,7 +1042,6 @@ bool Tracking::TrackLocalMap()
 {
     // We have an estimation of the camera pose and some map points tracked in the frame.
     // We retrieve the local map and try to find matches to points in the local map.
-
     UpdateLocalMap();
 
     SearchLocalPoints();
@@ -1138,16 +1173,11 @@ bool Tracking::NeedNewKeyFrame()
 void Tracking::CreateNewKeyFrame()
 {
 
+
     if(!mpLocalMapper->SetNotStop(true))
         return;
 
     KeyFrame* pKF = new KeyFrame(mCurrentFrame,mpMap,mpKeyFrameDB);
-
-    if(mpSystem->useOdometry)
-    {
-        g2o::SE3Quat currentOdomPose = mCurrentFrame.GetOdomPose();
-        pKF->SetOdomPose(mO_w_c.inverse() * currentOdomPose);
-    }
 
     if(mpLastKeyFrame==NULL)
     {
@@ -1436,6 +1466,7 @@ void Tracking::UpdateLocalKeyFrames()
 
 bool Tracking::Relocalization()
 {
+    //std::cout << "relocalizing" << std::endl;
     // Compute Bag of Words Vector
     mCurrentFrame.ComputeBoW();
 
@@ -1589,12 +1620,20 @@ bool Tracking::Relocalization()
     {
 
         mCurrentFrame.mTcw = cv::Mat::zeros(0, 0, CV_32F); // set mTcw back to empty if relocation is failed
-
         return false;
     }
     else
     {
         mnLastRelocFrameId = mCurrentFrame.mnId;
+       
+        if(!mpSystem->mbIsMapTransformUpdated)
+        {
+            g2o::SE3Quat Tc_wo = Converter::toSE3Quat(mCurrentFrame.mTcw);
+            g2o::SE3Quat Twm_c = mCurrentFrame.GetOdomPose();
+            mpMap->SetInitialPose(Twm_c * Tc_wo);
+            mpSystem->mbIsMapTransformUpdated = true;
+        }
+
         return true;
     }
 
@@ -1608,11 +1647,9 @@ void Tracking::Reset()
     {
         mpViewer->RequestStop();
         while(!mpViewer->isStopped())
-
         {
             std::this_thread::sleep_for(std::chrono::microseconds(3000));
         }
-
     }
 
     // Reset Local Mapping

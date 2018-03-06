@@ -45,12 +45,13 @@ public:
                      tf::TransformListener *pTFlistener, tf::TransformBroadcaster *pTFbroadcaster);
 
     // transform world and camera with grabbed image
-    tf::StampedTransform T_w_c;
+    tf::StampedTransform T_o_c;
     // transform between base and camera with image
     tf::StampedTransform T_b_c;
-    cv::Mat cvT_w_c;
+    cv::Mat cvT_o_c;
     cv_bridge::CvImageConstPtr cv_ptr;
-    cv::Mat Tcw;
+    cv::Mat Twc;
+
 
     // methods
 	void Shutdown();
@@ -58,9 +59,8 @@ public:
 private:
     // methods
     void GrabImage(const sensor_msgs::ImageConstPtr &msg);
-    void Publish_Orientation(cv::Mat Tcw, tf::StampedTransform T_w_c, tf::StampedTransform T_b_c);
+    void Publish_Orientation(cv::Mat Tcw, tf::StampedTransform T_w_c);
 
-    cv::Mat CameraToBaseFrame(cv::Mat Tcw, tf::StampedTransform T_b_c);
     cv::Mat tfToMat(const tf::StampedTransform& tfT);
     Eigen::Matrix<double,3,3> toMatrix3d(const cv::Mat &cvMat3);
     std::vector<float> toQuaternion(const Eigen::Matrix<double, 3, 3> &M);
@@ -82,10 +82,14 @@ private:
     std::string cameraTopic;
     std::string tfTopic;
     std::string cameraFrameTopic;
-    std::string worldFrameTopic;
+    std::string odomFrameTopic;
     std::string broadCastTopic;
     std::string baseFrameTopic;
+    std::string cameraFrameNameToPublish;
+    std::string worldFrameNameToPublish;
 
     // flags
     bool mbReferenceWorldFrame;
+
+    int useBaseFrame;
 };

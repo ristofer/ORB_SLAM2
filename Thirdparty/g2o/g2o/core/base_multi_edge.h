@@ -66,7 +66,6 @@ namespace g2o {
       typedef MatrixXd::MapType JacobianType;
       typedef typename BaseEdge<D,E>::ErrorVector ErrorVector;
       typedef typename BaseEdge<D,E>::InformationType InformationType;
-
       typedef Eigen::Map<MatrixXd, MatrixXd::Flags & PacketAccessBit ? Aligned : Unaligned > HessianBlockType;
 
 
