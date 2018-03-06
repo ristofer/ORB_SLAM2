@@ -7,10 +7,15 @@ IF(NOT ROS_BUILD_TYPE)
   SET(ROS_BUILD_TYPE Release)
 ENDIF()
 
+
+# optional: debug mode
+SET(ROS_BUILD_TYPE Debug)
+
 MESSAGE("Build type: " ${ROS_BUILD_TYPE})
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall -Wfatal-errors -Wno-write-strings -Wno-unused-result -Wformat=0 -O3 -march=native ")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wfatal-errors -Wno-write-strings -Wno-unused-result -Wformat=0  -O3 -march=native")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall  -O3 -march=native ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall  -O3 -march=native")
+
 
 # Check C++11 or C++0x support
 include(CheckCXXCompilerFlag)
@@ -40,11 +45,13 @@ endif()
 
 find_package(Eigen3 3.1.0 REQUIRED)
 find_package(Pangolin REQUIRED)
+
 find_package(PCL 1.7 REQUIRED)
 
 include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
+
 
 include_directories(
 ${PROJECT_SOURCE_DIR}
@@ -61,6 +68,7 @@ ${PROJECT_SOURCE_DIR}/../../../Thirdparty/DBoW2/lib/libDBoW2.so
 ${PROJECT_SOURCE_DIR}/../../../Thirdparty/g2o/lib/libg2o.so
 ${PROJECT_SOURCE_DIR}/../../../lib/libORB_SLAM2.so
 )
+
 
 # Node for monocular camera
 rosbuild_add_executable(Mono
@@ -87,32 +95,14 @@ target_link_libraries(Monosub
 ${LIBS}
 )
 
-# Node for monocular camera (Augmented Reality Demo)
-rosbuild_add_executable(MonoAR
-src/AR/ros_mono_ar.cc
-src/AR/ViewerAR.h
-src/AR/ViewerAR.cc
-)
 
-target_link_libraries(MonoAR
-${LIBS}
-)
-
-# Node for stereo camera
-rosbuild_add_executable(Stereo
-src/ros_stereo.cc
-)
-
-target_link_libraries(Stereo
-${LIBS}
-)
-
-# Node for RGB-D camera
-rosbuild_add_executable(RGBD
-src/ros_rgbd.cc
-)
-
-target_link_libraries(RGBD
+=======
+# node for Odometry
+rosbuild_add_executable(Maqui
+    ${PROJECT_SOURCE_DIR}/src/maqui/main.cpp
+    ${PROJECT_SOURCE_DIR}/src/maqui/SubscribeHandler.cpp
+    )
+target_link_libraries(Maqui
 ${LIBS}
 )
 

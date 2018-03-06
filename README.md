@@ -29,6 +29,7 @@ alt="ORB-SLAM2" width="240" height="180" border="10" /></a>
 alt="ORB-SLAM2" width="240" height="180" border="10" /></a>
 
 
+
 ###Related Publications:
 
 [Monocular] Raúl Mur-Artal, J. M. M. Montiel and Juan D. Tardós. **ORB-SLAM: A Versatile and Accurate Monocular SLAM System**. *IEEE Transactions on Robotics,* vol. 31, no. 5, pp. 1147-1163, 2015. (**2015 IEEE Transactions on Robotics Best Paper Award**). **[PDF](http://webdiis.unizar.es/~raulmur/MurMontielTardosTRO15.pdf)**.
@@ -88,6 +89,7 @@ We provide some examples to process the live input of a monocular, stereo or RGB
 
 #3. Building ORB-SLAM2 library and TUM/KITTI examples
 
+
 Clone the repository:
 ```
 git clone https://github.com/raulmur/ORB_SLAM2.git ORB_SLAM2
@@ -103,6 +105,7 @@ chmod +x build.sh
 This will create **libORB_SLAM2.so**  at *lib* folder and the executables **mono_tum**, **mono_kitti**, **rgbd_tum**, **stereo_kitti**, **mono_euroc** and **stereo_euroc** in *Examples* folder.
 
 #4. Monocular Examples
+
 
 ## TUM Dataset
 
@@ -137,6 +140,7 @@ This will create **libORB_SLAM2.so**  at *lib* folder and the executables **mono
 
 #5. Stereo Examples
 
+
 ## KITTI Dataset
 
 1. Download the dataset (grayscale images) from http://www.cvlibs.net/datasets/kitti/eval_odometry.php 
@@ -160,6 +164,7 @@ This will create **libORB_SLAM2.so**  at *lib* folder and the executables **mono
 
 #6. RGB-D Example
 
+
 ## TUM Dataset
 
 1. Download a sequence from http://vision.in.tum.de/data/datasets/rgbd-dataset/download and uncompress it.
@@ -176,7 +181,9 @@ This will create **libORB_SLAM2.so**  at *lib* folder and the executables **mono
   ./Examples/RGB-D/rgbd_tum Vocabulary/ORBvoc.txt Examples/RGB-D/TUMX.yaml PATH_TO_SEQUENCE_FOLDER ASSOCIATIONS_FILE
   ```
 
+
 #7. ROS Examples
+
 
 ### Building the nodes for mono, monoAR, stereo and RGB-D
 1. Add the path including *Examples/ROS/ORB_SLAM2* to the ROS_PACKAGE_PATH environment variable. Open .bashrc file and add at the end the following line. Replace PATH by the folder where you cloned ORB_SLAM2:
@@ -236,6 +243,7 @@ For an RGB-D input from topics `/camera/rgb/image_raw` and `/camera/depth_regist
   rosrun ORB_SLAM2 RGBD PATH_TO_VOCABULARY PATH_TO_SETTINGS_FILE
   ```
   
+<<<<<<< HEAD
 #8. Processing your own sequences
 You will need to create a settings file with the calibration of your camera. See the settings file provided for the TUM and KITTI datasets for monocular, stereo and RGB-D cameras. We use the calibration model of OpenCV. See the examples to learn how to create a program that makes use of the ORB-SLAM2 library and how to pass images to the SLAM system. Stereo input must be synchronized and rectified. RGB-D input must be synchronized and depth registered.
 

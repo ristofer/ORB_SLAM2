@@ -27,6 +27,8 @@
 
 #include<opencv2/core/core.hpp>
 #include<mutex>
+#include "BoostArchiver.h"
+
 
 namespace ORB_SLAM2
 {
@@ -44,9 +46,10 @@ public:
 
     void SetWorldPos(const cv::Mat &Pos);
     cv::Mat GetWorldPos();
-
+    void UpdateWorldPos(float s);
     cv::Mat GetNormal();
     KeyFrame* GetReferenceKeyFrame();
+
     std::map<KeyFrame*,size_t> GetObservations();
     int Observations();
 
@@ -79,6 +82,15 @@ public:
     float GetMaxDistanceInvariance();
     int PredictScale(const float &currentDist, KeyFrame*pKF);
     int PredictScale(const float &currentDist, Frame* pF);
+
+public:
+    // for serialization
+    MapPoint();
+private:
+    // serialize is recommended to be private
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive &ar, const unsigned int version);
 
 public:
     long unsigned int mnId;

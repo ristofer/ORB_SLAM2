@@ -54,13 +54,15 @@ class Tracking
 {  
 
 public:
+
     Tracking(System* pSys, ORBVocabulary* pVoc, FrameDrawer* pFrameDrawer, MapDrawer* pMapDrawer, Map* pMap,
-             KeyFrameDatabase* pKFDB, const string &strSettingPath, const int sensor);
+             KeyFrameDatabase* pKFDB, const string &strSettingPath, const int sensor, bool bReuseMap=false);
 
     // Preprocess the input and call Track(). Extract features and performs stereo matching.
     cv::Mat GrabImageStereo(const cv::Mat &imRectLeft,const cv::Mat &imRectRight, const double &timestamp);
     cv::Mat GrabImageRGBD(const cv::Mat &imRGB,const cv::Mat &imD, const double &timestamp);
     cv::Mat GrabImageMonocular(const cv::Mat &im, const double &timestamp);
+    cv::Mat GrabImageMonocular(const cv::Mat &im, const double &timestamp, g2o::SE3Quat &TF_c_w);
 
     void SetLocalMapper(LocalMapping* pLocalMapper);
     void SetLoopClosing(LoopClosing* pLoopClosing);
@@ -73,7 +75,7 @@ public:
 
     // Use this function if you have deactivated local mapping and you only want to localize the camera.
     void InformOnlyTracking(const bool &flag);
-
+    cv::Mat GetTranslation(cv::Mat &TFmat);
 
 public:
 	bool loop_detected;
@@ -96,6 +98,8 @@ public:
     // Current Frame
     Frame mCurrentFrame;
     cv::Mat mImGray;
+    cv::Mat mTfGray;
+    cv::Mat mTF;
 
     // Initialization Variables (Monocular)
     std::vector<int> mvIniLastMatches;
@@ -114,8 +118,12 @@ public:
     // True if local mapping is deactivated and we are performing only localization
     bool mbOnlyTracking;
 
+    // Indicates whether loaded map is used at startup
+    bool MapReloaded;
+
     void Reset();
 
+    g2o::SE3Quat mO_w_c;
 protected:
 
     // Main tracking function. It is independent of the input sensor.
@@ -170,10 +178,13 @@ protected:
     KeyFrame* mpReferenceKF;
     std::vector<KeyFrame*> mvpLocalKeyFrames;
     std::vector<MapPoint*> mvpLocalMapPoints;
-    
+
+    // scale recovery
+    std::vector<float> vec;
+
     // System
     System* mpSystem;
-    
+
     //Drawers
     Viewer* mpViewer;
     FrameDrawer* mpFrameDrawer;
@@ -205,6 +216,7 @@ protected:
     //Last Frame, KeyFrame and Relocalisation Info
     KeyFrame* mpLastKeyFrame;
     Frame mLastFrame;
+    Frame mLastFrameBeforeLost;
     unsigned int mnLastKeyFrameId;
     unsigned int mnLastRelocFrameId;
 
@@ -213,6 +225,9 @@ protected:
 
     //Color order (true RGB, false BGR, ignored if grayscale)
     bool mbRGB;
+
+    // To odometry or not to odometry
+    int useOdometry;
 
     list<MapPoint*> mlpTemporalPoints;
 };

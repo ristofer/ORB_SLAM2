@@ -24,180 +24,208 @@
 
 namespace ORB_SLAM2
 {
+Map::Map():mnMaxKFid(0),mnBigChangeIdx(0)
+{
+    IsMapScaled = false;
+}
 
-	Map::Map() :mnMaxKFid(0), mnBigChangeIdx(0)
-	{
+void Map::AddKeyFrame(KeyFrame *pKF)
+{
+    unique_lock<mutex> lock(mMutexMap);
+    mspKeyFrames.insert(pKF);
+    if(pKF->mnId>mnMaxKFid)
+        mnMaxKFid=pKF->mnId;
+}
+
+void Map::AddMapPoint(MapPoint *pMP)
+{
+    unique_lock<mutex> lock(mMutexMap);
+    mspMapPoints.insert(pMP);
+}
+
+void Map::EraseMapPoint(MapPoint *pMP)
+{
+    unique_lock<mutex> lock(mMutexMap);
+    mspMapPoints.erase(pMP);
+
+    // TODO: This only erase the pointer.
+    // Delete the MapPoint
+}
+
+void Map::EraseKeyFrame(KeyFrame *pKF)
+{
+    unique_lock<mutex> lock(mMutexMap);
+    mspKeyFrames.erase(pKF);
+
+    // TODO: This only erase the pointer.
+    // Delete the MapPoint
+}
+
+void Map::SetReferenceMapPoints(const vector<MapPoint *> &vpMPs)
+{
+    unique_lock<mutex> lock(mMutexMap);
+    mvpReferenceMapPoints = vpMPs;
+}
+
+void Map::InformNewBigChange()
+{
+    unique_lock<mutex> lock(mMutexMap);
+    mnBigChangeIdx++;
+}
+
+int Map::GetLastBigChangeIdx()
+{
+    unique_lock<mutex> lock(mMutexMap);
+    return mnBigChangeIdx;
+}
+
+vector<KeyFrame*> Map::GetAllKeyFrames()
+{
+    unique_lock<mutex> lock(mMutexMap);
+    return vector<KeyFrame*>(mspKeyFrames.begin(),mspKeyFrames.end());
+}
+
+vector<MapPoint*> Map::GetAllMapPoints()
+{
+    unique_lock<mutex> lock(mMutexMap);
+    return vector<MapPoint*>(mspMapPoints.begin(),mspMapPoints.end());
+}
+
+long unsigned int Map::MapPointsInMap()
+{
+    unique_lock<mutex> lock(mMutexMap);
+    return mspMapPoints.size();
+}
+
+long unsigned int Map::KeyFramesInMap()
+{
+    unique_lock<mutex> lock(mMutexMap);
+    return mspKeyFrames.size();
+}
+
+vector<MapPoint*> Map::GetReferenceMapPoints()
+{
+    unique_lock<mutex> lock(mMutexMap);
+    return mvpReferenceMapPoints;
+}
+
+long unsigned int Map::GetMaxKFid()
+{
+    unique_lock<mutex> lock(mMutexMap);
+    return mnMaxKFid;
+}
+
+void Map::SetInitialPose(g2o::SE3Quat T_wm_wo)
+{
+    unique_lock<mutex> lock(mMutexMap);
+    mT_wm_wo = T_wm_wo;
+}
+g2o::SE3Quat Map::GetInitialPose()
+{
+    unique_lock<mutex> lock(mMutexMap);
+    return mT_wm_wo;
+}
+
+void Map::clear()
+{
+    for(set<MapPoint*>::iterator sit=mspMapPoints.begin(), send=mspMapPoints.end(); sit!=send; sit++)
+        delete *sit;
+
+    for(set<KeyFrame*>::iterator sit=mspKeyFrames.begin(), send=mspKeyFrames.end(); sit!=send; sit++)
+        delete *sit;
+
+    mspMapPoints.clear();
+    mspKeyFrames.clear();
+    mnMaxKFid = 0;
+    mvpReferenceMapPoints.clear();
+    mvpKeyFrameOrigins.clear();
+
+    IsMapScaled = false;
+}
+
+template<class Archive>
+void Map::serialize(Archive &ar, const unsigned int version)
+{
+    // don't save mutex
+    ar & mspMapPoints;
+    ar & mvpKeyFrameOrigins;
+    ar & mspKeyFrames;
+    ar & mvpReferenceMapPoints;
+    ar & mnMaxKFid & mnBigChangeIdx;
+    ar & IsMapScaled;
+    ar & mT_wm_wo;
+}
+template void Map::serialize(boost::archive::binary_iarchive&, const unsigned int);
+template void Map::serialize(boost::archive::binary_oarchive&, const unsigned int);
+
+bool Map::Save(const string &filename) {
+	cout << "Saving map points to " << filename << endl;
+	ofstream fout(filename.c_str(), ios::out);
+	cout << "  writing " << mspMapPoints.size() << " map points" << endl;
+	//unsigned long int nbMapPoints = mspMapPoints.size();
+	//fout << nbMapPoints;
+	for (auto mp : mspMapPoints)
+		_WriteMapPointObj(fout, mp);
+	map<MapPoint*, unsigned long int> idx_of_mp;
+	unsigned long int i = 0;
+	for (auto mp : mspMapPoints) {
+		idx_of_mp[mp] = i;
+		i += 1;
 	}
+	fout.close();
+	return true;
+}
 
-	void Map::AddKeyFrame(KeyFrame *pKF)
-	{
-		unique_lock<mutex> lock(mMutexMap);
-		mspKeyFrames.insert(pKF);
-		if (pKF->mnId > mnMaxKFid)
-			mnMaxKFid = pKF->mnId;
-	}
-
-	void Map::AddMapPoint(MapPoint *pMP)
-	{
-		unique_lock<mutex> lock(mMutexMap);
-		mspMapPoints.insert(pMP);
-	}
-
-	void Map::EraseMapPoint(MapPoint *pMP)
-	{
-		unique_lock<mutex> lock(mMutexMap);
-		mspMapPoints.erase(pMP);
-
-		// TODO: This only erase the pointer.
-		// Delete the MapPoint
-	}
-
-	void Map::EraseKeyFrame(KeyFrame *pKF)
-	{
-		unique_lock<mutex> lock(mMutexMap);
-		mspKeyFrames.erase(pKF);
-
-		// TODO: This only erase the pointer.
-		// Delete the MapPoint
-	}
-
-	void Map::SetReferenceMapPoints(const vector<MapPoint *> &vpMPs)
-	{
-		unique_lock<mutex> lock(mMutexMap);
-		mvpReferenceMapPoints = vpMPs;
-	}
-
-	void Map::InformNewBigChange()
-	{
-		unique_lock<mutex> lock(mMutexMap);
-		mnBigChangeIdx++;
-	}
-
-	int Map::GetLastBigChangeIdx()
-	{
-		unique_lock<mutex> lock(mMutexMap);
-		return mnBigChangeIdx;
-	}
-
-	vector<KeyFrame*> Map::GetAllKeyFrames()
-	{
-		unique_lock<mutex> lock(mMutexMap);
-		return vector<KeyFrame*>(mspKeyFrames.begin(), mspKeyFrames.end());
-	}
-
-	vector<MapPoint*> Map::GetAllMapPoints()
-	{
-		unique_lock<mutex> lock(mMutexMap);
-		return vector<MapPoint*>(mspMapPoints.begin(), mspMapPoints.end());
-	}
-
-	long unsigned int Map::MapPointsInMap()
-	{
-		unique_lock<mutex> lock(mMutexMap);
-		return mspMapPoints.size();
-	}
-
-	long unsigned int Map::KeyFramesInMap()
-	{
-		unique_lock<mutex> lock(mMutexMap);
-		return mspKeyFrames.size();
-	}
-
-	vector<MapPoint*> Map::GetReferenceMapPoints()
-	{
-		unique_lock<mutex> lock(mMutexMap);
-		return mvpReferenceMapPoints;
-	}
-
-	long unsigned int Map::GetMaxKFid()
-	{
-		unique_lock<mutex> lock(mMutexMap);
-		return mnMaxKFid;
-	}
-
-	void Map::clear()
-	{
-		for (set<MapPoint*>::iterator sit = mspMapPoints.begin(), send = mspMapPoints.end(); sit != send; sit++)
-			delete *sit;
-
-		for (set<KeyFrame*>::iterator sit = mspKeyFrames.begin(), send = mspKeyFrames.end(); sit != send; sit++)
-			delete *sit;
-
-		mspMapPoints.clear();
-		mspKeyFrames.clear();
-		mnMaxKFid = 0;
-		mvpReferenceMapPoints.clear();
-		mvpKeyFrameOrigins.clear();
-	}
-
-	bool Map::Save(const string &filename) {
-		cout << "Saving map points to " << filename << endl;
-		ofstream fout(filename.c_str(), ios::out);
-		cout << "  writing " << mspMapPoints.size() << " map points" << endl;
-		//unsigned long int nbMapPoints = mspMapPoints.size();
-		//fout << nbMapPoints;
-		for (auto mp : mspMapPoints)
-			_WriteMapPointObj(fout, mp);
-		map<MapPoint*, unsigned long int> idx_of_mp;
-		unsigned long int i = 0;
-		for (auto mp : mspMapPoints) {
-			idx_of_mp[mp] = i;
-			i += 1;
+bool Map::SaveWithTimestamps(const string &filename) {
+	cout << "Saving map points to " << filename << endl;
+	ofstream fout(filename.c_str(), ios::out);
+	cout << "  writing " << mspMapPoints.size() << " map points" << endl;
+	//unsigned long int nbMapPoints = mspMapPoints.size();
+	//fout << nbMapPoints;
+	fout << fixed;
+	for (auto mp : mspMapPoints){
+		_WriteMapPoint(fout, mp, "");
+		std::map<KeyFrame*, size_t> keyframes = mp->GetObservations();
+		for (std::map<KeyFrame*, size_t>::iterator it = keyframes.begin(); it != keyframes.end(); it++) {
+			fout << setprecision(6) << " " << it->first->mTimeStamp;
 		}
-		fout.close();
-		return true;
+		fout << endl;
 	}
-
-	bool Map::SaveWithTimestamps(const string &filename) {
-		cout << "Saving map points to " << filename << endl;
-		ofstream fout(filename.c_str(), ios::out);
-		cout << "  writing " << mspMapPoints.size() << " map points" << endl;
-		//unsigned long int nbMapPoints = mspMapPoints.size();
-		//fout << nbMapPoints;
-		fout << fixed;
-		for (auto mp : mspMapPoints){
-			_WriteMapPoint(fout, mp, "");
-			std::map<KeyFrame*, size_t> keyframes = mp->GetObservations();
-			for (std::map<KeyFrame*, size_t>::iterator it = keyframes.begin(); it != keyframes.end(); it++) {
-				fout << setprecision(6) << " " << it->first->mTimeStamp;
-			}
-			fout << endl;
+	fout.close();
+	return true;
+}
+bool Map::SaveWithPose(const string &filename) {
+	cout << "Saving map points along with keyframe pose to " << filename << endl;
+	ofstream fout(filename.c_str(), ios::out);
+	cout << "  writing " << mspMapPoints.size() << " map points" << endl;
+	//unsigned long int nbMapPoints = mspMapPoints.size();
+	//fout << nbMapPoints;
+	fout << fixed;
+	for (auto mp : mspMapPoints){
+		_WriteMapPoint(fout, mp, "");
+		std::map<KeyFrame*, size_t> keyframes = mp->GetObservations();
+		for (std::map<KeyFrame*, size_t>::iterator it = keyframes.begin(); it != keyframes.end(); it++) {
+			fout << setprecision(6) << " " << it->first->mTimeStamp;
 		}
-		fout.close();
-		return true;
+		fout << endl;
 	}
-	bool Map::SaveWithPose(const string &filename) {
-		cout << "Saving map points along with keyframe pose to " << filename << endl;
-		ofstream fout(filename.c_str(), ios::out);
-		cout << "  writing " << mspMapPoints.size() << " map points" << endl;
-		//unsigned long int nbMapPoints = mspMapPoints.size();
-		//fout << nbMapPoints;
-		fout << fixed;
-		for (auto mp : mspMapPoints){
-			_WriteMapPoint(fout, mp, "");
-			std::map<KeyFrame*, size_t> keyframes = mp->GetObservations();
-			for (std::map<KeyFrame*, size_t>::iterator it = keyframes.begin(); it != keyframes.end(); it++) {
-				fout << setprecision(6) << " " << it->first->mTimeStamp;
-			}
-			fout << endl;
-		}
-		fout.close();
-		return true;
-	}
+	fout.close();
+	return true;
+}
 
-	void Map::_WriteMapPoint(ofstream &f, MapPoint* mp,
-		const std::string &end_marker) {
-		cv::Mat wp = mp->GetWorldPos();
-		f << wp.at<float>(0) << " "; // pos x: float
-		f << wp.at<float>(1) << " "; // pos y: float
-		f << wp.at<float>(2) << end_marker; // pos z: float
-	}
-	void Map::_WriteMapPointObj(ofstream &f, MapPoint* mp,
-		const std::string &end_marker) {
-		cv::Mat wp = mp->GetWorldPos();
-		f << "v ";
-		f << wp.at<float>(0) << " "; // pos x: float
-		f << wp.at<float>(1) << " "; // pos y: float
-		f << wp.at<float>(2) << end_marker; // pos z: float
-	}
+void Map::_WriteMapPoint(ofstream &f, MapPoint* mp,
+	const std::string &end_marker) {
+	cv::Mat wp = mp->GetWorldPos();
+	f << wp.at<float>(0) << " "; // pos x: float
+	f << wp.at<float>(1) << " "; // pos y: float
+	f << wp.at<float>(2) << end_marker; // pos z: float
+}
+void Map::_WriteMapPointObj(ofstream &f, MapPoint* mp,
+	const std::string &end_marker) {
+	cv::Mat wp = mp->GetWorldPos();
+	f << "v ";
+	f << wp.at<float>(0) << " "; // pos x: float
+	f << wp.at<float>(1) << " "; // pos y: float
+	f << wp.at<float>(2) << end_marker; // pos z: float
+}
 } //namespace ORB_SLAM

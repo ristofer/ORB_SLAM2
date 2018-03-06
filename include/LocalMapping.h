@@ -26,7 +26,8 @@
 #include "LoopClosing.h"
 #include "Tracking.h"
 #include "KeyFrameDatabase.h"
-
+#include "Converter.h"
+#include <Eigen/Dense>
 #include <mutex>
 
 
@@ -40,7 +41,7 @@ class Map;
 class LocalMapping
 {
 public:
-    LocalMapping(Map* pMap, const float bMonocular);
+    LocalMapping(Map* pMap, const string &strSettingPath, const float bMonocular);
 
     void SetLoopCloser(LoopClosing* pLoopCloser);
 
@@ -71,7 +72,6 @@ public:
         unique_lock<std::mutex> lock(mMutexNewKFs);
         return mlNewKeyFrames.size();
     }
-
 protected:
 
     bool CheckNewKeyFrames();
@@ -121,6 +121,15 @@ protected:
 
     bool mbAcceptKeyFrames;
     std::mutex mMutexAccept;
+
+    // To odometry or not to odometry
+    int useOdometry;
+
+    // MAP SCALING
+    void MapScaling();
+    float ScaleRecovery();
+    unsigned long NumOfKeyFrames;
+
 };
 
 } //namespace ORB_SLAM

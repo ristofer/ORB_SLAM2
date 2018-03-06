@@ -39,6 +39,7 @@ LoopClosing::LoopClosing(Map *pMap, KeyFrameDatabase *pDB, ORBVocabulary *pVoc, 
     mbResetRequested(false), mbFinishRequested(false), mbFinished(true), mpMap(pMap),
     mpKeyFrameDB(pDB), mpORBVocabulary(pVoc), mpMatchedKF(NULL), mLastLoopKFid(0), mbRunningGBA(false), mbFinishedGBA(true),
 	mbStopGBA(false), mpThreadGBA(NULL), mbFixScale(bFixScale), mnFullBAIdx(0), loop_detected(false)
+
 {
     mnCovisibilityConsistencyTh = 3;
 }
@@ -81,7 +82,7 @@ void LoopClosing::Run()
         if(CheckFinish())
             break;
 
-        usleep(5000);
+        std::this_thread::sleep_for(std::chrono::microseconds(5000));
     }
 
     SetFinish();
@@ -402,7 +403,8 @@ bool LoopClosing::ComputeSim3()
 void LoopClosing::CorrectLoop()
 {
 
-	cout << "Loop detected!" << endl;
+    cout << "Loop detected!" << endl;
+
 
     // Send a stop signal to Local Mapping
     // Avoid new keyframes are inserted while correcting the loop
@@ -426,7 +428,7 @@ void LoopClosing::CorrectLoop()
     // Wait until Local Mapping has effectively stopped
     while(!mpLocalMapper->isStopped())
     {
-        usleep(1000);
+        std::this_thread::sleep_for(std::chrono::microseconds(1000));
     }
 
     // Ensure current keyframe is updated
@@ -628,7 +630,8 @@ void LoopClosing::RequestReset()
         if(!mbResetRequested)
             break;
         }
-        usleep(5000);
+
+        std::this_thread::sleep_for(std::chrono::microseconds(5000));
     }
 }
 
@@ -647,8 +650,10 @@ void LoopClosing::RunGlobalBundleAdjustment(unsigned long nLoopKF)
 {
     cout << "Starting Global Bundle Adjustment" << endl;
 
+    useOdometry = 1;
+
     int idx =  mnFullBAIdx;
-    Optimizer::GlobalBundleAdjustemnt(mpMap,10,&mbStopGBA,nLoopKF,false);
+    Optimizer::GlobalBundleAdjustemnt(mpMap,10,&mbStopGBA,nLoopKF,false, useOdometry? true : false);
 
     // Update all MapPoints and KeyFrames
     // Local Mapping was active during BA, that means that there might be new keyframes
@@ -668,7 +673,7 @@ void LoopClosing::RunGlobalBundleAdjustment(unsigned long nLoopKF)
 
             while(!mpLocalMapper->isStopped() && !mpLocalMapper->isFinished())
             {
-                usleep(1000);
+                std::this_thread::sleep_for(std::chrono::microseconds(1000));
             }
 
             // Get Map Mutex
@@ -731,7 +736,7 @@ void LoopClosing::RunGlobalBundleAdjustment(unsigned long nLoopKF)
                     // Backproject using corrected camera
                     cv::Mat Twc = pRefKF->GetPoseInverse();
                     cv::Mat Rwc = Twc.rowRange(0,3).colRange(0,3);
-                    cv::Mat twc = Twc.rowRange(0,3).col(3);
+                   cv::Mat twc = Twc.rowRange(0,3).col(3);
 
                     pMP->SetWorldPos(Rwc*Xc+twc);
                 }
@@ -747,7 +752,9 @@ void LoopClosing::RunGlobalBundleAdjustment(unsigned long nLoopKF)
         mbFinishedGBA = true;
         mbRunningGBA = false;
     }
+
 	loop_detected = mpTracker->loop_detected = true;
+
 }
 
 void LoopClosing::RequestFinish()

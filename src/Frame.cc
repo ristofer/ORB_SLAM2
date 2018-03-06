@@ -33,11 +33,13 @@ float Frame::mnMinX, Frame::mnMinY, Frame::mnMaxX, Frame::mnMaxY;
 float Frame::mfGridElementWidthInv, Frame::mfGridElementHeightInv;
 
 Frame::Frame()
-{}
+{
+    becameKF = false;
+}
 
 //Copy Constructor
 Frame::Frame(const Frame &frame)
-	:is_keyframe(frame.is_keyframe), mpORBvocabulary(frame.mpORBvocabulary), mpORBextractorLeft(frame.mpORBextractorLeft), mpORBextractorRight(frame.mpORBextractorRight),
+    :is_keyframe(frame.is_keyframe),mpORBvocabulary(frame.mpORBvocabulary), mpORBextractorLeft(frame.mpORBextractorLeft), mpORBextractorRight(frame.mpORBextractorRight),
      mTimeStamp(frame.mTimeStamp), mK(frame.mK.clone()), mDistCoef(frame.mDistCoef.clone()),
      mbf(frame.mbf), mb(frame.mb), mThDepth(frame.mThDepth), N(frame.N), mvKeys(frame.mvKeys),
      mvKeysRight(frame.mvKeysRight), mvKeysUn(frame.mvKeysUn),  mvuRight(frame.mvuRight),
@@ -47,7 +49,7 @@ Frame::Frame(const Frame &frame)
      mpReferenceKF(frame.mpReferenceKF), mnScaleLevels(frame.mnScaleLevels),
      mfScaleFactor(frame.mfScaleFactor), mfLogScaleFactor(frame.mfLogScaleFactor),
      mvScaleFactors(frame.mvScaleFactors), mvInvScaleFactors(frame.mvInvScaleFactors),
-     mvLevelSigma2(frame.mvLevelSigma2), mvInvLevelSigma2(frame.mvInvLevelSigma2)
+     mvLevelSigma2(frame.mvLevelSigma2), mvInvLevelSigma2(frame.mvInvLevelSigma2), mTf_w_c(frame.mTf_w_c)
 {
     for(int i=0;i<FRAME_GRID_COLS;i++)
         for(int j=0; j<FRAME_GRID_ROWS; j++)
@@ -59,7 +61,7 @@ Frame::Frame(const Frame &frame)
 
 
 Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeStamp, ORBextractor* extractorLeft, ORBextractor* extractorRight, ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth)
-	:is_keyframe(false), mpORBvocabulary(voc), mpORBextractorLeft(extractorLeft), mpORBextractorRight(extractorRight), mTimeStamp(timeStamp), mK(K.clone()), mDistCoef(distCoef.clone()), mbf(bf), mThDepth(thDepth),
+    :is_keyframe(false), mpORBvocabulary(voc),mpORBextractorLeft(extractorLeft),mpORBextractorRight(extractorRight), mTimeStamp(timeStamp), mK(K.clone()),mDistCoef(distCoef.clone()), mbf(bf), mThDepth(thDepth),
      mpReferenceKF(static_cast<KeyFrame*>(NULL))
 {
     // Frame ID
@@ -117,7 +119,7 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeSt
 }
 
 Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth, const double &timeStamp, ORBextractor* extractor,ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth)
-	:is_keyframe(false), mpORBvocabulary(voc), mpORBextractorLeft(extractor), mpORBextractorRight(static_cast<ORBextractor*>(NULL)),
+    :is_keyframe(false),mpORBvocabulary(voc),mpORBextractorLeft(extractor),mpORBextractorRight(static_cast<ORBextractor*>(NULL)),
      mTimeStamp(timeStamp), mK(K.clone()),mDistCoef(distCoef.clone()), mbf(bf), mThDepth(thDepth)
 {
     // Frame ID
@@ -171,12 +173,13 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth, const double &timeSt
 }
 
 
-Frame::Frame(const cv::Mat &imGray, const double &timeStamp, ORBextractor* extractor,ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth)
-	:is_keyframe(false), mpORBvocabulary(voc), mpORBextractorLeft(extractor), mpORBextractorRight(static_cast<ORBextractor*>(NULL)),
+Frame::Frame(const cv::Mat &imGray, const double &timeStamp, ORBextractor* extractor, ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth)
+    :is_keyframe(false), mpORBvocabulary(voc),mpORBextractorLeft(extractor),mpORBextractorRight(static_cast<ORBextractor*>(NULL)),
      mTimeStamp(timeStamp), mK(K.clone()),mDistCoef(distCoef.clone()), mbf(bf), mThDepth(thDepth)
 {
     // Frame ID
     mnId=nNextId++;
+    becameKF = false;
 
     // Scale Level Info
     mnScaleLevels = mpORBextractorLeft->GetLevels();
@@ -225,6 +228,13 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp, ORBextractor* extra
     mb = mbf/fx;
 
     AssignFeaturesToGrid();
+
+}
+
+void Frame::EvolvedInKF(KeyFrame *pKF)
+{
+    becameKF = true;
+    mpKFEvolve = pKF;
 }
 
 void Frame::AssignFeaturesToGrid()
@@ -258,6 +268,20 @@ void Frame::SetPose(cv::Mat Tcw)
     UpdatePoseMatrices();
 }
 
+<<<<<<< HEAD
+=======
+
+void Frame::SetOdomPose(g2o::SE3Quat &TF_w_c)
+{
+    mTf_w_c = TF_w_c;
+}
+
+g2o::SE3Quat Frame::GetOdomPose()
+{
+    return mTf_w_c;
+}
+
+>>>>>>> feat-no-world-orb
 void Frame::UpdatePoseMatrices()
 { 
     mRcw = mTcw.rowRange(0,3).colRange(0,3);
@@ -679,4 +703,21 @@ cv::Mat Frame::UnprojectStereo(const int &i)
         return cv::Mat();
 }
 
+<<<<<<< HEAD
+=======
+g2o::SE3Quat Frame::GetRobotOdometryFrom(Frame &other)
+{
+    //SE3WithUncertainty dT = other.mrT_c_w.Compound(mrT_w_c);
+    g2o::SE3Quat dT = (other.GetOdomPose().inverse())*GetOdomPose();
+    return dT;
+}
+
+g2o::SE3Quat Frame::GetRobotOdometryFrom(KeyFrame &other)
+{
+    //SE3WithUncertainty dT = other.RobotGetCameraToWorld().Compound(mrT_w_c);
+    g2o::SE3Quat dT =  (other.GetOdomPose().inverse())*GetOdomPose();
+    return dT;
+}
+
+>>>>>>> feat-no-world-orb
 } //namespace ORB_SLAM

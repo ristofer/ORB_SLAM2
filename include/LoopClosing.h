@@ -81,10 +81,10 @@ public:
     bool isFinished();
 
 	bool loop_detected;
-
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
 protected:
+    int useOdometry;
 
     bool CheckNewKeyFrames();
 
@@ -144,8 +144,8 @@ protected:
     // Fix scale in the stereo/RGB-D case
     bool mbFixScale;
 
+    int mnFullBAIdx;
 
-    bool mnFullBAIdx;
 };
 
 } //namespace ORB_SLAM
