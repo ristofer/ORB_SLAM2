@@ -95,8 +95,6 @@ target_link_libraries(Monosub
 ${LIBS}
 )
 
-
-=======
 # node for Odometry
 rosbuild_add_executable(Maqui
     ${PROJECT_SOURCE_DIR}/src/maqui/main.cpp

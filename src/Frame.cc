@@ -268,9 +268,6 @@ void Frame::SetPose(cv::Mat Tcw)
     UpdatePoseMatrices();
 }
 
-<<<<<<< HEAD
-=======
-
 void Frame::SetOdomPose(g2o::SE3Quat &TF_w_c)
 {
     mTf_w_c = TF_w_c;
@@ -281,7 +278,6 @@ g2o::SE3Quat Frame::GetOdomPose()
     return mTf_w_c;
 }
 
->>>>>>> feat-no-world-orb
 void Frame::UpdatePoseMatrices()
 { 
     mRcw = mTcw.rowRange(0,3).colRange(0,3);
@@ -703,8 +699,6 @@ cv::Mat Frame::UnprojectStereo(const int &i)
         return cv::Mat();
 }
 
-<<<<<<< HEAD
-=======
 g2o::SE3Quat Frame::GetRobotOdometryFrom(Frame &other)
 {
     //SE3WithUncertainty dT = other.mrT_c_w.Compound(mrT_w_c);
@@ -719,5 +713,4 @@ g2o::SE3Quat Frame::GetRobotOdometryFrom(KeyFrame &other)
     return dT;
 }
 
->>>>>>> feat-no-world-orb
 } //namespace ORB_SLAM
