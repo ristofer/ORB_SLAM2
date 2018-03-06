@@ -212,7 +212,12 @@ void SubscribeHandler::Shutdown(){
 
 	std::cout << "ROS shutdown" << std::endl;
 	ros::shutdown();
-    mpSLAM->Shutdown();
+  mpSLAM->Shutdown();
+  mpSLAM->getMap()->Save("maqui_map_pts_out.obj");
+  // Save 3D points and timestamps of all keyframes they are visible in
+  mpSLAM->getMap()->SaveWithTimestamps("maqui_map_pts_and_keyframes.txt");
+  // Save camera trajectory
+  mpSLAM->SaveKeyFrameTrajectoryTUM("maqui_key_frame_trajectory.txt");
 }
 
 

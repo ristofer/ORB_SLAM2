@@ -54,7 +54,7 @@ def get_line_bresenham(start, end):
     return points
 
 
-seq_name = 'kitti_00'
+seq_name = 'maqui'
 # seq_name = 'tum'
 # inverse of cell size
 scale_factor = 3
@@ -305,25 +305,3 @@ out_fname = 'grid_map_{:s}_filtered_{:d}_scale_{:d}_resize_{:d}_{:.2f}_{:.2f}'.f
 cv2.imwrite('{:s}.pgm'.format(out_fname), grid_map_resized)
 cv2.imshow(out_fname, grid_map_resized)
 cv2.waitKey(0)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
