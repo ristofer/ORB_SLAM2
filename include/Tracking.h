@@ -105,9 +105,6 @@ public:
     cv::Mat mTfGray;
     cv::Mat mTF;
 
-    cv::Mat mTfGray;
-    cv::Mat mTF;
-
     // Initialization Variables (Monocular)
     std::vector<int> mvIniLastMatches;
     std::vector<int> mvIniMatches;

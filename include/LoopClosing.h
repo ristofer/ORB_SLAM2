@@ -87,7 +87,6 @@ public:
 protected:
     int useOdometry;
 
-    int useOdometry;
     bool CheckNewKeyFrames();
 
     bool DetectLoop();

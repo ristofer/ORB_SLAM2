@@ -130,7 +130,6 @@ public:
         return pKF1->mnId<pKF2->mnId;
     }
 
-public:
     // for serialization
     KeyFrame(); // Default constructor for serialization, need to deal with const member
     void SetORBvocabulary(ORBVocabulary *porbv) {mpORBvocabulary=porbv;}
@@ -142,17 +141,6 @@ private:
     template <class Archive>
     void save(Archive &ar, const unsigned int version) const;
     BOOST_SERIALIZATION_SPLIT_MEMBER()
-
-public:
-    // for serialization
-    KeyFrame(); // Default constructor for serialization, need to deal with const member
-    void SetORBvocabulary(ORBVocabulary *porbv) {mpORBvocabulary=porbv;}
-private:
-    // serialize is recommended to be private
-    friend class boost::serialization::access;
-    template<class Archive>
-    void serialize(Archive &ar, const unsigned int version);
-
 
     // The following variables are accesed from only 1 thread or never change (no mutex needed).
 public:
@@ -226,10 +214,6 @@ public:
     const cv::Mat mK;
 
     bool isWorldFrame = false;
-
-
-    bool isWorldFrame = false;
-
 
     // The following variables need to be accessed trough a mutex to be thread safe.
 protected:

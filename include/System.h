@@ -147,23 +147,12 @@ public:
     int useOdometry;
 
 
-    void SetOdomPose(const cv::Mat& T_w_c);
-    g2o::SE3Quat mTF_w_c;
-
-    // To odometry or not to odometry
-    int useOdometry;
-
 
 private:
     // Save/Load functions
     void SaveMap(const string &filename);
     bool LoadMap(const string &filename);
 
-
-private:
-    // Save/Load functions
-    void SaveMap(const string &filename);
-    bool LoadMap(const string &filename);
 
 
 private:

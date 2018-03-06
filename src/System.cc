@@ -553,7 +553,6 @@ void System::SaveTrajectoryKITTI(const string &filename)
     f.close();
     cout << endl << "trajectory saved!" << endl;
 }
-<<<<<<< HEAD
 void System::SaveGridMapTUM(const string &filename)
 {
 
