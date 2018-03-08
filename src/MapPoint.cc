@@ -88,6 +88,9 @@ void MapPoint::UpdateWorldPos(float s)
     mWorldPos.at<float>(0) *= s;
     mWorldPos.at<float>(1) *= s;
     mWorldPos.at<float>(2) *= s;
+
+    mfMaxDistance *= s;
+    mfMinDistance *= s;
 }
 
 cv::Mat MapPoint::GetNormal()
