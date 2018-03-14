@@ -72,7 +72,7 @@ Viewer.ViewpointF: 500
 # ORB Settings
 #--------------------------------------------------------------------------------------------
 
-Initializer.KeyFrames: 10
+Initializer.KeyFrames: 100
 Initializer.UseOdometry: 1
 # 1 is baseframe, 0 is camera
 Initializer.baseFrame: 0

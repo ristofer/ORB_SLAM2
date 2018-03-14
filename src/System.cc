@@ -330,7 +330,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
             cv::Mat Twc = InvertcvMat(Tcw.clone());
         //    g2o::SE3Quat mTcw = Converter::toSE3Quat(Tcw.clone());
         //    cv::Mat Twc = Converter::toCvMat(mTcw.inverse());
-        std::cout << "the map is not scaled yet" << mbIsMapTransformUpdated << std::endl;
+        // std::cout << "the map is not scaled yet" << mbIsMapTransformUpdated << std::endl; //
             return Twc.clone();
         }
         else

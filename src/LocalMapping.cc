@@ -776,18 +776,21 @@ bool LocalMapping::isFinished()
 void LocalMapping::MapScaling()
 {
     float scale = ScaleRecovery();
+    std::cout << "The scale is " << scale << "the map will not be scaled" << std::endl;
+    float scale_horn = ScaleRecoveryHorn();
+    std::cout << "The scale horn is " << scale_horn << "the map will not be scaled" << std::endl;
     std::vector<KeyFrame*> UnscaledKF = mpMap->GetAllKeyFrames();
     std::vector<MapPoint*> UnscaledMP = mpMap->GetAllMapPoints();
 
     for(vector<KeyFrame*>::const_iterator itKF = UnscaledKF.begin(), itEndKF = UnscaledKF.end(); itKF!=itEndKF; itKF++)
     {
         KeyFrame* pKF = *itKF;
-        pKF->UpdateTranslation(scale);
+        pKF->UpdateTranslation(scale_horn);
     }
     for(vector<MapPoint*>::const_iterator itMP = UnscaledMP.begin(), itEndMP = UnscaledMP.end(); itMP!=itEndMP; itMP++)
     {
         MapPoint* pMP = *itMP;
-        pMP->UpdateWorldPos(scale);
+        pMP->UpdateWorldPos(scale_horn);
     }
 
     mpMap->IsMapScaled = true;
@@ -838,5 +841,40 @@ float LocalMapping::ScaleRecovery()
     std::cout <<"Scale obtained as " << scale.at<double>(0) <<std::endl;
     float s = (float) scale.at<double>(0);
     return s;
+}
+float LocalMapping::ScaleRecoveryHorn() {
+
+    cout <<"Scale obtaining started " <<endl;
+    double visualDistancesSum = 0.0;
+    double odometryDistancesSum = 0.0;
+
+    int N = 0;
+    vector<KeyFrame*> MapKeyFrames = mpMap->GetAllKeyFrames();
+    for(vector<KeyFrame*>::const_iterator itKF=MapKeyFrames.begin(), itEndKF=MapKeyFrames.end(); itKF!=itEndKF; itKF++)
+    {
+        KeyFrame* pKF = *itKF;
+        KeyFrame* pKFprev = pKF->GetPreviousKF();
+        if(pKFprev)
+        {
+            // Camera pose & odometry pose
+            cv::Mat Cw = pKF->GetCameraCenter();
+            cv::Mat Cw_prev = pKFprev->GetCameraCenter();
+            cv::Mat dCw = Cw.clone() - Cw_prev.clone(); //why here we clone the matrix and wue calculate the delta different from the odometry
+            double deltaVisualDistance = cv::norm(dCw);
+            visualDistancesSum += (deltaVisualDistance * deltaVisualDistance);
+
+            cv::Mat oTwc = Converter::toCvMat(pKF->GetOdomPose());
+            cv::Mat oTwc_prev = Converter::toCvMat(pKFprev->GetOdomPose());
+            cv::Mat dOdometry = oTwc.rowRange(0, 3).col(3) - oTwc_prev.rowRange(0, 3).col(3);
+            double deltaOdometryDistance = cv::norm(dOdometry);
+            odometryDistancesSum += (deltaOdometryDistance * deltaOdometryDistance) ;
+            N++;
+        }
+    }
+
+// compute horn scale
+    double scale_horn = sqrt(odometryDistancesSum / visualDistancesSum);
+    std::cout <<"Scale Horn obtained as " << scale_horn <<std::endl;
+    return scale_horn;
 }
 } //namespace ORB_SLAM

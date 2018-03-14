@@ -6,6 +6,8 @@ Examples/RGB-D/rgbd_tum
 Examples/ROS/ORB_SLAM2/CMakeLists.txt.user
 Examples/ROS/ORB_SLAM2/Mono
 Examples/ROS/ORB_SLAM2/MonoAR
+Examples/ROS/ORB_SLAM2/Monosub
+Examples/ROS/ORB_SLAM2/Monopub
 Examples/ROS/ORB_SLAM2/RGBD
 Examples/ROS/ORB_SLAM2/Stereo
 Examples/ROS/ORB_SLAM2/build/
@@ -22,6 +24,7 @@ Thirdparty/g2o/lib/
 Vocabulary/ORBvoc.txt
 Vocabulary/ORBvoc.bin
 Vocabulary/bin_vocabulary
+cmake-build*
 *.bin
 build/
 *~
@@ -78,6 +81,8 @@ CTestTestfile.cmake
 *.png
 *.pgm
 cam_*
+*_counter.txt
+maqui*.txt
 
 # maps ignore
 *.bin
