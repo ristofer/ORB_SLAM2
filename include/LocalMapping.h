@@ -128,8 +128,8 @@ protected:
 
     // MAP SCALING
     void MapScaling();
-    float ScaleRecovery();
-    float ScaleRecoveryHorn();
+    double ScaleRecovery();
+    double ScaleRecoveryHorn();
     unsigned long NumOfKeyFrames;
 
 

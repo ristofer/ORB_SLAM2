@@ -775,9 +775,9 @@ bool LocalMapping::isFinished()
 
 void LocalMapping::MapScaling()
 {
-    float scale = ScaleRecovery();
+    double scale = ScaleRecovery();
     std::cout << "The scale is " << scale << "the map will not be scaled" << std::endl;
-    float scale_horn = ScaleRecoveryHorn();
+    double scale_horn = ScaleRecoveryHorn();
     std::cout << "The scale horn is " << scale_horn << "the map will not be scaled" << std::endl;
     std::vector<KeyFrame*> UnscaledKF = mpMap->GetAllKeyFrames();
     std::vector<MapPoint*> UnscaledMP = mpMap->GetAllMapPoints();
@@ -794,10 +794,11 @@ void LocalMapping::MapScaling()
     }
 
     mpMap->IsMapScaled = true;
+    mpMap->RecoveredScale = scale_horn;
 }
 
 
-float LocalMapping::ScaleRecovery()
+double LocalMapping::ScaleRecovery()
 {
     cout <<"Scale obtaining started " <<endl;
 
@@ -839,10 +840,10 @@ float LocalMapping::ScaleRecovery()
     cv::solve(A, B, scale, cv::DECOMP_SVD);
 
     std::cout <<"Scale obtained as " << scale.at<double>(0) <<std::endl;
-    float s = (float) scale.at<double>(0);
+    double s = (double) scale.at<double>(0);
     return s;
 }
-float LocalMapping::ScaleRecoveryHorn() {
+double LocalMapping::ScaleRecoveryHorn() {
 
     cout <<"Scale obtaining started " <<endl;
     double visualDistancesSum = 0.0;
