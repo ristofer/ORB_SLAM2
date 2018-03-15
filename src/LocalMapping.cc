@@ -779,24 +779,29 @@ void LocalMapping::MapScaling()
     std::cout << "The scale is " << scale << "the map will not be scaled" << std::endl;
     double scale_horn = ScaleRecoveryHorn();
     std::cout << "The scale horn is " << scale_horn << "the map will not be scaled" << std::endl;
+    ScaleKeyFramesAndMapPointsPositions(scale_horn);
+
+}
+
+void LocalMapping::ScaleKeyFramesAndMapPointsPositions(double scale){
+
     std::vector<KeyFrame*> UnscaledKF = mpMap->GetAllKeyFrames();
     std::vector<MapPoint*> UnscaledMP = mpMap->GetAllMapPoints();
 
     for(vector<KeyFrame*>::const_iterator itKF = UnscaledKF.begin(), itEndKF = UnscaledKF.end(); itKF!=itEndKF; itKF++)
     {
         KeyFrame* pKF = *itKF;
-        pKF->UpdateTranslation(scale_horn);
+        pKF->UpdateTranslation(scale);
     }
     for(vector<MapPoint*>::const_iterator itMP = UnscaledMP.begin(), itEndMP = UnscaledMP.end(); itMP!=itEndMP; itMP++)
     {
         MapPoint* pMP = *itMP;
-        pMP->UpdateWorldPos(scale_horn);
+        pMP->UpdateWorldPos(scale);
     }
 
     mpMap->IsMapScaled = true;
-    mpMap->RecoveredScale = scale_horn;
+    mpMap->RecoveredScale = scale;
 }
-
 
 double LocalMapping::ScaleRecovery()
 {

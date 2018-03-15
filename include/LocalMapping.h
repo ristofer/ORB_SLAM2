@@ -128,6 +128,7 @@ protected:
 
     // MAP SCALING
     void MapScaling();
+    void ScaleKeyFramesAndMapPointsPositions(double scale);
     double ScaleRecovery();
     double ScaleRecoveryHorn();
     unsigned long NumOfKeyFrames;
