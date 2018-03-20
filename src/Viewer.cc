@@ -74,7 +74,9 @@ void Viewer::Run()
     pangolin::Var<bool> menuLocalizationMode("menu.Localization Mode",mbReuseMap,true);
     pangolin::Var<bool> menuReset("menu.Reset",false,false);
     pangolin::Var<bool> menuGlobalBA("menu.Global BA",false,false);
+    pangolin::Var<bool> menuRecalculateScale("menu.Calculate scale",false,false);
     pangolin::Var<bool> menuResetTrajectoryView("menu.Reset Trajectory View",false,false);
+    pangolin::Var<double> menuScale("menu.Scale",1,0.01,15);
 
 
     // Define Camera Render Object (for view / scene browsing)
@@ -95,6 +97,7 @@ void Viewer::Run()
 
     bool bFollow = true;
     bool bLocalizationMode = false;
+    double actualScale = 1;
 
     while(1)
     {
@@ -143,6 +146,19 @@ void Viewer::Run()
         {
             Optimizer::GlobalBundleAdjustemnt(mpMap, 20);
             menuGlobalBA = false;
+        }
+
+        if(menuRecalculateScale)
+        {
+            mpSystem->mpLocalMapper->MapScaling();
+            menuRecalculateScale = false;
+
+        }
+
+        if(menuScale!=actualScale)
+        {
+            mpSystem->mpLocalMapper->ScaleKeyFramesAndMapPointsPositions(menuScale);
+            actualScale = menuScale;
         }
 
         d_cam.Activate(s_cam);

@@ -130,6 +130,7 @@ public:
     int useOdometry;
 
 
+
 private:
     // Save/Load functions
     void SaveMap(const string &filename);
@@ -157,8 +158,7 @@ private:
     // performs relocalization if tracking fails.
     Tracking* mpTracker;
 
-    // Local Mapper. It manages the local map and performs local bundle adjustment.
-    LocalMapping* mpLocalMapper;
+
 
     // Loop Closer. It searches loops with every new keyframe. If there is a loop it performs
     // a pose graph optimization and full bundle adjustment (in a new thread) afterwards.
@@ -193,6 +193,11 @@ private:
 
 
     cv::Mat InvertcvMat(cv::Mat Tcw);
+
+public:
+    // Local Mapper. It manages the local map and performs local bundle adjustment.
+    //THIS THING HAS TO BE PRIVATE, NOW IT'S PUBLIC JUST FOR TESTING
+    LocalMapping* mpLocalMapper;
 };
 
 }// namespace ORB_SLAM

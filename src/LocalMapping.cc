@@ -776,15 +776,19 @@ bool LocalMapping::isFinished()
 void LocalMapping::MapScaling()
 {
     double scale = ScaleRecovery();
-    std::cout << "The scale is " << scale << "the map will not be scaled" << std::endl;
+    std::cout << "The scale is " << scale <<std::endl;
     double scale_horn = ScaleRecoveryHorn();
-    std::cout << "The scale horn is " << scale_horn << "the map will not be scaled" << std::endl;
+    std::cout << "The scale horn is " << scale_horn << std::endl;
     ScaleKeyFramesAndMapPointsPositions(scale_horn);
 
 }
 
 void LocalMapping::ScaleKeyFramesAndMapPointsPositions(double scale){
-
+    if (scale==0)
+    {
+        std::cout <<"The obtained scale is 0.  The map won't be scaled" <<std::endl;
+        return;
+    }
     std::vector<KeyFrame*> UnscaledKF = mpMap->GetAllKeyFrames();
     std::vector<MapPoint*> UnscaledMP = mpMap->GetAllMapPoints();
 

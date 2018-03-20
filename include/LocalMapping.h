@@ -126,14 +126,16 @@ protected:
     // To odometry or not to odometry
     int useOdometry;
 
-    // MAP SCALING
-    void MapScaling();
-    void ScaleKeyFramesAndMapPointsPositions(double scale);
+    //MAP SCALING
     double ScaleRecovery();
     double ScaleRecoveryHorn();
     unsigned long NumOfKeyFrames;
 
-
+public:
+    // MAP SCALING
+    //THESE METHODS HAS TO BE PRIVATE, NOW THEY ARE PUBLIC JUST FOR TESTING
+    void MapScaling();
+    void ScaleKeyFramesAndMapPointsPositions(double scale);
 
 };
 
