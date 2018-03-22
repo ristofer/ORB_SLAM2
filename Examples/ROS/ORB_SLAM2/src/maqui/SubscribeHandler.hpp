@@ -20,6 +20,7 @@ TODOs:
 #include<ros/ros.h>
 #include <sensor_msgs/Image.h>
 #include <geometry_msgs/PoseStamped.h>
+#include <std_msgs/Int8.h>
 
 // TF
 #include <tf/tfMessage.h>
@@ -59,6 +60,7 @@ private:
     // methods
     void GrabImage(const sensor_msgs::ImageConstPtr &msg);
     void Publish_Orientation(cv::Mat Tcw, tf::StampedTransform T_w_c);
+    void Publish_Tracking_State(int state);
 
     cv::Mat tfToMat(const tf::StampedTransform& tfT);
     Eigen::Matrix<double,3,3> toMatrix3d(const cv::Mat &cvMat3);
@@ -70,6 +72,7 @@ private:
     // ROS
     ros::Subscriber subImage;
     ros::Publisher maqui_orientation;
+    ros::Publisher tracking_state;
     ros::NodeHandle* mpNodeHandler;
     tf::TransformListener* mpTFlistener;
     tf::TransformBroadcaster* mpTFbroadcaster;

@@ -37,6 +37,7 @@ mbReferenceWorldFrame(false)
 
       subImage = mpNodeHandler->subscribe(cameraTopic, 1, &SubscribeHandler::GrabImage, this);
       maqui_orientation = mpNodeHandler->advertise<geometry_msgs::PoseStamped>("/maqui/odom_ORB", queueSize);
+      tracking_state = mpNodeHandler->advertise<std_msgs::Int8>("/orb_slam_tracking_state", queueSize);
 
       // Initialize ORB system
    // argument 4 boolean is user viewer
@@ -73,6 +74,9 @@ void SubscribeHandler::GrabImage(const sensor_msgs::ImageConstPtr& msg)
     {
         SubscribeHandler::Publish_Orientation(Twc.clone(), T_o_c);
     }
+
+    int TrackingState = mpSLAM->GetTrackingState();
+    SubscribeHandler::Publish_Tracking_State(TrackingState);
 }
 
 
@@ -118,7 +122,13 @@ void SubscribeHandler::Publish_Orientation(cv::Mat Tcw, tf::StampedTransform T_o
 
 }
 
-
+void SubscribeHandler::Publish_Tracking_State(int state)
+{
+    std_msgs::Int8 StateMsg;
+    StateMsg.data = state;
+    tracking_state.publish(StateMsg);
+    return;
+}
 cv::Mat SubscribeHandler::tfToMat(const tf::StampedTransform& tfT)
 {
     cv::Mat cvT = cv::Mat::eye(4, 4, CV_32F);
