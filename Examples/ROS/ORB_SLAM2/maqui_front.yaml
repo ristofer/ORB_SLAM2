@@ -50,8 +50,8 @@ ORBextractor.nLevels: 8
 # Image is divided in a grid. At each cell FAST are extracted imposing a minimum response.
 # Firstly we impose iniThFAST. If no corners are detected we impose a lower value minThFAST
 # You can lower these values if your images have low contrast			
-ORBextractor.iniThFAST: 20
-ORBextractor.minThFAST: 4
+ORBextractor.iniThFAST: 7 # 20
+ORBextractor.minThFAST: 4 # 4
 
 #--------------------------------------------------------------------------------------------
 # Viewer Parameters
@@ -72,7 +72,7 @@ Viewer.ViewpointF: 500
 # ORB Settings
 #--------------------------------------------------------------------------------------------
 
-Initializer.KeyFrames: 100
+Initializer.KeyFrames: 15
 Initializer.UseOdometry: 1
 # 1 is baseframe, 0 is camera
 Initializer.baseFrame: 0
