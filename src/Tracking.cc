@@ -1619,12 +1619,12 @@ void Tracking::Reset()
 
     // Reset Local Mapping
     cout << "Reseting Local Mapper...";
-    mpLocalMapper->RequestReset();
+    //mpLocalMapper->RequestReset();
     cout << " done" << endl;
 
     // Reset Loop Closing
     cout << "Reseting Loop Closing...";
-    mpLoopClosing->RequestReset();
+    //mpLoopClosing->RequestReset();
     cout << " done" << endl;
 
     // Clear BoW Database
