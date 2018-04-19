@@ -126,6 +126,9 @@ public:
     void SetOdomPose(const cv::Mat& T_w_c);
     g2o::SE3Quat mTF_w_c;
 
+    //method to get the draw frame
+    cv::Mat DrawFrame();
+
     // To odometry or not to odometry
     int useOdometry;
 
@@ -167,7 +170,7 @@ private:
     // The viewer draws the map and the current camera pose. It uses Pangolin.
     Viewer* mpViewer;
 
-    FrameDrawer* mpFrameDrawer;
+
     MapDrawer* mpMapDrawer;
 
     // System threads: Local Mapping, Loop Closing, Viewer.
@@ -198,6 +201,8 @@ public:
     // Local Mapper. It manages the local map and performs local bundle adjustment.
     //THIS THING HAS TO BE PRIVATE, NOW IT'S PUBLIC JUST FOR TESTING
     LocalMapping* mpLocalMapper;
+    //THIS THING HAS TO BE PRIVATE, NOW IT'S PUBLIC JUST FOR TESTING
+    FrameDrawer* mpFrameDrawer;
 };
 
 }// namespace ORB_SLAM

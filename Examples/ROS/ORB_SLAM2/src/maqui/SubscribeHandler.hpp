@@ -73,6 +73,7 @@ private:
     ros::Subscriber subImage;
     ros::Publisher maqui_orientation;
     ros::Publisher tracking_state;
+    ros::Publisher current_frame;
     ros::NodeHandle* mpNodeHandler;
     tf::TransformListener* mpTFlistener;
     tf::TransformBroadcaster* mpTFbroadcaster;
