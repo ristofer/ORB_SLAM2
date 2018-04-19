@@ -23,7 +23,6 @@
 #include "System.h"
 #include "Converter.h"
 #include <thread>
-#include <pangolin/pangolin.h>
 #include <iomanip>
 
 static bool has_suffix(const std::string &str, const std::string &suffix)
@@ -37,7 +36,7 @@ namespace ORB_SLAM2
 
 System::System(const string &strVocFile, const string &strSettingsFile, const eSensor sensor,
                const bool bUseViewer, bool is_save_map_):mSensor(sensor), is_save_map(is_save_map_), mpViewer(static_cast<Viewer*>(NULL)), mbReset(false),
-        mbActivateLocalizationMode(false), mbDeactivateLocalizationMode(false)
+        mbActivateLocalizationMode(true), mbDeactivateLocalizationMode(false)
 {
     //Check settings file
     cv::FileStorage fsSettings(strSettingsFile.c_str(), cv::FileStorage::READ);
@@ -119,7 +118,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
 
     //Initialize the Tracking thread
     //(it will live in the main thread of execution, the one that called this constructor)
-    mpTracker = new Tracking(this, mpVocabulary, mpFrameDrawer, mpMapDrawer,
+    mpTracker = new Tracking(this, mpVocabulary, mpFrameDrawer,
                              mpMap, mpKeyFrameDatabase, strSettingsFile, mSensor, bReuseMap);
 
     if(bReuseMap) {
@@ -377,22 +376,22 @@ void System::Shutdown()
 {
     mpLocalMapper->RequestFinish();
     mpLoopCloser->RequestFinish();
-    if(mpViewer)
-    {
-        mpViewer->RequestFinish();
-        while(!mpViewer->isFinished())
-        {
-            std::this_thread::sleep_for(std::chrono::microseconds(5000));
-        }
-    }
+    //if(mpViewer)
+    //{
+    //    mpViewer->RequestFinish();
+    //    while(!mpViewer->isFinished())
+    //    {
+    //        std::this_thread::sleep_for(std::chrono::microseconds(5000));
+    //    }
+    //}
 
     // Wait until all thread have effectively stopped
     while(!mpLocalMapper->isFinished() || !mpLoopCloser->isFinished() || mpLoopCloser->isRunningGBA())
     {
         std::this_thread::sleep_for(std::chrono::microseconds(5000));
     }
-    if(mpViewer)
-        pangolin::BindToContext("ORB-SLAM2: Map Viewer");
+    //if(mpViewer)
+    //    pangolin::BindToContext("ORB-SLAM2: Map Viewer");
     if (is_save_map)
         SaveMap(mapfile);
 }

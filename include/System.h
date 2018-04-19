@@ -28,13 +28,12 @@
 
 #include "Tracking.h"
 #include "FrameDrawer.h"
-#include "MapDrawer.h"
 #include "Map.h"
 #include "LocalMapping.h"
 #include "LoopClosing.h"
 #include "KeyFrameDatabase.h"
 #include "ORBVocabulary.h"
-#include "Viewer.h"
+
 
 #include "BoostArchiver.h"
 // for map file io
@@ -171,7 +170,7 @@ private:
     Viewer* mpViewer;
 
 
-    MapDrawer* mpMapDrawer;
+    //MapDrawer* mpMapDrawer;
 
     // System threads: Local Mapping, Loop Closing, Viewer.
     // The Tracking thread "lives" in the main execution thread that creates the System object.

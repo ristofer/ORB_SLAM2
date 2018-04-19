@@ -38,13 +38,13 @@ if(NOT OpenCV_FOUND)
 endif()
 
 find_package(Eigen3 3.1.0 REQUIRED)
-find_package(Pangolin REQUIRED)
+#find_package(Pangolin REQUIRED)
 
 include_directories(
 ${PROJECT_SOURCE_DIR}
 ${PROJECT_SOURCE_DIR}/include
 ${EIGEN3_INCLUDE_DIR}
-${Pangolin_INCLUDE_DIRS}
+#${Pangolin_INCLUDE_DIRS}
 )
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
@@ -62,7 +62,7 @@ ${HEADER_FILES}
 target_link_libraries(${PROJECT_NAME}
 ${OpenCV_LIBS}
 ${EIGEN3_LIBS}
-${Pangolin_LIBRARIES}
+#${Pangolin_LIBRARIES}
 ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
 ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
 )
@@ -116,19 +116,7 @@ target_link_libraries(${PROJECT_NAME} ${BOOST_SERIALIZATION})
 #Examples/Monocular/mono_euroc.cc)
 #target_link_libraries(mono_euroc ${PROJECT_NAME})
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Vocabulary)
-add_executable(bin_vocabulary Vocabulary/bin_vocabulary.cpp)
-target_link_libraries(bin_vocabulary ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so ${OpenCV_LIBS})
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Vocabulary)
+#add_executable(bin_vocabulary Vocabulary/bin_vocabulary.cpp)
+#target_link_libraries(bin_vocabulary ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so ${OpenCV_LIBS})
 
-if(USE_EXAMPLE_WEBCAM)
-    find_package(PkgConfig REQUIRED)
-    pkg_search_module(CURL REQUIRED libcurl)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-    add_executable(mono_uvc Examples/mono_uvc.cpp)
-    target_link_libraries(mono_uvc ${PROJECT_NAME})
-    add_executable(mono_android_ipcam Examples/mono_android_ipcam.cpp)
-    target_link_libraries(mono_android_ipcam ${PROJECT_NAME} ${CURL_LIBRARIES})
-    add_executable(mono_android_ipcam_ar Examples/mono_android_ipcam_ar.cpp Examples/AR/ViewerAR.cc)
-    target_include_directories(mono_android_ipcam_ar PUBLIC Examples/AR/)
-    target_link_libraries(mono_android_ipcam_ar ${PROJECT_NAME} ${CURL_LIBRARIES})
-endif()
