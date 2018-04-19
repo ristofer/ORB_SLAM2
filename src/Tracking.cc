@@ -473,7 +473,8 @@ void Tracking::Track()
             else
                 mVelocity = cv::Mat();
 
-            mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.mTcw);
+            //DEACTIVATE MAP DRAWER FOR LOCALIZATION ONLY MODE
+            //mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.mTcw);
 
             // Clean VO matches
             for(int i=0; i<mCurrentFrame.N; i++)
@@ -531,8 +532,8 @@ void Tracking::Track()
                 deltaT = Converter::toCvMat(mCurrentFrame.GetRobotOdometryFrom(*mpLastKeyFrame).inverse());
                 mCurrentFrame.SetPose(deltaT*mpLastKeyFrame->GetPose());
 
-                if(mpMapDrawer)
-                    mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.mTcw);
+                //if(mpMapDrawer)
+                //    mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.mTcw);
             }
             else if (!mLastFrameBeforeLost.mTcw.empty())
             {
@@ -540,8 +541,8 @@ void Tracking::Track()
                 deltaT = Converter::toCvMat(mCurrentFrame.GetRobotOdometryFrom(mLastFrameBeforeLost).inverse());
                 mCurrentFrame.SetPose(deltaT*mLastFrameBeforeLost.mTcw);
                //std::cout << "--> Predicting pose when lost using last frame" << std::endl;//
-                if(mpMapDrawer)
-                    mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.mTcw);
+               // if(mpMapDrawer)
+               //     mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.mTcw);
             }
         }
 
