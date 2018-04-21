@@ -33,10 +33,10 @@
 #include "ORBVocabulary.h"
 #include"KeyFrameDatabase.h"
 #include"ORBextractor.h"
-#include "Initializer.h"
+//#include "Initializer.h"
 #include "System.h"
 
-#include <mutex>
+//#include <mutex>
 
 namespace ORB_SLAM2
 {
@@ -173,7 +173,7 @@ protected:
     KeyFrameDatabase* mpKeyFrameDB;
 
     // Initalization (only for monocular)
-    Initializer* mpInitializer;
+    //Initializer* mpInitializer;
 
     //Local Map
     KeyFrame* mpReferenceKF;

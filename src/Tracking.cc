@@ -28,7 +28,7 @@
 #include"FrameDrawer.h"
 #include"Converter.h"
 #include"Map.h"
-#include"Initializer.h"
+//#include"Initializer.h"
 
 #include"Optimizer.h"
 #include"PnPsolver.h"
@@ -36,7 +36,7 @@
 
 #include<iostream>
 
-#include<mutex>
+//#include<mutex>
 
 
 using namespace std;
@@ -46,7 +46,7 @@ namespace ORB_SLAM2
 
 Tracking::Tracking(System *pSys, ORBVocabulary* pVoc, FrameDrawer *pFrameDrawer, Map *pMap, KeyFrameDatabase* pKFDB, const string &strSettingPath, const int sensor, bool bReuseMap):
     mState(NO_IMAGES_YET), mSensor(sensor), mbOnlyTracking(false), mbVO(false), mpORBVocabulary(pVoc),
-    mpKeyFrameDB(pKFDB), mpInitializer(static_cast<Initializer*>(NULL)), mpSystem(pSys),
+    mpKeyFrameDB(pKFDB), mpSystem(pSys),
     mpFrameDrawer(pFrameDrawer),  mpMap(pMap), mnLastRelocFrameId(0)
 {
     // Load camera parameters from settings file
@@ -633,75 +633,75 @@ void Tracking::StereoInitialization()
 void Tracking::MonocularInitialization()
 {
 
-    if(!mpInitializer)
-    {
-        // Set Reference Frame
-        if(mCurrentFrame.mvKeys.size()>100)
-        {
-            mInitialFrame = Frame(mCurrentFrame);
-            mLastFrame = Frame(mCurrentFrame);
-            mvbPrevMatched.resize(mCurrentFrame.mvKeysUn.size());
-            for(size_t i=0; i<mCurrentFrame.mvKeysUn.size(); i++)
-                mvbPrevMatched[i]=mCurrentFrame.mvKeysUn[i].pt;
-
-            if(mpInitializer)
-                delete mpInitializer;
-
-            mpInitializer =  new Initializer(mCurrentFrame,1.0,200);
-
-            fill(mvIniMatches.begin(),mvIniMatches.end(),-1);
-
-            return;
-        }
-    }
-    else
-    {
-        // Try to initialize
-        if((int)mCurrentFrame.mvKeys.size()<=100)
-        {
-            delete mpInitializer;
-            mpInitializer = static_cast<Initializer*>(NULL);
-            fill(mvIniMatches.begin(),mvIniMatches.end(),-1);
-            return;
-        }
-
-        // Find correspondences
-        ORBmatcher matcher(0.9,true);
-        int nmatches = matcher.SearchForInitialization(mInitialFrame,mCurrentFrame,mvbPrevMatched,mvIniMatches,100);
-
-        // Check if there are enough correspondences
-        if(nmatches<100)
-        {
-            delete mpInitializer;
-            mpInitializer = static_cast<Initializer*>(NULL);
-            return;
-        }
-
-        cv::Mat Rcw; // Current Camera Rotation
-        cv::Mat tcw; // Current Camera Translation
-        vector<bool> vbTriangulated; // Triangulated Correspondences (mvIniMatches)
-
-        if(mpInitializer->Initialize(mCurrentFrame, mvIniMatches, Rcw, tcw, mvIniP3D, vbTriangulated))
-        {
-            for(size_t i=0, iend=mvIniMatches.size(); i<iend;i++)
-            {
-                if(mvIniMatches[i]>=0 && !vbTriangulated[i])
-                {
-                    mvIniMatches[i]=-1;
-                    nmatches--;
-                }
-            }
-
-            // Set Frame Poses
-            mInitialFrame.SetPose(cv::Mat::eye(4,4,CV_32F));
-            cv::Mat Tcw = cv::Mat::eye(4,4,CV_32F);
-            Rcw.copyTo(Tcw.rowRange(0,3).colRange(0,3));
-            tcw.copyTo(Tcw.rowRange(0,3).col(3));
-            mCurrentFrame.SetPose(Tcw);
-
-            CreateInitialMapMonocular();
-        }
-    }
+//    if(!mpInitializer)
+//    {
+//        // Set Reference Frame
+//        if(mCurrentFrame.mvKeys.size()>100)
+//        {
+//            mInitialFrame = Frame(mCurrentFrame);
+//            mLastFrame = Frame(mCurrentFrame);
+//            mvbPrevMatched.resize(mCurrentFrame.mvKeysUn.size());
+//            for(size_t i=0; i<mCurrentFrame.mvKeysUn.size(); i++)
+//                mvbPrevMatched[i]=mCurrentFrame.mvKeysUn[i].pt;
+//
+//            if(mpInitializer)
+//                delete mpInitializer;
+//
+//            mpInitializer =  new Initializer(mCurrentFrame,1.0,200);
+//
+//            fill(mvIniMatches.begin(),mvIniMatches.end(),-1);
+//
+//            return;
+//        }
+//    }
+//    else
+//    {
+//        // Try to initialize
+//        if((int)mCurrentFrame.mvKeys.size()<=100)
+//        {
+//            delete mpInitializer;
+//            mpInitializer = static_cast<Initializer*>(NULL);
+//            fill(mvIniMatches.begin(),mvIniMatches.end(),-1);
+//            return;
+//        }
+//
+//        // Find correspondences
+//        ORBmatcher matcher(0.9,true);
+//        int nmatches = matcher.SearchForInitialization(mInitialFrame,mCurrentFrame,mvbPrevMatched,mvIniMatches,100);
+//
+//        // Check if there are enough correspondences
+//        if(nmatches<100)
+//        {
+//            delete mpInitializer;
+//            mpInitializer = static_cast<Initializer*>(NULL);
+//            return;
+//        }
+//
+//        cv::Mat Rcw; // Current Camera Rotation
+//        cv::Mat tcw; // Current Camera Translation
+//        vector<bool> vbTriangulated; // Triangulated Correspondences (mvIniMatches)
+//
+//        if(mpInitializer->Initialize(mCurrentFrame, mvIniMatches, Rcw, tcw, mvIniP3D, vbTriangulated))
+//        {
+//            for(size_t i=0, iend=mvIniMatches.size(); i<iend;i++)
+//            {
+//                if(mvIniMatches[i]>=0 && !vbTriangulated[i])
+//                {
+//                    mvIniMatches[i]=-1;
+//                    nmatches--;
+//                }
+//            }
+//
+//            // Set Frame Poses
+//            mInitialFrame.SetPose(cv::Mat::eye(4,4,CV_32F));
+//            cv::Mat Tcw = cv::Mat::eye(4,4,CV_32F);
+//            Rcw.copyTo(Tcw.rowRange(0,3).colRange(0,3));
+//            tcw.copyTo(Tcw.rowRange(0,3).col(3));
+//            mCurrentFrame.SetPose(Tcw);
+//
+//            CreateInitialMapMonocular();
+//        }
+//    }
 }
 
 void Tracking::CreateInitialMapMonocular()
@@ -1122,7 +1122,7 @@ bool Tracking::NeedNewKeyFrame()
         }
         else
         {
-            mpLocalMapper->InterruptBA();
+            //mpLocalMapper->InterruptBA();
             if(mSensor!=System::MONOCULAR)
             {
                 //if(mpLocalMapper->KeyframesInQueue()<3)
@@ -1142,8 +1142,8 @@ void Tracking::CreateNewKeyFrame()
 {
 
 
-    if(!mpLocalMapper->SetNotStop(true))
-        return;
+    //if(!mpLocalMapper->SetNotStop(true))
+    //    return;
 
     KeyFrame* pKF = new KeyFrame(mCurrentFrame,mpMap,mpKeyFrameDB);
 
@@ -1225,9 +1225,9 @@ void Tracking::CreateNewKeyFrame()
         }
     }
 
-    mpLocalMapper->InsertKeyFrame(pKF);
+    //mpLocalMapper->InsertKeyFrame(pKF);
 
-    mpLocalMapper->SetNotStop(false);
+    //mpLocalMapper->SetNotStop(false);
 
     mnLastKeyFrameId = mCurrentFrame.mnId;
     mpLastKeyFrame = pKF;
@@ -1640,11 +1640,11 @@ void Tracking::Reset()
     Frame::nNextId = 0;
     mState = NO_IMAGES_YET;
 
-    if(mpInitializer)
-    {
-        delete mpInitializer;
-        mpInitializer = static_cast<Initializer*>(NULL);
-    }
+    //if(mpInitializer)
+    //{
+    //    delete mpInitializer;
+    //    mpInitializer = static_cast<Initializer*>(NULL);
+    //}
 
     mlRelativeFramePoses.clear();
     mlpReferences.clear();

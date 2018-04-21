@@ -22,7 +22,7 @@
 
 #include "System.h"
 #include "Converter.h"
-#include <thread>
+//#include <thread>
 #include <iomanip>
 
 static bool has_suffix(const std::string &str, const std::string &suffix)
@@ -76,7 +76,8 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     bool bReuseMap = false;
     if (!mapfilen.empty())
     {
-        mapfile = (string)mapfilen;
+        std::string mapfile_s = (string)mapfilen;
+        mapfile = mapfile_s.c_str();
     }
 
     //Load ORB Vocabulary
@@ -101,7 +102,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
 
     //Create KeyFrame Database
     //Create the Map
-    if (!mapfile.empty() && LoadMap(mapfile))
+    if (!mapfile && LoadMap(*mapfile))
     {
         bReuseMap = true;
         mbIsMapTransformUpdated = false;
@@ -393,7 +394,7 @@ void System::Shutdown()
     //if(mpViewer)
     //    pangolin::BindToContext("ORB-SLAM2: Map Viewer");
     if (is_save_map)
-        SaveMap(mapfile);
+        SaveMap(*mapfile);
 }
 
 void System::SaveTrajectoryTUM(const string &filename)
@@ -585,9 +586,9 @@ void System::SetOdomPose(const cv::Mat& T_w_c)
     mTF_w_c = Converter::toSE3Quat(mTf_w_c);
 }
 
-void System::SaveMap(const string &filename)
+void System::SaveMap(const char &filename)
 {
-    std::ofstream out(filename, std::ios_base::binary);
+    std::ofstream out(&filename, std::ios_base::binary);
     if (!out)
     {
         cerr << "Cannot Write to Mapfile: " << mapfile << std::endl;
@@ -600,9 +601,9 @@ void System::SaveMap(const string &filename)
     cout << " ...done" << std::endl;
     out.close();
 }
-bool System::LoadMap(const string &filename)
+bool System::LoadMap(const char &filename)
 {
-    std::ifstream in(filename, std::ios_base::binary);
+    std::ifstream in(&filename, std::ios_base::binary);
     if (!in)
     {
         cerr << "Cannot Open Mapfile: " << mapfile << " , Create a new one" << std::endl;
