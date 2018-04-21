@@ -166,16 +166,16 @@ cv::Mat System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const
 
     // Check mode change
     {
-        unique_lock<mutex> lock(mMutexMode);
+        //unique_lock<mutex> lock(mMutexMode);
         if(mbActivateLocalizationMode)
         {
-            mpLocalMapper->RequestStop();
+            //mpLocalMapper->RequestStop();
 
             // Wait until Local Mapping has effectively stopped
-            while(!mpLocalMapper->isStopped())
-            {
-                std::this_thread::sleep_for(std::chrono::microseconds(1000));
-            }
+            //while(!mpLocalMapper->isStopped())
+            //{
+                //std::this_thread::sleep_for(std::chrono::microseconds(1000));
+            //}
 
             mpTracker->InformOnlyTracking(true);
             mbActivateLocalizationMode = false;
@@ -183,14 +183,14 @@ cv::Mat System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const
         if(mbDeactivateLocalizationMode)
         {
             mpTracker->InformOnlyTracking(false);
-            mpLocalMapper->Release();
+            //mpLocalMapper->Release();
             mbDeactivateLocalizationMode = false;
         }
     }
 
     // Check reset
     {
-    unique_lock<mutex> lock(mMutexReset);
+    //unique_lock<mutex> lock(mMutexReset);
     if(mbReset)
     {
         mpTracker->Reset();
@@ -200,7 +200,7 @@ cv::Mat System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const
 
     cv::Mat Tcw = mpTracker->GrabImageStereo(imLeft,imRight,timestamp);
 
-    unique_lock<mutex> lock2(mMutexState);
+    //unique_lock<mutex> lock2(mMutexState);
     mTrackingState = mpTracker->mState;
     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
@@ -217,58 +217,7 @@ cv::Mat System::TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const doub
 
     // Check mode change
     {
-        unique_lock<mutex> lock(mMutexMode);
-        if(mbActivateLocalizationMode)
-        {
-            mpLocalMapper->RequestStop();
-
-            // Wait until Local Mapping has effectively stopped
-            while(!mpLocalMapper->isStopped())
-            {
-                std::this_thread::sleep_for(std::chrono::microseconds(1000));
-            }
-
-            mpTracker->InformOnlyTracking(true);
-            mbActivateLocalizationMode = false;
-        }
-        if(mbDeactivateLocalizationMode)
-        {
-            mpTracker->InformOnlyTracking(false);
-            mpLocalMapper->Release();
-            mbDeactivateLocalizationMode = false;
-        }
-    }
-
-    // Check reset
-    {
-    unique_lock<mutex> lock(mMutexReset);
-    if(mbReset)
-    {
-        mpTracker->Reset();
-        mbReset = false;
-    }
-    }
-
-    cv::Mat Tcw = mpTracker->GrabImageRGBD(im,depthmap,timestamp);
-
-    unique_lock<mutex> lock2(mMutexState);
-    mTrackingState = mpTracker->mState;
-    mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
-    mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
-    return Tcw;
-}
-
-cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
-{
-    if(mSensor!=MONOCULAR)
-    {
-        cerr << "ERROR: you called TrackMonocular but input sensor was not set to Monocular or Odometry." << endl;
-        exit(-1);
-    }
-
-    // Check mode change
-    {
-        unique_lock<mutex> lock(mMutexMode);
+        //unique_lock<mutex> lock(mMutexMode);
         if(mbActivateLocalizationMode)
         {
             //mpLocalMapper->RequestStop();
@@ -292,7 +241,58 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
 
     // Check reset
     {
-    unique_lock<mutex> lock(mMutexReset);
+    //unique_lock<mutex> lock(mMutexReset);
+    if(mbReset)
+    {
+        mpTracker->Reset();
+        mbReset = false;
+    }
+    }
+
+    cv::Mat Tcw = mpTracker->GrabImageRGBD(im,depthmap,timestamp);
+
+    //unique_lock<mutex> lock2(mMutexState);
+    mTrackingState = mpTracker->mState;
+    mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
+    mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
+    return Tcw;
+}
+
+cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
+{
+    if(mSensor!=MONOCULAR)
+    {
+        cerr << "ERROR: you called TrackMonocular but input sensor was not set to Monocular or Odometry." << endl;
+        exit(-1);
+    }
+
+    // Check mode change
+    {
+        //unique_lock<mutex> lock(mMutexMode);
+        if(mbActivateLocalizationMode)
+        {
+            //mpLocalMapper->RequestStop();
+
+            // Wait until Local Mapping has effectively stopped
+            //while(!mpLocalMapper->isStopped())
+            //{
+            //    std::this_thread::sleep_for(std::chrono::microseconds(1000));
+            //}
+
+            mpTracker->InformOnlyTracking(true);
+            mbActivateLocalizationMode = false;
+        }
+        if(mbDeactivateLocalizationMode)
+        {
+            mpTracker->InformOnlyTracking(false);
+            //mpLocalMapper->Release();
+            mbDeactivateLocalizationMode = false;
+        }
+    }
+
+    // Check reset
+    {
+    //unique_lock<mutex> lock(mMutexReset);
     if(mbReset)
     {
         mpTracker->Reset();
@@ -307,7 +307,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
     else
         Tcw = mpTracker->GrabImageMonocular(im,timestamp);
 
-    unique_lock<mutex> lock2(mMutexState);
+    //unique_lock<mutex> lock2(mMutexState);
     mTrackingState = mpTracker->mState;
     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
@@ -343,13 +343,13 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
 
 void System::ActivateLocalizationMode()
 {   
-    unique_lock<mutex> lock(mMutexMode);
+    //unique_lock<mutex> lock(mMutexMode);
     mbActivateLocalizationMode = true;
 }
 
 void System::DeactivateLocalizationMode()
 {
-    unique_lock<mutex> lock(mMutexMode);
+    //unique_lock<mutex> lock(mMutexMode);
     mbDeactivateLocalizationMode = true;
 }
 
@@ -368,14 +368,14 @@ bool System::MapChanged()
 
 void System::Reset()
 {
-    unique_lock<mutex> lock(mMutexReset);
+    //unique_lock<mutex> lock(mMutexReset);
     mbReset = true;
 }
 
 void System::Shutdown()
 {
-    mpLocalMapper->RequestFinish();
-    mpLoopCloser->RequestFinish();
+    //mpLocalMapper->RequestFinish();
+    //mpLoopCloser->RequestFinish();
     //if(mpViewer)
     //{
     //    mpViewer->RequestFinish();
@@ -386,10 +386,10 @@ void System::Shutdown()
     //}
 
     // Wait until all thread have effectively stopped
-    while(!mpLocalMapper->isFinished() || !mpLoopCloser->isFinished() || mpLoopCloser->isRunningGBA())
-    {
-        std::this_thread::sleep_for(std::chrono::microseconds(5000));
-    }
+    //while(!mpLocalMapper->isFinished() || !mpLoopCloser->isFinished() || mpLoopCloser->isRunningGBA())
+    //{
+    //    std::this_thread::sleep_for(std::chrono::microseconds(5000));
+    //}
     //if(mpViewer)
     //    pangolin::BindToContext("ORB-SLAM2: Map Viewer");
     if (is_save_map)
@@ -564,19 +564,19 @@ void System::SaveTrajectoryKITTI(const string &filename)
 
 int System::GetTrackingState()
 {
-    unique_lock<mutex> lock(mMutexState);
+    //unique_lock<mutex> lock(mMutexState);
     return mTrackingState;
 }
 
 vector<MapPoint*> System::GetTrackedMapPoints()
 {
-    unique_lock<mutex> lock(mMutexState);
+    //unique_lock<mutex> lock(mMutexState);
     return mTrackedMapPoints;
 }
 
 vector<cv::KeyPoint> System::GetTrackedKeyPointsUn()
 {
-    unique_lock<mutex> lock(mMutexState);
+    //unique_lock<mutex> lock(mMutexState);
     return mTrackedKeyPointsUn;
 }
 void System::SetOdomPose(const cv::Mat& T_w_c)

@@ -29,7 +29,7 @@
 #include "Frame.h"
 #include "ORBVocabulary.h"
 
-#include<mutex>
+//#include<mutex>
 #include "BoostArchiver.h"
 
 namespace ORB_SLAM2
@@ -76,7 +76,7 @@ protected:
   std::vector<list<KeyFrame*> > mvInvertedFile;
 
   // Mutex
-  std::mutex mMutex;
+  //std::mutex mMutex;
 };
 
 } //namespace ORB_SLAM

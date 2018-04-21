@@ -29,7 +29,7 @@
 #include "Frame.h"
 #include "KeyFrameDatabase.h"
 #include "Converter.h"
-#include <mutex>
+//#include <mutex>
 #include "BoostArchiver.h"
 
 namespace ORB_SLAM2
@@ -261,9 +261,9 @@ protected:
 
     Map* mpMap;
 
-    std::mutex mutable mMutexPose ;
-    std::mutex mutable mMutexConnections;
-    std::mutex mutable mMutexFeatures;
+    //std::mutex mutable mMutexPose ;
+    //std::mutex mutable mMutexConnections;
+    //std::mutex mutable mMutexFeatures;
 
 
     // SE3 Odometry Pose

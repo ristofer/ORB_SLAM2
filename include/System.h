@@ -23,14 +23,14 @@
 #define SYSTEM_H
 
 #include<string>
-#include<thread>
+//#include<thread>
 #include<opencv2/core/core.hpp>
 
 #include "Tracking.h"
 #include "FrameDrawer.h"
 #include "Map.h"
-#include "LocalMapping.h"
-#include "LoopClosing.h"
+//#include "LocalMapping.h"
+//#include "LoopClosing.h"
 #include "KeyFrameDatabase.h"
 #include "ORBVocabulary.h"
 
@@ -174,16 +174,16 @@ private:
 
     // System threads: Local Mapping, Loop Closing, Viewer.
     // The Tracking thread "lives" in the main execution thread that creates the System object.
-    std::thread* mptLocalMapping;
-    std::thread* mptLoopClosing;
-    std::thread* mptViewer;
+    //std::thread* mptLocalMapping;
+    //std::thread* mptLoopClosing;
+    //std::thread* mptViewer;
 
     // Reset flag
-    std::mutex mMutexReset;
+    //std::mutex mMutexReset;
     bool mbReset;
 
     // Change mode flags
-    std::mutex mMutexMode;
+    //std::mutex mMutexMode;
     bool mbActivateLocalizationMode;
     bool mbDeactivateLocalizationMode;
 
@@ -191,7 +191,7 @@ private:
     int mTrackingState;
     std::vector<MapPoint*> mTrackedMapPoints;
     std::vector<cv::KeyPoint> mTrackedKeyPointsUn;
-    std::mutex mMutexState;
+    //std::mutex mMutexState;
 
 
     cv::Mat InvertcvMat(cv::Mat Tcw);

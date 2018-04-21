@@ -25,8 +25,7 @@
 #include "KeyFrame.h"
 #include <set>
 
-#include <mutex>
-
+//#include<boost/thread.hpp>
 #include "BoostArchiver.h"
 
 
@@ -64,10 +63,10 @@ public:
 
     vector<KeyFrame*> mvpKeyFrameOrigins;
 
-    std::mutex mMutexMapUpdate;
+    //boost::mutex mMutexMapUpdate;
 
     // This avoid that two points are created simultaneously in separate threads (id conflict)
-    std::mutex mMutexPointCreation;
+    //boost::mutex mMutexPointCreation;
 
 
     bool IsMapScaled;
@@ -93,7 +92,7 @@ protected:
     // Index related to a big change in the map (loop closure, global BA)
     int mnBigChangeIdx;
 
-    std::mutex mMutexMap;
+    //boost::mutex mMutexMap;
 
 };
 
