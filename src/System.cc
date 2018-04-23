@@ -77,7 +77,9 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     if (!mapfilen.empty())
     {
         std::string mapfile_s = (string)mapfilen;
-        mapfile = mapfile_s.c_str();
+        cout << "map file" << mapfile_s << endl;
+        mapfile = mapfile_s;
+        cout << "map file c string" << mapfile << endl;
     }
 
     //Load ORB Vocabulary
@@ -102,7 +104,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
 
     //Create KeyFrame Database
     //Create the Map
-    if (!mapfile && LoadMap(*mapfile))
+    if (!mapfile.empty() && LoadMap(mapfile))
     {
         bReuseMap = true;
         mbIsMapTransformUpdated = false;
@@ -394,7 +396,7 @@ void System::Shutdown()
     //if(mpViewer)
     //    pangolin::BindToContext("ORB-SLAM2: Map Viewer");
     if (is_save_map)
-        SaveMap(*mapfile);
+        SaveMap(mapfile);
 }
 
 void System::SaveTrajectoryTUM(const string &filename)
@@ -586,9 +588,9 @@ void System::SetOdomPose(const cv::Mat& T_w_c)
     mTF_w_c = Converter::toSE3Quat(mTf_w_c);
 }
 
-void System::SaveMap(const char &filename)
+void System::SaveMap(string filename)
 {
-    std::ofstream out(&filename, std::ios_base::binary);
+    std::ofstream out(filename.c_str(), std::ios_base::binary);
     if (!out)
     {
         cerr << "Cannot Write to Mapfile: " << mapfile << std::endl;
@@ -601,9 +603,9 @@ void System::SaveMap(const char &filename)
     cout << " ...done" << std::endl;
     out.close();
 }
-bool System::LoadMap(const char &filename)
+bool System::LoadMap(string filename)
 {
-    std::ifstream in(&filename, std::ios_base::binary);
+    std::ifstream in(filename.c_str(), std::ios_base::binary);
     if (!in)
     {
         cerr << "Cannot Open Mapfile: " << mapfile << " , Create a new one" << std::endl;
@@ -618,7 +620,8 @@ bool System::LoadMap(const char &filename)
     cout << "Map Reconstructing" << flush;
     vector<ORB_SLAM2::KeyFrame*> vpKFS = mpMap->GetAllKeyFrames();
     unsigned long mnFrameId = 0;
-    for (auto it:vpKFS) {
+    for (int i=0; i<vpKFS.size(); i++) {
+        ORB_SLAM2::KeyFrame* it = vpKFS[i];
         it->SetORBvocabulary(mpVocabulary);
         it->ComputeBoW();
         if (it->mnFrameId > mnFrameId)

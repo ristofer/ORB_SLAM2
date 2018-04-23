@@ -135,8 +135,8 @@ public:
 
 private:
     // Save/Load functions
-    void SaveMap(const char &filename);
-    bool LoadMap(const char &filename);
+    void SaveMap(string filename);
+    bool LoadMap(string filename);
 
 
 private:
@@ -152,7 +152,7 @@ private:
     // Map structure that stores the pointers to all KeyFrames and MapPoints.
     Map* mpMap;
 
-    const char* mapfile;
+    string mapfile;
     bool is_save_map;
 
     // Tracker. It receives a frame and computes the associated camera pose.
