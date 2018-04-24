@@ -1,13 +1,13 @@
 argument1="Maqui"
-argument2="Vocabulary/ORBvoc.bin"
+argument2="Vocabulary/ORBvoc.txt"
 #argument2="Vocabulary/ORBvoc.bin"
-argument3="Examples/ROS/ORB_SLAM2/maqui_front.yaml"
+argument3="Examples/ROS/src/ORB_SLAM2/maqui_front.yaml"
 
 
 if [ "$1" == gdb ]; then
    gdb --args Examples/ROS/ORB_SLAM2/Maqui ${argument2} ${argument3}
 else
-rosrun "ORB_SLAM2" ${argument1} ${argument2} ${argument3} 
+rosrun "orb_slam_ros" ${argument1} ${argument2} ${argument3} 
 fi
 
 
