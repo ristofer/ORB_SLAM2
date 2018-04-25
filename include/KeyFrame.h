@@ -215,7 +215,7 @@ public:
     const int mnMaxY;
     const cv::Mat mK;
 
-    bool isWorldFrame = false;
+    bool isWorldFrame;
 
 
     // The following variables need to be accessed trough a mutex to be thread safe.
