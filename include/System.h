@@ -18,10 +18,12 @@
 * along with ORB-SLAM2. If not, see <http://www.gnu.org/licenses/>.
 */
 
-
+#define EIGEN_DONT_VECTORIZE
+#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 #ifndef SYSTEM_H
 #define SYSTEM_H
-
+#define EIGEN_DONT_VECTORIZE
+#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 #include<string>
 //#include<thread>
 #include<opencv2/core/core.hpp>

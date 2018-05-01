@@ -23,9 +23,12 @@
 // LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 // NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#define EIGEN_DONT_VECTORIZE
+#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 #ifndef G2O_BASE_VERTEX_H
 #define G2O_BASE_VERTEX_H
-
+#define EIGEN_DONT_VECTORIZE
+#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 #include "optimizable_graph.h"
 #include "creators.h"
 #include "../stuff/macros.h"
@@ -107,8 +110,8 @@ namespace g2o {
     Matrix<double, D, 1> _b;
     EstimateType _estimate;
     BackupStackType _backup;
-  public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+ // public:
+ //   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 #include "base_vertex.hpp"

@@ -17,10 +17,12 @@
 * You should have received a copy of the GNU General Public License
 * along with ORB-SLAM2. If not, see <http://www.gnu.org/licenses/>.
 */
-
+#define EIGEN_DONT_VECTORIZE
+#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 #ifndef MAPPOINT_H
 #define MAPPOINT_H
-
+#define EIGEN_DONT_VECTORIZE
+#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 #include"KeyFrame.h"
 #include"Frame.h"
 #include"Map.h"

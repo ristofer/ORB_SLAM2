@@ -8,8 +8,12 @@
  *   - Map
  *   - MapPoint
  */
+#define EIGEN_DONT_VECTORIZE
+#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 #ifndef BOOST_ARCHIVER_H
 #define BOOST_ARCHIVER_H
+#define EIGEN_DONT_VECTORIZE
+#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 #include <boost/serialization/list.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/set.hpp>

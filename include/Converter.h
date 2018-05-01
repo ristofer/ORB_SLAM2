@@ -17,9 +17,12 @@
 * You should have received a copy of the GNU General Public License
 * along with ORB-SLAM2. If not, see <http://www.gnu.org/licenses/>.
 */
+#define EIGEN_DONT_VECTORIZE
+#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 #ifndef CONVERTER_H
 #define CONVERTER_H
-
+#define EIGEN_DONT_VECTORIZE
+#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 #include<opencv2/core/core.hpp>
 
 #include<Eigen/Dense>
@@ -51,8 +54,8 @@ public:
 
     static std::vector<float> toQuaternion(const cv::Mat &M);
     static cv::Mat Normalize(const cv::Mat &R);
-public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+//public:
+//    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 }// namespace ORB_SLAM
