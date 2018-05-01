@@ -26,7 +26,6 @@
 
 #ifndef G2O_AIS_OPTIMIZABLE_GRAPH_HH_
 #define G2O_AIS_OPTIMIZABLE_GRAPH_HH_
-
 #include <set>
 #include <iostream>
 #include <list>

@@ -17,7 +17,6 @@
 * You should have received a copy of the GNU General Public License
 * along with ORB-SLAM2. If not, see <http://www.gnu.org/licenses/>.
 */
-
 #ifndef CONVERTER_H
 #define CONVERTER_H
 
@@ -52,7 +51,8 @@ public:
 
     static std::vector<float> toQuaternion(const cv::Mat &M);
     static cv::Mat Normalize(const cv::Mat &R);
-
+public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 }// namespace ORB_SLAM
