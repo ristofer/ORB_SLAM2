@@ -134,7 +134,9 @@ public:
 private:
     // Save/Load functions
     void SaveMap(const string &filename);
+    void SaveMapXML(const string &filename);
     bool LoadMap(const string &filename);
+    bool LoadMapXML(const string &filename);
 
 
 private:

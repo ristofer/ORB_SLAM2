@@ -102,12 +102,19 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
 
     //Create KeyFrame Database
     //Create the Map
-    if (!mapfile.empty() && LoadMap(mapfile))
+    bool ok_loaded = false;
+    if (!mapfile.empty())
     {
+        if(has_suffix(mapfile,".bin")){
+            ok_loaded = LoadMap(mapfile);
+        }
+        else{
+            ok_loaded = LoadMapXML(mapfile);
+        }
         bReuseMap = true;
         mbIsMapTransformUpdated = false;
     }
-    else
+    else if (!ok_loaded)
     {
         mpKeyFrameDatabase = new KeyFrameDatabase(mpVocabulary);
         mpMap = new Map();
@@ -394,7 +401,8 @@ void System::Shutdown()
     if(mpViewer)
         pangolin::BindToContext("ORB-SLAM2: Map Viewer");
     if (is_save_map)
-        SaveMap(mapfile);
+        SaveMap("file.bin");
+        SaveMapXML("file.xml");
 }
 
 void System::SaveTrajectoryTUM(const string &filename)
@@ -412,7 +420,6 @@ void System::SaveTrajectoryTUM(const string &filename)
     // Transform all keyframes so that the first keyframe is at the origin.
     // After a loop closure the first keyframe might not be at the origin.
     cv::Mat Two = vpKFs[0]->GetPoseInverse();
-
     ofstream f;
     f.open(filename.c_str());
     f << fixed;
@@ -601,6 +608,21 @@ void System::SaveMap(const string &filename)
     cout << " ...done" << std::endl;
     out.close();
 }
+void System::SaveMapXML(const string &filename)
+{
+    std::ofstream out(filename);
+    if (!out)
+    {
+        cerr << "Cannot Write to Mapfile: " << mapfile << std::endl;
+        exit(-1);
+    }
+    cout << "Saving Mapfile: " << mapfile << std::flush;
+    boost::archive::text_oarchive oa(out);
+    oa << mpMap;
+    oa << mpKeyFrameDatabase;
+    cout << " ...done" << std::endl;
+    out.close();
+}
 bool System::LoadMap(const string &filename)
 {
     std::ifstream in(filename, std::ios_base::binary);
@@ -609,7 +631,7 @@ bool System::LoadMap(const string &filename)
         cerr << "Cannot Open Mapfile: " << mapfile << " , Create a new one" << std::endl;
         return false;
     }
-    cout << "Loading Mapfile: " << mapfile << std::flush;
+    //cout << "Loading Mapfile: " << mapfile << std::flush;
     boost::archive::binary_iarchive ia(in, boost::archive::no_header);
     ia >> mpMap;
     ia >> mpKeyFrameDatabase;
@@ -630,5 +652,34 @@ bool System::LoadMap(const string &filename)
     in.close();
     return true;
 }
+bool System::LoadMapXML(const string &filename)
+    {
+        std::ifstream in(filename);
+        if (!in)
+        {
+            cerr << "Cannot Open Mapfile: " << mapfile << " , Create a new one" << std::endl;
+            return false;
+        }
+       // cout << "Loading Mapfile: " << mapfile << std::flush;
+        boost::archive::text_iarchive ia(in);
+        ia >> mpMap;
+        ia >> mpKeyFrameDatabase;
+        mpKeyFrameDatabase->SetORBvocabulary(mpVocabulary);
+        cout << " ...done" << std::endl;
+        cout << "Map Reconstructing" << flush;
+        vector<ORB_SLAM2::KeyFrame*> vpKFS = mpMap->GetAllKeyFrames();
+        unsigned long mnFrameId = 0;
+        for (auto it:vpKFS) {
+            it->SetORBvocabulary(mpVocabulary);
+            it->ComputeBoW();
+            if (it->mnFrameId > mnFrameId)
+                mnFrameId = it->mnFrameId;
+        }
+        Frame::nNextId = mnFrameId;
+        mpMap->IsMapScaled = true;
+        cout << " ...done" << endl;
+        in.close();
+        return true;
+    }
 
 } //namespace ORB_SLAM
