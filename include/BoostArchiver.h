@@ -68,7 +68,7 @@ namespace boost{
         if (!m.isContinuous())
             m_ = m.clone();
         size_t elem_size = m_.elemSize();
-        size_t elem_type = m_.type();
+        size_t elem_type = size_t(m_.type());
         ar & m_.cols;
         ar & m_.rows;
         ar & elem_size;

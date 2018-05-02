@@ -25,6 +25,7 @@
 #include <thread>
 #include <pangolin/pangolin.h>
 #include <iomanip>
+#include <fstream>
 
 static bool has_suffix(const std::string &str, const std::string &suffix)
 {
@@ -109,7 +110,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
             ok_loaded = LoadMap(mapfile);
         }
         else{
-            ok_loaded = LoadMapXML(mapfile);
+            ok_loaded = LoadMapXML("file.xml");
         }
         bReuseMap = true;
         mbIsMapTransformUpdated = false;
@@ -401,8 +402,9 @@ void System::Shutdown()
     if(mpViewer)
         pangolin::BindToContext("ORB-SLAM2: Map Viewer");
     if (is_save_map)
-        SaveMap("file.bin");
         SaveMapXML("file.xml");
+        SaveMap("file.bin");
+
 }
 
 void System::SaveTrajectoryTUM(const string &filename)
@@ -608,20 +610,18 @@ void System::SaveMap(const string &filename)
     cout << " ...done" << std::endl;
     out.close();
 }
-void System::SaveMapXML(const string &filename)
-{
+void System::SaveMapXML(const string &filename) {
     std::ofstream out(filename);
-    if (!out)
-    {
+    if (!out) {
         cerr << "Cannot Write to Mapfile: " << mapfile << std::endl;
         exit(-1);
     }
     cout << "Saving Mapfile: " << mapfile << std::flush;
-    boost::archive::text_oarchive oa(out);
+    {   boost::archive::text_oarchive oa(out);
     oa << mpMap;
     oa << mpKeyFrameDatabase;
     cout << " ...done" << std::endl;
-    out.close();
+}out.close();
 }
 bool System::LoadMap(const string &filename)
 {
@@ -653,17 +653,22 @@ bool System::LoadMap(const string &filename)
     return true;
 }
 bool System::LoadMapXML(const string &filename)
-    {
+    {   std::cout << "entrando" << std::endl;
         std::ifstream in(filename);
+        std::cout << "stream ok" << std::endl;
         if (!in)
         {
             cerr << "Cannot Open Mapfile: " << mapfile << " , Create a new one" << std::endl;
             return false;
         }
-       // cout << "Loading Mapfile: " << mapfile << std::flush;
-        boost::archive::text_iarchive ia(in);
+       cout << "Loading Mapfile: " << filename << std::endl;
+
+        { boost::archive::text_iarchive ia(in);
+        std::cout << "vamos bien" << std::endl;
         ia >> mpMap;
+        std::cout << "el mapa carga" << std::endl;
         ia >> mpKeyFrameDatabase;
+        std::cout << "no carga la wea " <<  std::endl;
         mpKeyFrameDatabase->SetORBvocabulary(mpVocabulary);
         cout << " ...done" << std::endl;
         cout << "Map Reconstructing" << flush;
@@ -677,7 +682,7 @@ bool System::LoadMapXML(const string &filename)
         }
         Frame::nNextId = mnFrameId;
         mpMap->IsMapScaled = true;
-        cout << " ...done" << endl;
+        cout << " ...done" << endl;}
         in.close();
         return true;
     }
