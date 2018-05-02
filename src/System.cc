@@ -115,7 +115,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
         bReuseMap = true;
         mbIsMapTransformUpdated = false;
     }
-    else if (!ok_loaded)
+    if (!ok_loaded)
     {
         mpKeyFrameDatabase = new KeyFrameDatabase(mpVocabulary);
         mpMap = new Map();
