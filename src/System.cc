@@ -108,12 +108,19 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     {
         if(has_suffix(mapfile,".bin")){
             ok_loaded = LoadMap(mapfile);
+            if(ok_loaded) {
+                bReuseMap = true;
+                mbIsMapTransformUpdated = false;
+            }
         }
         else{
             ok_loaded = LoadMapXML("file.xml");
+            if(ok_loaded) {
+                bReuseMap = true;
+                mbIsMapTransformUpdated = false;
+            }
         }
-        bReuseMap = true;
-        mbIsMapTransformUpdated = false;
+
     }
     if (!ok_loaded)
     {
