@@ -107,20 +107,20 @@ target_link_libraries(${PROJECT_NAME} ${BOOST_SERIALIZATION})
 #Examples/Stereo/stereo_euroc.cc)
 #target_link_libraries(stereo_euroc ${PROJECT_NAME})
 
-set(LIBS 
-${OpenCV_LIBS} 
-${EIGEN3_LIBS}
-/home/nao/ORB_SLAM2
-/home/nao/ORB_SLAM2/include
-/home/nao/ORB_SLAM2/Thirdparty/DBoW2/lib/libDBoW2.so
-/home/nao/ORB_SLAM2/Thirdparty/g2o/lib/libg2o.so
-/home/nao/ORB_SLAM2/lib/libORB_SLAM2.so
-)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/Monocular)
+#set(LIBS 
+#${OpenCV_LIBS} 
+#${EIGEN3_LIBS}
+#/home/nao/ORB_SLAM2
+#/home/nao/ORB_SLAM2/include
+#/home/nao/ORB_SLAM2/Thirdparty/DBoW2/lib/libDBoW2.so
+#/home/nao/ORB_SLAM2/Thirdparty/g2o/lib/libg2o.so
+#/home/nao/ORB_SLAM2/lib/libORB_SLAM2.so
+#)
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/Monocular)
 
-add_executable(test
-Examples/test/src/main.cpp Examples/test/src/SubscribeHandler.cpp)
-target_link_libraries(test ${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/lib/libORB_SLAM2.so ${Boost_LIBRARIES} ${LIBS})
+#add_executable(test
+#Examples/test/src/main.cpp Examples/test/src/SubscribeHandler.cpp)
+#target_link_libraries(test ${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/lib/libORB_SLAM2.so ${Boost_LIBRARIES} ${LIBS})
 
 #add_executable(mono_kitti
 #Examples/Monocular/mono_kitti.cc)
