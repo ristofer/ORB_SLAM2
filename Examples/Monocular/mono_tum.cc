@@ -22,13 +22,13 @@
 #include<iostream>
 #include<algorithm>
 #include<fstream>
-#include<chrono>
+#include<boost/chrono.cpp>
 
 #include<opencv2/core/core.hpp>
 
 #include<System.h>
 
-using namespace std;
+using namespace boost;
 
 void LoadImages(const string &strFile, vector<string> &vstrImageFilenames,
                 vector<double> &vTimestamps);
@@ -76,21 +76,21 @@ int main(int argc, char **argv)
         }
 
 #ifdef COMPILEDWITHC11
-        std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
+        boost::chrono::steady_clock::time_point t1 = boost::chrono::steady_clock::now();
 #else
-        std::chrono::monotonic_clock::time_point t1 = std::chrono::monotonic_clock::now();
+        boost::chrono::monotonic_clock::time_point t1 = boost::chrono::monotonic_clock::now();
 #endif
 
         // Pass the image to the SLAM system
         SLAM.TrackMonocular(im,tframe);
 
 #ifdef COMPILEDWITHC11
-        std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
+        boost::chrono::steady_clock::time_point t2 = boost::chrono::steady_clock::now();
 #else
-        std::chrono::monotonic_clock::time_point t2 = std::chrono::monotonic_clock::now();
+        boost::chrono::monotonic_clock::time_point t2 = boost::chrono::monotonic_clock::now();
 #endif
 
-        double ttrack= std::chrono::duration_cast<std::chrono::duration<double> >(t2 - t1).count();
+        double ttrack= boost::chrono::duration_cast<boost::chrono::duration<double> >(t2 - t1).count();
 
         vTimesTrack[ni]=ttrack;
 
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
             T = tframe-vTimestamps[ni-1];
 
         if(ttrack<T)
-            std::this_thread::sleep_for(std::chrono::microseconds(static_cast<size_t>((T-ttrack)*1e6)));
+            boost::this_thread::sleep_for(boost::chrono::microseconds(static_cast<size_t>((T-ttrack)*1e6)));
     }
 
     // Stop all threads
