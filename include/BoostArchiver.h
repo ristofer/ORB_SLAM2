@@ -20,6 +20,8 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_woarchive.hpp>
+#include <boost/archive/text_wiarchive.hpp>
 #include <boost/serialization/split_free.hpp>
 #include <boost/serialization/base_object.hpp>
 // base object needed by DBoW2::BowVector and DBoW2::FeatureVector

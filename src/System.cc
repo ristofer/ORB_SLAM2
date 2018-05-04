@@ -618,13 +618,13 @@ void System::SaveMap(const string &filename)
     out.close();
 }
 void System::SaveMapXML(const string &filename) {
-    std::ofstream out(filename);
+    std::wofstream out(filename);
     if (!out) {
         cerr << "Cannot Write to Mapfile: " << mapfile << std::endl;
         exit(-1);
     }
     cout << "Saving Mapfile: " << mapfile << std::flush;
-    {   boost::archive::text_oarchive oa(out);
+    {   boost::archive::text_woarchive oa(out);
     oa << mpMap;
     oa << mpKeyFrameDatabase;
     cout << " ...done" << std::endl;
@@ -661,7 +661,7 @@ bool System::LoadMap(const string &filename)
 }
 bool System::LoadMapXML(const string &filename)
     {   std::cout << "entrando" << std::endl;
-        std::ifstream in(filename);
+        std::wifstream in(filename);
         std::cout << "stream ok" << std::endl;
         if (!in)
         {
@@ -670,7 +670,7 @@ bool System::LoadMapXML(const string &filename)
         }
        cout << "Loading Mapfile: " << filename << std::endl;
 
-        { boost::archive::text_iarchive ia(in);
+        { boost::archive::text_wiarchive ia(in);
         std::cout << "vamos bien" << std::endl;
         ia >> mpMap;
         std::cout << "el mapa carga" << std::endl;
