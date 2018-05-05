@@ -74,12 +74,10 @@ ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
 
 
 
-message(STATUS "Compile With map save/load function")
-find_library(BOOST_SERIALIZATION boost_serialization)
-if (NOT BOOST_SERIALIZATION)
-    message(FATAL_ERROR "Can't find libboost_serialization")
-endif()
-target_link_libraries(${PROJECT_NAME} ${BOOST_SERIALIZATION})
+find_package(Boost REQUIRED COMPONENTS 
+serialization
+)
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 
 # Build examples
 

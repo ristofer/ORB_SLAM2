@@ -893,7 +893,10 @@ bool KeyFrame::HasPrevNeighbour()
 {
     return mbKFNeighbour;
 }
+template void KeyFrame::load(boost::archive::text_iarchive&, const unsigned int);
+template void KeyFrame::save(boost::archive::text_oarchive&, const unsigned int) const;
 template void KeyFrame::load(boost::archive::binary_iarchive&, const unsigned int);
 template void KeyFrame::save(boost::archive::binary_oarchive&, const unsigned int) const;
+
 
 } //namespace ORB_SLAM

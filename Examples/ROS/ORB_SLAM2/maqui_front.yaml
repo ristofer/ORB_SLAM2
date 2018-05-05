@@ -53,6 +53,7 @@ ORBextractor.nLevels: 8
 ORBextractor.iniThFAST: 7 # 20
 ORBextractor.minThFAST: 4 # 4
 
+
 #--------------------------------------------------------------------------------------------
 # Viewer Parameters
 #--------------------------------------------------------------------------------------------
@@ -72,7 +73,7 @@ Viewer.ViewpointF: 500
 # ORB Settings
 #--------------------------------------------------------------------------------------------
 
-Initializer.KeyFrames: 15
+Initializer.KeyFrames: 10
 Initializer.UseOdometry: 1
 # 1 is baseframe, 0 is camera
 Initializer.baseFrame: 0
@@ -84,7 +85,7 @@ Initializer.baseFrame: 0
 
 Topic.Camera: "/maqui/camera/front/image_raw"
 Topic.CameraFrame: "/CameraTop_optical_frame"
-Topic.CameraFrameNameToPublish: "/camera_orb_position_two"
+Topic.CameraFrameNameToPublish: "/camera_orb_position_three"
 Topic.WorldFrameNameToPublish: "/odom"
 Topic.OdomFrame: "/odom"
 #Topic.WorldFrame: "/odom"
@@ -92,4 +93,4 @@ Topic.OdomFrame: "/odom"
 Topic.TF: "tf"
 Topic.BaseFrame: "/base_link"
 
-Map.mapfile: basement.bin
+Map.mapfile: file.xml

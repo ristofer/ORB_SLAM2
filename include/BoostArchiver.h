@@ -18,6 +18,10 @@
 // map serialization needed by KeyFrame::mConnectedKeyFrameWeights ...
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_woarchive.hpp>
+#include <boost/archive/text_wiarchive.hpp>
 #include <boost/serialization/split_free.hpp>
 #include <boost/serialization/base_object.hpp>
 // base object needed by DBoW2::BowVector and DBoW2::FeatureVector
@@ -66,7 +70,7 @@ namespace boost{
         if (!m.isContinuous())
             m_ = m.clone();
         size_t elem_size = m_.elemSize();
-        size_t elem_type = m_.type();
+        size_t elem_type = size_t(m_.type());
         ar & m_.cols;
         ar & m_.rows;
         ar & elem_size;

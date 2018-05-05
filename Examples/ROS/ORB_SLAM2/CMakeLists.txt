@@ -40,10 +40,11 @@ if(NOT OpenCV_FOUND)
       message(FATAL_ERROR "OpenCV > 2.4.3 not found.")
    endif()
 endif()
-
+#find_package(Boost REQUIRED COMPONENTS 
+#serialization
+#)
 find_package(Eigen3 3.1.0 REQUIRED)
 find_package(Pangolin REQUIRED)
-
 include_directories(
 ${PROJECT_SOURCE_DIR}
 ${PROJECT_SOURCE_DIR}/../../../
@@ -58,6 +59,7 @@ ${Pangolin_LIBRARIES}
 ${PROJECT_SOURCE_DIR}/../../../Thirdparty/DBoW2/lib/libDBoW2.so
 ${PROJECT_SOURCE_DIR}/../../../Thirdparty/g2o/lib/libg2o.so
 ${PROJECT_SOURCE_DIR}/../../../lib/libORB_SLAM2.so
+#${Boost_LIBRARIES}
 )
 
 # node for Odometry
@@ -68,6 +70,18 @@ rosbuild_add_executable(Maqui
 target_link_libraries(Maqui
 ${LIBS}
 )
+#rosbuild_add_executable(test_serialization
+#    ${PROJECT_SOURCE_DIR}/src/maqui/test_serialization.cpp
+#    )
+#target_link_libraries(test_serialization
+#${LIBS}
+#)
+#rosbuild_add_executable(test_open
+#    ${PROJECT_SOURCE_DIR}/src/maqui/test_open.cpp
+#    )
+#target_link_libraries(test_open
+#${LIBS}
+#)
 
 
 # #Node for monocular camera
