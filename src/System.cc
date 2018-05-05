@@ -105,7 +105,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
 
     //Create KeyFrame Database
     //Create the Map
-    if (!mapfile.empty() && LoadMap(mapfile))
+    if (!mapfile.empty() && LoadMapXML(mapfile))
     {
         bReuseMap = true;
         mbIsMapTransformUpdated = false;
@@ -614,6 +614,36 @@ bool System::LoadMap(string filename)
     }
     cout << "Loading Mapfile: " << mapfile << std::flush;
     boost::archive::binary_iarchive ia(in, boost::archive::no_header);
+    ia >> mpMap;
+    ia >> mpKeyFrameDatabase;
+    mpKeyFrameDatabase->SetORBvocabulary(mpVocabulary);
+    cout << " ...done" << std::endl;
+    cout << "Map Reconstructing" << flush;
+    vector<ORB_SLAM2::KeyFrame*> vpKFS = mpMap->GetAllKeyFrames();
+    unsigned long mnFrameId = 0;
+    for (int i=0; i<vpKFS.size(); i++) {
+        ORB_SLAM2::KeyFrame* it = vpKFS[i];
+        it->SetORBvocabulary(mpVocabulary);
+        it->ComputeBoW();
+        if (it->mnFrameId > mnFrameId)
+            mnFrameId = it->mnFrameId;
+    }
+    Frame::nNextId = mnFrameId;
+    mpMap->IsMapScaled = true;
+    cout << " ...done" << endl;
+    in.close();
+    return true;
+}
+bool System::LoadMapXML(string filename)
+{
+    std::ifstream in(filename.c_str());
+    if (!in)
+    {
+        cerr << "Cannot Open Mapfile: " << filename << " , Create a new one" << std::endl;
+        return false;
+    }
+    cout << "Loading Mapfile: " << filename << std::flush;
+    boost::archive::text_iarchive ia(in);
     ia >> mpMap;
     ia >> mpKeyFrameDatabase;
     mpKeyFrameDatabase->SetORBvocabulary(mpVocabulary);

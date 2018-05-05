@@ -139,6 +139,7 @@ private:
     // Save/Load functions
     void SaveMap(string filename);
     bool LoadMap(string filename);
+    bool LoadMapXML(string filename);
 
 
 private:
