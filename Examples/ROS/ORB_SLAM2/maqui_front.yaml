@@ -50,7 +50,7 @@ ORBextractor.nLevels: 8
 # Image is divided in a grid. At each cell FAST are extracted imposing a minimum response.
 # Firstly we impose iniThFAST. If no corners are detected we impose a lower value minThFAST
 # You can lower these values if your images have low contrast			
-ORBextractor.iniThFAST: 20
+ORBextractor.iniThFAST: 7
 ORBextractor.minThFAST: 4
 
 #--------------------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ Viewer.ViewpointF: 500
 # ORB Settings
 #--------------------------------------------------------------------------------------------
 
-Initializer.KeyFrames: 15
+Initializer.KeyFrames: 10
 Initializer.UseOdometry: 1
 # 1 is baseframe, 0 is camera
 Initializer.baseFrame: 0
@@ -84,7 +84,7 @@ Initializer.baseFrame: 0
 
 Topic.Camera: "/maqui/camera/front/image_raw"
 Topic.CameraFrame: "/CameraTop_optical_frame"
-Topic.CameraFrameNameToPublish: "/camera_orb_position_two"
+Topic.CameraFrameNameToPublish: "/camera_orb_position_three"
 Topic.WorldFrameNameToPublish: "/odom"
 Topic.OdomFrame: "/odom"
 #Topic.WorldFrame: "/odom"
