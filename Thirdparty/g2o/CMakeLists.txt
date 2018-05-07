@@ -17,10 +17,10 @@ SET (G2O_LIB_TYPE SHARED)
 
 # There seems to be an issue with MSVC8
 # see http://eigen.tuxfamily.org/bz/show_bug.cgi?id=83
-if(MSVC90)
-  add_definitions(-DEIGEN_DONT_ALIGN_STATICALLY=1)
-  message(STATUS "Disabling memory alignment for MSVC8")
-endif(MSVC90)
+
+add_definitions(-DEIGEN_DONT_ALIGN_STATICALLY=1)
+message(STATUS "Disabling memory alignment for Pepper")
+
 
 # Set the output directory for the build executables and libraries
 IF(WIN32)

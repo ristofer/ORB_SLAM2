@@ -49,7 +49,7 @@ namespace g2o {
  */
   class VertexSim3Expmap : public BaseVertex<7, Sim3>
   {
-  //public:
+  public:
   //  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     VertexSim3Expmap();
     virtual bool read(std::istream& is);
@@ -100,7 +100,7 @@ namespace g2o {
  */
   class EdgeSim3 : public BaseBinaryEdge<7, Sim3, VertexSim3Expmap, VertexSim3Expmap>
   {
- // public:
+  public:
    // EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     EdgeSim3();
     virtual bool read(std::istream& is);
@@ -131,7 +131,7 @@ namespace g2o {
 /**/
 class EdgeSim3ProjectXYZ : public  BaseBinaryEdge<2, Vector2d,  VertexSBAPointXYZ, VertexSim3Expmap>
 {
-  //public:
+  public:
   //  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     EdgeSim3ProjectXYZ();
     virtual bool read(std::istream& is);
@@ -153,7 +153,7 @@ class EdgeSim3ProjectXYZ : public  BaseBinaryEdge<2, Vector2d,  VertexSBAPointXY
 /**/
 class EdgeInverseSim3ProjectXYZ : public  BaseBinaryEdge<2, Vector2d,  VertexSBAPointXYZ, VertexSim3Expmap>
 {
-  //public:
+  public:
   //  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     EdgeInverseSim3ProjectXYZ();
     virtual bool read(std::istream& is);

@@ -59,7 +59,7 @@ typedef Matrix<double, 6, 6> Matrix6d;
  and externally with its exponential map
  */
 class  VertexSE3Expmap : public BaseVertex<6, SE3Quat>{
-//public:
+public:
 //  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   VertexSE3Expmap();
@@ -79,7 +79,7 @@ class  VertexSE3Expmap : public BaseVertex<6, SE3Quat>{
 };
 
 class EdgeSE3Odometry: public BaseBinaryEdge<6, SE3Quat, VertexSE3Expmap, VertexSE3Expmap>{
-//public:
+public:
 //  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   EdgeSE3Odometry();
@@ -95,7 +95,7 @@ class EdgeSE3Odometry: public BaseBinaryEdge<6, SE3Quat, VertexSE3Expmap, Vertex
 };
 
 class  EdgeSE3ProjectXYZ: public  BaseBinaryEdge<2, Vector2d, VertexSBAPointXYZ, VertexSE3Expmap>{
-//public:
+public:
 //  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   EdgeSE3ProjectXYZ();
@@ -127,7 +127,7 @@ class  EdgeSE3ProjectXYZ: public  BaseBinaryEdge<2, Vector2d, VertexSBAPointXYZ,
 
 
 class  EdgeStereoSE3ProjectXYZ: public  BaseBinaryEdge<3, Vector3d, VertexSBAPointXYZ, VertexSE3Expmap>{
-//public:
+public:
 //  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   EdgeStereoSE3ProjectXYZ();
@@ -158,7 +158,7 @@ class  EdgeStereoSE3ProjectXYZ: public  BaseBinaryEdge<3, Vector3d, VertexSBAPoi
 };
 
 class  EdgeSE3ProjectXYZOnlyPose: public  BaseUnaryEdge<2, Vector2d, VertexSE3Expmap>{
-//public:
+public:
 //  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   EdgeSE3ProjectXYZOnlyPose(){}
@@ -189,7 +189,7 @@ class  EdgeSE3ProjectXYZOnlyPose: public  BaseUnaryEdge<2, Vector2d, VertexSE3Ex
 
 
 class  EdgeStereoSE3ProjectXYZOnlyPose: public  BaseUnaryEdge<3, Vector3d, VertexSE3Expmap>{
-//public:
+public:
 //  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   EdgeStereoSE3ProjectXYZOnlyPose(){}
