@@ -27,10 +27,12 @@
 // Modified by Raúl Mur Artal (2014)
 // - Added EdgeInverseSim3ProjectXYZ 
 // - Modified VertexSim3Expmap to represent relative transformation between two cameras. Includes calibration of both cameras.
-
+#define EIGEN_DONT_VECTORIZE
+#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 #ifndef G2O_SEVEN_DOF_EXPMAP_TYPES
 #define G2O_SEVEN_DOF_EXPMAP_TYPES
-
+#define EIGEN_DONT_VECTORIZE
+#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 #include "../core/base_vertex.h"
 #include "../core/base_binary_edge.h"
 #include "types_six_dof_expmap.h"
@@ -47,8 +49,8 @@ namespace g2o {
  */
   class VertexSim3Expmap : public BaseVertex<7, Sim3>
   {
-  public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  //public:
+  //  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     VertexSim3Expmap();
     virtual bool read(std::istream& is);
     virtual bool write(std::ostream& os) const;
@@ -98,8 +100,8 @@ namespace g2o {
  */
   class EdgeSim3 : public BaseBinaryEdge<7, Sim3, VertexSim3Expmap, VertexSim3Expmap>
   {
-  public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+ // public:
+   // EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     EdgeSim3();
     virtual bool read(std::istream& is);
     virtual bool write(std::ostream& os) const;
@@ -129,8 +131,8 @@ namespace g2o {
 /**/
 class EdgeSim3ProjectXYZ : public  BaseBinaryEdge<2, Vector2d,  VertexSBAPointXYZ, VertexSim3Expmap>
 {
-  public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  //public:
+  //  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     EdgeSim3ProjectXYZ();
     virtual bool read(std::istream& is);
     virtual bool write(std::ostream& os) const;
@@ -151,8 +153,8 @@ class EdgeSim3ProjectXYZ : public  BaseBinaryEdge<2, Vector2d,  VertexSBAPointXY
 /**/
 class EdgeInverseSim3ProjectXYZ : public  BaseBinaryEdge<2, Vector2d,  VertexSBAPointXYZ, VertexSim3Expmap>
 {
-  public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  //public:
+  //  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     EdgeInverseSim3ProjectXYZ();
     virtual bool read(std::istream& is);
     virtual bool write(std::ostream& os) const;

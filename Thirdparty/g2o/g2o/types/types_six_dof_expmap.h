@@ -30,10 +30,12 @@
 // Added EdgeStereoSE3ProjectXYZ (project using focal_length in x,y directions)
 // Added EdgeSE3ProjectXYZOnlyPose (unary edge to optimize only the camera pose)
 // Added EdgeStereoSE3ProjectXYZOnlyPose (unary edge to optimize only the camera pose)
-
+#define EIGEN_DONT_VECTORIZE
+#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 #ifndef G2O_SIX_DOF_TYPES_EXPMAP
 #define G2O_SIX_DOF_TYPES_EXPMAP
-
+#define EIGEN_DONT_VECTORIZE
+#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 #include "../core/base_vertex.h"
 #include "../core/base_binary_edge.h"
 #include "../core/base_unary_edge.h"
@@ -57,8 +59,8 @@ typedef Matrix<double, 6, 6> Matrix6d;
  and externally with its exponential map
  */
 class  VertexSE3Expmap : public BaseVertex<6, SE3Quat>{
-public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+//public:
+//  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   VertexSE3Expmap();
 
@@ -77,8 +79,8 @@ public:
 };
 
 class EdgeSE3Odometry: public BaseBinaryEdge<6, SE3Quat, VertexSE3Expmap, VertexSE3Expmap>{
-public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+//public:
+//  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   EdgeSE3Odometry();
 
@@ -93,8 +95,8 @@ public:
 };
 
 class  EdgeSE3ProjectXYZ: public  BaseBinaryEdge<2, Vector2d, VertexSBAPointXYZ, VertexSE3Expmap>{
-public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+//public:
+//  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   EdgeSE3ProjectXYZ();
 
@@ -125,8 +127,8 @@ public:
 
 
 class  EdgeStereoSE3ProjectXYZ: public  BaseBinaryEdge<3, Vector3d, VertexSBAPointXYZ, VertexSE3Expmap>{
-public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+//public:
+//  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   EdgeStereoSE3ProjectXYZ();
 
@@ -156,8 +158,8 @@ public:
 };
 
 class  EdgeSE3ProjectXYZOnlyPose: public  BaseUnaryEdge<2, Vector2d, VertexSE3Expmap>{
-public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+//public:
+//  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   EdgeSE3ProjectXYZOnlyPose(){}
 
@@ -187,8 +189,8 @@ public:
 
 
 class  EdgeStereoSE3ProjectXYZOnlyPose: public  BaseUnaryEdge<3, Vector3d, VertexSE3Expmap>{
-public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+//public:
+//  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   EdgeStereoSE3ProjectXYZOnlyPose(){}
 
