@@ -40,13 +40,13 @@ find_package(Boost REQUIRED COMPONENTS
 system 
 thread
 chrono)
-find_package(Eigen3 3.1.0 REQUIRED)
+#find_package(Eigen3 3.1.0 REQUIRED)
 #find_package(Pangolin REQUIRED)
 
 include_directories(
 ${PROJECT_SOURCE_DIR}
 ${PROJECT_SOURCE_DIR}/include
-${EIGEN3_INCLUDE_DIR}
+/home/nao/eigen
 #${Pangolin_INCLUDE_DIRS}
 ${Boost_INCLUDE_DIR}
 ${PROJECT_SOURCE_DIR}/Examples/test/include
@@ -66,7 +66,7 @@ ${HEADER_FILES}
 
 target_link_libraries(${PROJECT_NAME}
 ${OpenCV_LIBS}
-${EIGEN3_LIBS}
+/home/nao/eigen
 #${Pangolin_LIBRARIES}
 ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
 ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
@@ -107,20 +107,20 @@ target_link_libraries(${PROJECT_NAME} ${BOOST_SERIALIZATION})
 #Examples/Stereo/stereo_euroc.cc)
 #target_link_libraries(stereo_euroc ${PROJECT_NAME})
 
-#set(LIBS 
-#${OpenCV_LIBS} 
-#${EIGEN3_LIBS}
-#/home/nao/ORB_SLAM2
-#/home/nao/ORB_SLAM2/include
-#/home/nao/ORB_SLAM2/Thirdparty/DBoW2/lib/libDBoW2.so
-#/home/nao/ORB_SLAM2/Thirdparty/g2o/lib/libg2o.so
-#/home/nao/ORB_SLAM2/lib/libORB_SLAM2.so
-#)
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/Monocular)
+set(LIBS 
+${OpenCV_LIBS} 
+/home/nao/eigen
+/home/nao/ORB_SLAM2
+/home/nao/ORB_SLAM2/include
+/home/nao/ORB_SLAM2/Thirdparty/DBoW2/lib/libDBoW2.so
+/home/nao/ORB_SLAM2/Thirdparty/g2o/lib/libg2o.so
+/home/nao/ORB_SLAM2/lib/libORB_SLAM2.so
+)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/Monocular)
 
-#add_executable(test
-#Examples/test/src/main.cpp Examples/test/src/SubscribeHandler.cpp)
-#target_link_libraries(test ${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/lib/libORB_SLAM2.so ${Boost_LIBRARIES} ${LIBS})
+add_executable(test
+Examples/test/src/main.cpp Examples/test/src/SubscribeHandler.cpp)
+target_link_libraries(test ${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/lib/libORB_SLAM2.so ${Boost_LIBRARIES} ${LIBS})
 
 #add_executable(mono_kitti
 #Examples/Monocular/mono_kitti.cc)
