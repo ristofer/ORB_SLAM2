@@ -17,10 +17,10 @@ SET (G2O_LIB_TYPE SHARED)
 
 # There seems to be an issue with MSVC8
 # see http://eigen.tuxfamily.org/bz/show_bug.cgi?id=83
-if(MSVC90)
-  add_definitions(-DEIGEN_DONT_ALIGN_STATICALLY=1)
-  message(STATUS "Disabling memory alignment for MSVC8")
-endif(MSVC90)
+#if(MSVC90)
+add_definitions(-DEIGEN_DONT_ALIGN_STATICALLY=1)
+message(STATUS "Disabling memory alignment for Pepper")
+#endif(MSVC90)
 
 # Set the output directory for the build executables and libraries
 IF(WIN32)
@@ -66,13 +66,13 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${g2o_CXX_FLAGS}")
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${g2o_C_FLAGS}")
 
 # Find Eigen3
-SET(EIGEN3_INCLUDE_DIR ${G2O_EIGEN3_INCLUDE})
-FIND_PACKAGE(Eigen3 3.1.0 REQUIRED)
-IF(EIGEN3_FOUND)
-  SET(G2O_EIGEN3_INCLUDE ${EIGEN3_INCLUDE_DIR} CACHE PATH "Directory of Eigen3")
-ELSE(EIGEN3_FOUND)
-  SET(G2O_EIGEN3_INCLUDE "" CACHE PATH "Directory of Eigen3")
-ENDIF(EIGEN3_FOUND)
+#SET(EIGEN3_INCLUDE_DIR ${G2O_EIGEN3_INCLUDE})
+#FIND_PACKAGE(Eigen3 3.1.0 REQUIRED)
+#IF(EIGEN3_FOUND)
+#  SET(G2O_EIGEN3_INCLUDE ${EIGEN3_INCLUDE_DIR} CACHE PATH "Directory of Eigen3")
+#ELSE(EIGEN3_FOUND)
+#  SET(G2O_EIGEN3_INCLUDE "" CACHE PATH "Directory of Eigen3")
+#ENDIF(EIGEN3_FOUND)
 
 # Generate config.h
 SET(G2O_CXX_COMPILER "${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER}")
@@ -83,7 +83,7 @@ INCLUDE_DIRECTORIES(
 ${g2o_SOURCE_DIR}/core
 ${g2o_SOURCE_DIR}/types
 ${g2o_SOURCE_DIR}/stuff 
-${G2O_EIGEN3_INCLUDE})
+/home/nao/eigen)
 
 # Include the subdirectories
 ADD_LIBRARY(g2o ${G2O_LIB_TYPE}
