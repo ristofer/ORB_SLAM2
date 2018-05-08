@@ -127,6 +127,9 @@ public:
     void SetOdomPose(const cv::Mat& T_w_c);
     g2o::SE3Quat mTF_w_c;
 
+
+    //method to get the draw frame
+    cv::Mat DrawFrame();
     // To odometry or not to odometry
     int useOdometry;
 
@@ -134,10 +137,9 @@ public:
 
 private:
     // Save/Load functions
-    void SaveMap(const string &filename);
-    void SaveMapXML(const string &filename);
-    bool LoadMap(const string &filename);
-    bool LoadMapXML(const string &filename);
+    void SaveMap(string filename);
+    bool LoadMap(string filename);
+    bool LoadMapXML(string filename);
 
 
 private:
