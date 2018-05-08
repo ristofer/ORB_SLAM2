@@ -32,11 +32,10 @@
 
 #include"Optimizer.h"
 #include"PnPsolver.h"
-#include "../include/Tracking.h"
 
 #include<iostream>
 
-#include<mutex>
+//#include<mutex>
 
 
 using namespace std;
@@ -316,7 +315,7 @@ void Tracking::Track()
     mLastProcessedState=mState;
 
     // Get Map Mutex -> Map cannot be changed
-    unique_lock<mutex> lock(mpMap->mMutexMapUpdate);
+    boost::mutex::scoped_lock lock(mpMap->mMutexMapUpdate);
 
     if(mState==NOT_INITIALIZED)
     {
@@ -1613,7 +1612,7 @@ void Tracking::Reset()
         mpViewer->RequestStop();
         while(!mpViewer->isStopped())
         {
-            std::this_thread::sleep_for(std::chrono::microseconds(3000));
+            boost::this_thread::sleep_for(boost::chrono::microseconds(3000));
         }
     }
 

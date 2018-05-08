@@ -75,6 +75,8 @@ ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
 
 find_package(Boost REQUIRED COMPONENTS 
 serialization
+thread
+system
 )
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 

@@ -28,8 +28,8 @@
 
 #include "ORBmatcher.h"
 
-#include<mutex>
-#include<thread>
+//#include<mutex>
+#include <boost/thread.hpp>
 
 
 namespace ORB_SLAM2
@@ -81,7 +81,7 @@ void LoopClosing::Run()
         if(CheckFinish())
             break;
 
-        std::this_thread::sleep_for(std::chrono::microseconds(5000));
+        boost::this_thread::sleep_for(boost::chrono::microseconds(5000));
     }
 
     SetFinish();
@@ -89,21 +89,21 @@ void LoopClosing::Run()
 
 void LoopClosing::InsertKeyFrame(KeyFrame *pKF)
 {
-    unique_lock<mutex> lock(mMutexLoopQueue);
+    boost::mutex::scoped_lock lock(mMutexLoopQueue);
     if(pKF->mnId!=0)
         mlpLoopKeyFrameQueue.push_back(pKF);
 }
 
 bool LoopClosing::CheckNewKeyFrames()
 {
-    unique_lock<mutex> lock(mMutexLoopQueue);
+    boost::mutex::scoped_lock lock(mMutexLoopQueue);
     return(!mlpLoopKeyFrameQueue.empty());
 }
 
 bool LoopClosing::DetectLoop()
 {
     {
-        unique_lock<mutex> lock(mMutexLoopQueue);
+        boost::mutex::scoped_lock lock(mMutexLoopQueue);
         mpCurrentKF = mlpLoopKeyFrameQueue.front();
         mlpLoopKeyFrameQueue.pop_front();
         // Avoid that a keyframe can be erased while it is being process by this thread
@@ -410,7 +410,7 @@ void LoopClosing::CorrectLoop()
     // If a Global Bundle Adjustment is running, abort it
     if(isRunningGBA())
     {
-        unique_lock<mutex> lock(mMutexGBA);
+        boost::mutex::scoped_lock lock(mMutexGBA);
         mbStopGBA = true;
 
         mnFullBAIdx++;
@@ -425,7 +425,7 @@ void LoopClosing::CorrectLoop()
     // Wait until Local Mapping has effectively stopped
     while(!mpLocalMapper->isStopped())
     {
-        std::this_thread::sleep_for(std::chrono::microseconds(1000));
+        boost::this_thread::sleep_for(boost::chrono::microseconds(1000));
     }
 
     // Ensure current keyframe is updated
@@ -442,7 +442,7 @@ void LoopClosing::CorrectLoop()
 
     {
         // Get Map Mutex
-        unique_lock<mutex> lock(mpMap->mMutexMapUpdate);
+        boost::mutex::scoped_lock lock(mpMap->mMutexMapUpdate);
 
         for(vector<KeyFrame*>::iterator vit=mvpCurrentConnectedKFs.begin(), vend=mvpCurrentConnectedKFs.end(); vit!=vend; vit++)
         {
@@ -576,7 +576,7 @@ void LoopClosing::CorrectLoop()
     mbRunningGBA = true;
     mbFinishedGBA = false;
     mbStopGBA = false;
-    mpThreadGBA = new thread(&LoopClosing::RunGlobalBundleAdjustment,this,mpCurrentKF->mnId);
+    mpThreadGBA = new boost::thread(&LoopClosing::RunGlobalBundleAdjustment,this,mpCurrentKF->mnId);
 
     // Loop closed. Release Local Mapping.
     mpLocalMapper->Release();    
@@ -599,7 +599,7 @@ void LoopClosing::SearchAndFuse(const KeyFrameAndPose &CorrectedPosesMap)
         matcher.Fuse(pKF,cvScw,mvpLoopMapPoints,4,vpReplacePoints);
 
         // Get Map Mutex
-        unique_lock<mutex> lock(mpMap->mMutexMapUpdate);
+        boost::mutex::scoped_lock lock(mpMap->mMutexMapUpdate);
         const int nLP = mvpLoopMapPoints.size();
         for(int i=0; i<nLP;i++)
         {
@@ -616,24 +616,24 @@ void LoopClosing::SearchAndFuse(const KeyFrameAndPose &CorrectedPosesMap)
 void LoopClosing::RequestReset()
 {
     {
-        unique_lock<mutex> lock(mMutexReset);
+        boost::mutex::scoped_lock lock(mMutexReset);
         mbResetRequested = true;
     }
 
     while(1)
     {
         {
-        unique_lock<mutex> lock2(mMutexReset);
+        boost::mutex::scoped_lock lock2(mMutexReset);
         if(!mbResetRequested)
             break;
         }
-        std::this_thread::sleep_for(std::chrono::microseconds(5000));
+        boost::this_thread::sleep_for(boost::chrono::microseconds(5000));
     }
 }
 
 void LoopClosing::ResetIfRequested()
 {
-    unique_lock<mutex> lock(mMutexReset);
+    boost::mutex::scoped_lock lock(mMutexReset);
     if(mbResetRequested)
     {
         mlpLoopKeyFrameQueue.clear();
@@ -656,7 +656,7 @@ void LoopClosing::RunGlobalBundleAdjustment(unsigned long nLoopKF)
     // not included in the Global BA and they are not consistent with the updated map.
     // We need to propagate the correction through the spanning tree
     {
-        unique_lock<mutex> lock(mMutexGBA);
+        boost::mutex::scoped_lock lock(mMutexGBA);
         if(idx!=mnFullBAIdx)
             return;
 
@@ -669,11 +669,11 @@ void LoopClosing::RunGlobalBundleAdjustment(unsigned long nLoopKF)
 
             while(!mpLocalMapper->isStopped() && !mpLocalMapper->isFinished())
             {
-                std::this_thread::sleep_for(std::chrono::microseconds(1000));
+                boost::this_thread::sleep_for(boost::chrono::microseconds(1000));
             }
 
             // Get Map Mutex
-            unique_lock<mutex> lock(mpMap->mMutexMapUpdate);
+            boost::mutex::scoped_lock lock(mpMap->mMutexMapUpdate);
 
             // Correct keyframes starting at map first keyframe
             list<KeyFrame*> lpKFtoCheck(mpMap->mvpKeyFrameOrigins.begin(),mpMap->mvpKeyFrameOrigins.end());
@@ -752,25 +752,25 @@ void LoopClosing::RunGlobalBundleAdjustment(unsigned long nLoopKF)
 
 void LoopClosing::RequestFinish()
 {
-    unique_lock<mutex> lock(mMutexFinish);
+    boost::mutex::scoped_lock lock(mMutexFinish);
     mbFinishRequested = true;
 }
 
 bool LoopClosing::CheckFinish()
 {
-    unique_lock<mutex> lock(mMutexFinish);
+    boost::mutex::scoped_lock lock(mMutexFinish);
     return mbFinishRequested;
 }
 
 void LoopClosing::SetFinish()
 {
-    unique_lock<mutex> lock(mMutexFinish);
+    boost::mutex::scoped_lock lock(mMutexFinish);
     mbFinished = true;
 }
 
 bool LoopClosing::isFinished()
 {
-    unique_lock<mutex> lock(mMutexFinish);
+    boost::mutex::scoped_lock lock(mMutexFinish);
     return mbFinished;
 }
 

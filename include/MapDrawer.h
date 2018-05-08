@@ -25,8 +25,8 @@
 #include"MapPoint.h"
 #include"KeyFrame.h"
 #include<pangolin/pangolin.h>
-
-#include<mutex>
+#include <boost/thread.hpp>
+//#include<mutex>
 
 namespace ORB_SLAM2
 {

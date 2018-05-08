@@ -25,9 +25,8 @@
 #define EIGEN_DONT_VECTORIZE
 #define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 #include<string>
-#include<thread>
 #include<opencv2/core/core.hpp>
-
+#include<boost/thread.hpp>
 #include "Tracking.h"
 #include "FrameDrawer.h"
 #include "MapDrawer.h"
@@ -37,7 +36,7 @@
 #include "KeyFrameDatabase.h"
 #include "ORBVocabulary.h"
 #include "Viewer.h"
-
+#include <boost/thread.hpp>
 #include "BoostArchiver.h"
 // for map file io
 #include <fstream>
@@ -176,16 +175,16 @@ private:
 
     // System threads: Local Mapping, Loop Closing, Viewer.
     // The Tracking thread "lives" in the main execution thread that creates the System object.
-    std::thread* mptLocalMapping;
-    std::thread* mptLoopClosing;
-    std::thread* mptViewer;
+    boost::thread* mptLocalMapping;
+    boost::thread* mptLoopClosing;
+    boost::thread* mptViewer;
 
     // Reset flag
-    std::mutex mMutexReset;
+    boost::mutex mMutexReset;
     bool mbReset;
 
     // Change mode flags
-    std::mutex mMutexMode;
+    boost::mutex mMutexMode;
     bool mbActivateLocalizationMode;
     bool mbDeactivateLocalizationMode;
 
@@ -193,7 +192,7 @@ private:
     int mTrackingState;
     std::vector<MapPoint*> mTrackedMapPoints;
     std::vector<cv::KeyPoint> mTrackedKeyPointsUn;
-    std::mutex mMutexState;
+    boost::mutex mMutexState;
 
 
     cv::Mat InvertcvMat(cv::Mat Tcw);

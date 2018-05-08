@@ -20,8 +20,8 @@
 
 #include "Frame.h"
 #include "ORBmatcher.h"
-#include <thread>
-
+//#include <thread>
+#include<boost/thread.hpp>
 namespace ORB_SLAM2
 {
 
@@ -77,8 +77,8 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeSt
     mvInvLevelSigma2 = mpORBextractorLeft->GetInverseScaleSigmaSquares();
 
     // ORB extraction
-    thread threadLeft(&Frame::ExtractORB,this,0,imLeft);
-    thread threadRight(&Frame::ExtractORB,this,1,imRight);
+    boost::thread threadLeft(&Frame::ExtractORB,this,0,imLeft);
+    boost::thread threadRight(&Frame::ExtractORB,this,1,imRight);
     threadLeft.join();
     threadRight.join();
 

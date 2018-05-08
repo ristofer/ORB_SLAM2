@@ -26,9 +26,9 @@
 #include"KeyFrame.h"
 #include"Frame.h"
 #include"Map.h"
-
+#include <boost/thread.hpp>
 #include<opencv2/core/core.hpp>
-#include<mutex>
+//#include<mutex>
 #include "BoostArchiver.h"
 
 namespace ORB_SLAM2
@@ -122,7 +122,7 @@ public:
     long unsigned int mnBAGlobalForKF;
 
 
-    static std::mutex mGlobalMutex;
+    static boost::mutex mGlobalMutex;
 
 protected:    
 
@@ -155,8 +155,8 @@ protected:
 
      Map* mpMap;
 
-     std::mutex mMutexPos;
-     std::mutex mMutexFeatures;
+     boost::mutex mMutexPos;
+     boost::mutex mMutexFeatures;
 };
 
 } //namespace ORB_SLAM

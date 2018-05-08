@@ -21,7 +21,8 @@
 #include "Viewer.h"
 #include <pangolin/pangolin.h>
 #include "Optimizer.h"
-#include <mutex>
+#include <boost/thread.hpp>
+//#include <mutex>
 
 namespace ORB_SLAM2
 {
@@ -194,7 +195,7 @@ void Viewer::Run()
         {
             while(isStopped())
             {
-                std::this_thread::sleep_for(std::chrono::microseconds(3000));
+                boost::this_thread::sleep_for(boost::chrono::microseconds(3000));
             }
         }
 
@@ -207,45 +208,45 @@ void Viewer::Run()
 
 void Viewer::RequestFinish()
 {
-    unique_lock<mutex> lock(mMutexFinish);
+    boost::mutex::scoped_lock lock(mMutexFinish);
     mbFinishRequested = true;
 }
 
 bool Viewer::CheckFinish()
 {
-    unique_lock<mutex> lock(mMutexFinish);
+    boost::mutex::scoped_lock lock(mMutexFinish);
     return mbFinishRequested;
 }
 
 void Viewer::SetFinish()
 {
-    unique_lock<mutex> lock(mMutexFinish);
+    boost::mutex::scoped_lock lock(mMutexFinish);
     mbFinished = true;
 }
 
 bool Viewer::isFinished()
 {
-    unique_lock<mutex> lock(mMutexFinish);
+    boost::mutex::scoped_lock lock(mMutexFinish);
     return mbFinished;
 }
 
 void Viewer::RequestStop()
 {
-    unique_lock<mutex> lock(mMutexStop);
+    boost::mutex::scoped_lock lock(mMutexStop);
     if(!mbStopped)
         mbStopRequested = true;
 }
 
 bool Viewer::isStopped()
 {
-    unique_lock<mutex> lock(mMutexStop);
+    boost::mutex::scoped_lock lock(mMutexStop);
     return mbStopped;
 }
 
 bool Viewer::Stop()
 {
-    unique_lock<mutex> lock(mMutexStop);
-    unique_lock<mutex> lock2(mMutexFinish);
+    boost::mutex::scoped_lock lock(mMutexStop);
+    boost::mutex::scoped_lock lock2(mMutexFinish);
 
     if(mbFinishRequested)
         return false;
@@ -262,7 +263,7 @@ bool Viewer::Stop()
 
 void Viewer::Release()
 {
-    unique_lock<mutex> lock(mMutexStop);
+    boost::mutex::scoped_lock lock(mMutexStop);
     mbStopped = false;
 }
 

@@ -23,7 +23,7 @@
 
 #include "System.h"
 #include "Converter.h"
-#include <thread>
+#include <boost/thread.hpp>
 #include <pangolin/pangolin.h>
 #include <iomanip>
 #include <fstream>
@@ -148,17 +148,17 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
 
     //Initialize the Local Mapping thread and launch
     mpLocalMapper = new LocalMapping(mpMap, strSettingsFile, mSensor==MONOCULAR);
-    mptLocalMapping = new thread(&ORB_SLAM2::LocalMapping::Run,mpLocalMapper);
+    mptLocalMapping = new boost::thread(&ORB_SLAM2::LocalMapping::Run,mpLocalMapper);
 
     //Initialize the Loop Closing thread and launch
     mpLoopCloser = new LoopClosing(mpMap, mpKeyFrameDatabase, mpVocabulary, true);
-    mptLoopClosing = new thread(&ORB_SLAM2::LoopClosing::Run, mpLoopCloser);
+    mptLoopClosing = new boost::thread(&ORB_SLAM2::LoopClosing::Run, mpLoopCloser);
 
     //Initialize the Viewer thread and launch
     if(bUseViewer)
     {
         mpViewer = new Viewer(this, mpFrameDrawer,mpMapDrawer,mpTracker,mpMap, strSettingsFile, bReuseMap);
-        mptViewer = new thread(&Viewer::Run, mpViewer);
+        mptViewer = new boost::thread(&Viewer::Run, mpViewer);
         mpTracker->SetViewer(mpViewer);
     }
 
@@ -183,7 +183,7 @@ cv::Mat System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const
 
     // Check mode change
     {
-        unique_lock<mutex> lock(mMutexMode);
+        boost::mutex::scoped_lock lock(mMutexMode);
         if(mbActivateLocalizationMode)
         {
             mpLocalMapper->RequestStop();
@@ -191,7 +191,7 @@ cv::Mat System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const
             // Wait until Local Mapping has effectively stopped
             while(!mpLocalMapper->isStopped())
             {
-                std::this_thread::sleep_for(std::chrono::microseconds(1000));
+                boost::this_thread::sleep_for(boost::chrono::microseconds(1000));
             }
 
             mpTracker->InformOnlyTracking(true);
@@ -207,7 +207,7 @@ cv::Mat System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const
 
     // Check reset
     {
-    unique_lock<mutex> lock(mMutexReset);
+    boost::mutex::scoped_lock lock(mMutexReset);
     if(mbReset)
     {
         mpTracker->Reset();
@@ -217,7 +217,7 @@ cv::Mat System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const
 
     cv::Mat Tcw = mpTracker->GrabImageStereo(imLeft,imRight,timestamp);
 
-    unique_lock<mutex> lock2(mMutexState);
+    boost::mutex::scoped_lock lock2(mMutexState);
     mTrackingState = mpTracker->mState;
     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
@@ -234,7 +234,7 @@ cv::Mat System::TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const doub
 
     // Check mode change
     {
-        unique_lock<mutex> lock(mMutexMode);
+        boost::mutex::scoped_lock lock(mMutexMode);
         if(mbActivateLocalizationMode)
         {
             mpLocalMapper->RequestStop();
@@ -242,7 +242,7 @@ cv::Mat System::TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const doub
             // Wait until Local Mapping has effectively stopped
             while(!mpLocalMapper->isStopped())
             {
-                std::this_thread::sleep_for(std::chrono::microseconds(1000));
+                boost::this_thread::sleep_for(boost::chrono::microseconds(1000));
             }
 
             mpTracker->InformOnlyTracking(true);
@@ -258,7 +258,7 @@ cv::Mat System::TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const doub
 
     // Check reset
     {
-    unique_lock<mutex> lock(mMutexReset);
+    boost::mutex::scoped_lock lock(mMutexReset);
     if(mbReset)
     {
         mpTracker->Reset();
@@ -268,7 +268,7 @@ cv::Mat System::TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const doub
 
     cv::Mat Tcw = mpTracker->GrabImageRGBD(im,depthmap,timestamp);
 
-    unique_lock<mutex> lock2(mMutexState);
+    boost::mutex::scoped_lock lock2(mMutexState);
     mTrackingState = mpTracker->mState;
     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
@@ -285,7 +285,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
 
     // Check mode change
     {
-        unique_lock<mutex> lock(mMutexMode);
+        boost::mutex::scoped_lock lock(mMutexMode);
         if(mbActivateLocalizationMode)
         {
             mpLocalMapper->RequestStop();
@@ -293,7 +293,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
             // Wait until Local Mapping has effectively stopped
             while(!mpLocalMapper->isStopped())
             {
-                std::this_thread::sleep_for(std::chrono::microseconds(1000));
+                boost::this_thread::sleep_for(boost::chrono::microseconds(1000));
             }
 
             mpTracker->InformOnlyTracking(true);
@@ -309,7 +309,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
 
     // Check reset
     {
-    unique_lock<mutex> lock(mMutexReset);
+    boost::mutex::scoped_lock lock(mMutexReset);
     if(mbReset)
     {
         mpTracker->Reset();
@@ -324,7 +324,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
     else
         Tcw = mpTracker->GrabImageMonocular(im,timestamp);
 
-    unique_lock<mutex> lock2(mMutexState);
+    boost::mutex::scoped_lock lock2(mMutexState);
     mTrackingState = mpTracker->mState;
     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
@@ -360,13 +360,13 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
 
 void System::ActivateLocalizationMode()
 {   
-    unique_lock<mutex> lock(mMutexMode);
+    boost::mutex::scoped_lock lock(mMutexMode);
     mbActivateLocalizationMode = true;
 }
 
 void System::DeactivateLocalizationMode()
 {
-    unique_lock<mutex> lock(mMutexMode);
+    boost::mutex::scoped_lock lock(mMutexMode);
     mbDeactivateLocalizationMode = true;
 }
 
@@ -385,7 +385,7 @@ bool System::MapChanged()
 
 void System::Reset()
 {
-    unique_lock<mutex> lock(mMutexReset);
+    boost::mutex::scoped_lock lock(mMutexReset);
     mbReset = true;
 }
 
@@ -398,14 +398,14 @@ void System::Shutdown()
         mpViewer->RequestFinish();
         while(!mpViewer->isFinished())
         {
-            std::this_thread::sleep_for(std::chrono::microseconds(5000));
+            boost::this_thread::sleep_for(boost::chrono::microseconds(5000));
         }
     }
 
     // Wait until all thread have effectively stopped
     while(!mpLocalMapper->isFinished() || !mpLoopCloser->isFinished() || mpLoopCloser->isRunningGBA())
     {
-        std::this_thread::sleep_for(std::chrono::microseconds(5000));
+        boost::this_thread::sleep_for(boost::chrono::microseconds(5000));
     }
     if(mpViewer)
         pangolin::BindToContext("ORB-SLAM2: Map Viewer");
@@ -582,19 +582,19 @@ void System::SaveTrajectoryKITTI(const string &filename)
 
 int System::GetTrackingState()
 {
-    unique_lock<mutex> lock(mMutexState);
+    boost::mutex::scoped_lock lock(mMutexState);
     return mTrackingState;
 }
 
 vector<MapPoint*> System::GetTrackedMapPoints()
 {
-    unique_lock<mutex> lock(mMutexState);
+    boost::mutex::scoped_lock lock(mMutexState);
     return mTrackedMapPoints;
 }
 
 vector<cv::KeyPoint> System::GetTrackedKeyPointsUn()
 {
-    unique_lock<mutex> lock(mMutexState);
+    boost::mutex::scoped_lock lock(mMutexState);
     return mTrackedKeyPointsUn;
 }
 void System::SetOdomPose(const cv::Mat& T_w_c)

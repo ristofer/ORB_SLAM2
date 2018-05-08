@@ -27,9 +27,9 @@
 #include "Tracking.h"
 #include "KeyFrameDatabase.h"
 #include "Converter.h"
-
+#include <boost/thread.hpp>
 #include <Eigen/Dense>
-#include <mutex>
+//#include <mutex>
 
 
 namespace ORB_SLAM2
@@ -70,7 +70,7 @@ public:
     bool isFinished();
 
     int KeyframesInQueue(){
-        unique_lock<std::mutex> lock(mMutexNewKFs);
+        boost::mutex::scoped_lock lock(mMutexNewKFs);
         return mlNewKeyFrames.size();
     }
 protected:
@@ -92,13 +92,13 @@ protected:
 
     void ResetIfRequested();
     bool mbResetRequested;
-    std::mutex mMutexReset;
+    boost::mutex mMutexReset;
 
     bool CheckFinish();
     void SetFinish();
     bool mbFinishRequested;
     bool mbFinished;
-    std::mutex mMutexFinish;
+    boost::mutex mMutexFinish;
 
     Map* mpMap;
 
@@ -111,17 +111,17 @@ protected:
 
     std::list<MapPoint*> mlpRecentAddedMapPoints;
 
-    std::mutex mMutexNewKFs;
+    boost::mutex mMutexNewKFs;
 
     bool mbAbortBA;
 
     bool mbStopped;
     bool mbStopRequested;
     bool mbNotStop;
-    std::mutex mMutexStop;
+    boost::mutex mMutexStop;
 
     bool mbAcceptKeyFrames;
-    std::mutex mMutexAccept;
+    boost::mutex mMutexAccept;
 
     // To odometry or not to odometry
     int useOdometry;

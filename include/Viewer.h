@@ -27,8 +27,8 @@
 #include "Tracking.h"
 #include "System.h"
 #include "Map.h"
-
-#include <mutex>
+#include <boost/thread.hpp>
+//#include <mutex>
 
 namespace ORB_SLAM2
 {
@@ -80,13 +80,13 @@ private:
     void SetFinish();
     bool mbFinishRequested;
     bool mbFinished;
-    std::mutex mMutexFinish;
+    boost::mutex mMutexFinish;
 
     bool mbStopped;
     bool mbStopRequested;
     bool mbReuseMap;
 
-    std::mutex mMutexStop;
+    boost::mutex mMutexStop;
 
 };
 
