@@ -24,7 +24,7 @@
 #include "System.h"
 #include "Converter.h"
 #include <boost/thread.hpp>
-#include <pangolin/pangolin.h>
+//#include <pangolin/pangolin.h>
 #include <iomanip>
 #include <fstream>
 
@@ -38,7 +38,7 @@ namespace ORB_SLAM2
 {
 
 System::System(const string &strVocFile, const string &strSettingsFile, const eSensor sensor,
-               const bool bUseViewer, bool is_save_map_):mSensor(sensor), is_save_map(is_save_map_), mpViewer(static_cast<Viewer*>(NULL)), mbReset(false),
+               const bool bUseViewer, bool is_save_map_):mSensor(sensor), is_save_map(is_save_map_), mbReset(false),
         mbActivateLocalizationMode(false), mbDeactivateLocalizationMode(false)
 {
     //Check settings file
@@ -131,11 +131,11 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
 
     //Create Drawers. These are used by the Viewer
     mpFrameDrawer = new FrameDrawer(mpMap, bReuseMap);
-    mpMapDrawer = new MapDrawer(mpMap, strSettingsFile);
+    //mpMapDrawer = new MapDrawer(mpMap, strSettingsFile);
 
     //Initialize the Tracking thread
     //(it will live in the main thread of execution, the one that called this constructor)
-    mpTracker = new Tracking(this, mpVocabulary, mpFrameDrawer, mpMapDrawer,
+    mpTracker = new Tracking(this, mpVocabulary, mpFrameDrawer,
                              mpMap, mpKeyFrameDatabase, strSettingsFile, mSensor, bReuseMap);
 
     if(bReuseMap) {
@@ -155,12 +155,12 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     mptLoopClosing = new boost::thread(&ORB_SLAM2::LoopClosing::Run, mpLoopCloser);
 
     //Initialize the Viewer thread and launch
-    if(bUseViewer)
-    {
-        mpViewer = new Viewer(this, mpFrameDrawer,mpMapDrawer,mpTracker,mpMap, strSettingsFile, bReuseMap);
-        mptViewer = new boost::thread(&Viewer::Run, mpViewer);
-        mpTracker->SetViewer(mpViewer);
-    }
+    //if(bUseViewer)
+    //{
+    //    mpViewer = new Viewer(this, mpFrameDrawer,mpMapDrawer,mpTracker,mpMap, strSettingsFile, bReuseMap);
+    //    mptViewer = new boost::thread(&Viewer::Run, mpViewer);
+    //   mpTracker->SetViewer(mpViewer);
+    //}
 
     //Set pointers between threads
     mpTracker->SetLocalMapper(mpLocalMapper);
@@ -393,22 +393,22 @@ void System::Shutdown()
 {
     mpLocalMapper->RequestFinish();
     mpLoopCloser->RequestFinish();
-    if(mpViewer)
-    {
-        mpViewer->RequestFinish();
-        while(!mpViewer->isFinished())
-        {
-            boost::this_thread::sleep_for(boost::chrono::microseconds(5000));
-        }
-    }
+    //if(mpViewer)
+    //{
+     //   mpViewer->RequestFinish();
+     //   while(!mpViewer->isFinished())
+     //   {
+     //       boost::this_thread::sleep_for(boost::chrono::microseconds(5000));
+     //   }
+    //}
 
     // Wait until all thread have effectively stopped
     while(!mpLocalMapper->isFinished() || !mpLoopCloser->isFinished() || mpLoopCloser->isRunningGBA())
     {
         boost::this_thread::sleep_for(boost::chrono::microseconds(5000));
     }
-    if(mpViewer)
-        pangolin::BindToContext("ORB-SLAM2: Map Viewer");
+    //if(mpViewer)
+    //    pangolin::BindToContext("ORB-SLAM2: Map Viewer");
     if (is_save_map)
         SaveMapXML("file.xml");
         //SaveMap("file.bin");

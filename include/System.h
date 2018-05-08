@@ -29,13 +29,13 @@
 #include<boost/thread.hpp>
 #include "Tracking.h"
 #include "FrameDrawer.h"
-#include "MapDrawer.h"
+//#include "MapDrawer.h"
 #include "Map.h"
 #include "LocalMapping.h"
 #include "LoopClosing.h"
 #include "KeyFrameDatabase.h"
 #include "ORBVocabulary.h"
-#include "Viewer.h"
+//#include "Viewer.h"
 #include <boost/thread.hpp>
 #include "BoostArchiver.h"
 // for map file io
@@ -168,10 +168,10 @@ private:
     LoopClosing* mpLoopCloser;
 
     // The viewer draws the map and the current camera pose. It uses Pangolin.
-    Viewer* mpViewer;
+   // Viewer* mpViewer;
 
     FrameDrawer* mpFrameDrawer;
-    MapDrawer* mpMapDrawer;
+    //MapDrawer* mpMapDrawer;
 
     // System threads: Local Mapping, Loop Closing, Viewer.
     // The Tracking thread "lives" in the main execution thread that creates the System object.
