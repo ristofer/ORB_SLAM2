@@ -42,7 +42,7 @@ find_package(Pangolin REQUIRED)
 include_directories(
 ${PROJECT_SOURCE_DIR}
 ${PROJECT_SOURCE_DIR}/include
-/home/robotica/eigen/Eigen
+/home/robotica/eigen
 ${Pangolin_INCLUDE_DIRS}
 )
 
