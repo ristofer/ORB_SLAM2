@@ -42,7 +42,7 @@ endif()
 include_directories(
 ${PROJECT_SOURCE_DIR}
 ${PROJECT_SOURCE_DIR}/include
-/home/nao/eigen
+/home/robotica/eigen
 #${Pangolin_INCLUDE_DIRS}
 )
 
