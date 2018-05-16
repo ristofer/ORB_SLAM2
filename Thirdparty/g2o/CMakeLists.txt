@@ -83,7 +83,7 @@ INCLUDE_DIRECTORIES(
 ${g2o_SOURCE_DIR}/core
 ${g2o_SOURCE_DIR}/types
 ${g2o_SOURCE_DIR}/stuff 
-/home/nao/eigen)
+/home/robotica/eigen)
 
 # Include the subdirectories
 ADD_LIBRARY(g2o ${G2O_LIB_TYPE}

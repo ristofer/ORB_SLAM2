@@ -46,7 +46,7 @@ chrono)
 include_directories(
 ${PROJECT_SOURCE_DIR}
 ${PROJECT_SOURCE_DIR}/include
-/home/nao/eigen
+/home/robotica/eigen
 #${Pangolin_INCLUDE_DIRS}
 ${Boost_INCLUDE_DIR}
 ${PROJECT_SOURCE_DIR}/Examples/test/include
@@ -66,7 +66,7 @@ ${HEADER_FILES}
 
 target_link_libraries(${PROJECT_NAME}
 ${OpenCV_LIBS}
-/home/nao/eigen
+/home/robotica/eigen
 #${Pangolin_LIBRARIES}
 ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
 ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
@@ -109,12 +109,12 @@ target_link_libraries(${PROJECT_NAME} ${BOOST_SERIALIZATION})
 
 set(LIBS 
 ${OpenCV_LIBS} 
-/home/nao/eigen
-/home/nao/ORB_SLAM2
-/home/nao/ORB_SLAM2/include
-/home/nao/ORB_SLAM2/Thirdparty/DBoW2/lib/libDBoW2.so
-/home/nao/ORB_SLAM2/Thirdparty/g2o/lib/libg2o.so
-/home/nao/ORB_SLAM2/lib/libORB_SLAM2.so
+/home/robotica/eigen
+/home/robotica/alt_orb/ORB_SLAM2
+/home/robotica/alt_orb/ORB_SLAM2/include
+/home/robotica/alt_orb/ORB_SLAM2/Thirdparty/DBoW2/lib/libDBoW2.so
+/home/robotica/alt_orb/ORB_SLAM2/Thirdparty/g2o/lib/libg2o.so
+/home/robotica/alt_orb/ORB_SLAM2/lib/libORB_SLAM2.so
 )
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/Monocular)
 
