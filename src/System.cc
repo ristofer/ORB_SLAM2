@@ -411,7 +411,7 @@ void System::Shutdown()
         pangolin::BindToContext("ORB-SLAM2: Map Viewer");
     if (is_save_map)
         SaveMapXML("file.xml");
-        //SaveMap("file.bin");
+        SaveMap("file.bin");
 
 }
 
