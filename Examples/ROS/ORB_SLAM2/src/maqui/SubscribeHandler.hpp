@@ -17,7 +17,7 @@ TODOs:
 //#include <string>
 
 // ROS
-#include<ros/ros.h>
+#include <ros/ros.h>
 #include <sensor_msgs/Image.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <std_msgs/Int8.h>
@@ -30,6 +30,15 @@ TODOs:
 // cv bridge
 #include <opencv2/core/core.hpp>
 #include <cv_bridge/cv_bridge.h>
+
+#include <geometry_msgs/Pose.h>
+#include <geometry_msgs/PoseStamped.h>
+#include <sensor_msgs/PointCloud2.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/point_types.h>
+#include <pcl_conversions/pcl_conversions.h> 
+#include <pcl_ros/transforms.h>
+#include <pcl/point_cloud.h> 
 
 //Eigen
 #include <Eigen/Geometry>
@@ -61,6 +70,8 @@ private:
     void GrabImage(const sensor_msgs::ImageConstPtr &msg);
     void Publish_Orientation(cv::Mat Tcw, tf::StampedTransform T_w_c);
     void Publish_Tracking_State(int state);
+    void GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all_point_cloud, sensor_msgs::PointCloud2 &ref_point_cloud);
+    void PointCloudPub();
 
     cv::Mat tfToMat(const tf::StampedTransform& tfT);
     Eigen::Matrix<double,3,3> toMatrix3d(const cv::Mat &cvMat3);
@@ -73,6 +84,10 @@ private:
     ros::Subscriber subImage;
     ros::Publisher maqui_orientation;
     ros::Publisher tracking_state;
+
+    ros::Publisher AllPointCloud_pub_;
+    ros::Publisher RefPointCloud_pub_; 
+
     ros::NodeHandle* mpNodeHandler;
     tf::TransformListener* mpTFlistener;
     tf::TransformBroadcaster* mpTFbroadcaster;

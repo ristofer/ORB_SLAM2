@@ -227,3 +227,82 @@ void SubscribeHandler::Shutdown(){
 
 
 
+void SubscribeHandler::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all_point_cloud, sensor_msgs::PointCloud2 &ref_point_cloud)
+{
+    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_all( new pcl::PointCloud<pcl::PointXYZRGBA> );  
+    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_ref( new pcl::PointCloud<pcl::PointXYZRGBA> );     
+    
+    const vector<MapPoint*> &vpMPs = mpSLAM->mpMap->GetAllMapPoints();
+    const vector<MapPoint*> &vpRefMPs = mpSLAM->mpMap->GetReferenceMapPoints();
+    
+    set<MapPoint*> spRefMPs(vpRefMPs.begin(), vpRefMPs.end());
+
+    if(vpMPs.empty())
+        return;
+    
+    for(size_t i=0, iend=vpMPs.size(); i<iend;i++)
+    {
+        if(vpMPs[i]->isBad() || spRefMPs.count(vpMPs[i]))
+            continue;
+        cv::Mat pos = vpMPs[i]->GetWorldPos();
+        pcl::PointXYZRGBA p1;
+    Eigen::Vector4f p1_temp, p1_temp_t;
+    p1_temp(0) = pos.at<float>(0);
+    p1_temp(1) = pos.at<float>(1);
+    p1_temp(2) = pos.at<float>(2);
+    p1_temp(3) = 1; 
+    p1_temp_t = p1_temp;    
+    p1.x = p1_temp_t(0);
+    p1.y = p1_temp_t(1);
+    p1.z = p1_temp_t(2);
+    p1.b = 255;
+    p1.g = 255;
+    p1.r = 255;
+    p1.a = 255;
+    cloud_all->points.push_back( p1 );
+    }
+    pcl::PCLPointCloud2 pcl_pc1;
+    pcl::toPCLPointCloud2(*cloud_all, pcl_pc1);    // pcl::PointXYZRGBA -> pcl::PCLPointCloud2
+    pcl_conversions::fromPCL(pcl_pc1, all_point_cloud);  // pcl::PCLPointCloud2 -> sensor_msgs::PointCloud2
+    all_point_cloud.header.frame_id = "map";  
+    all_point_cloud.header.stamp = ros::Time::now();   
+  
+    for(set<MapPoint*>::iterator sit=spRefMPs.begin(), send=spRefMPs.end(); sit!=send; sit++)
+    {
+        if((*sit)->isBad())
+            continue;
+        cv::Mat pos = (*sit)->GetWorldPos();
+        pcl::PointXYZRGBA p2;
+    Eigen::Vector4f p2_temp, p2_temp_t;
+    p2_temp(0) = pos.at<float>(0);
+    p2_temp(1) = pos.at<float>(1);
+    p2_temp(2) = pos.at<float>(2);
+    p2_temp(3) = 1;
+    p2_temp_t = p2_temp;    
+    p2.x = p2_temp_t(0);
+    p2.y = p2_temp_t(1);
+    p2.z = p2_temp_t(2);
+    p2.b = 0;
+    p2.g = 0;
+    p2.r = 255;
+    p2.a = 255;
+    cloud_ref->points.push_back( p2 );
+    }
+    pcl::PCLPointCloud2 pcl_pc2;
+    pcl::toPCLPointCloud2(*cloud_ref, pcl_pc2); // pcl::PointXYZRGBA -> pcl::PCLPointCloud2
+    pcl_conversions::fromPCL(pcl_pc2, ref_point_cloud);  // pcl::PCLPointCloud2 -> sensor_msgs::PointCloud2
+    ref_point_cloud.header.frame_id = "map";
+    ref_point_cloud.header.stamp = ros::Time::now();   
+
+}
+
+void SlamDataPub::PointCloudPub()
+{
+    sensor_msgs::PointCloud2 allMapPoints;
+    sensor_msgs::PointCloud2 referenceMapPoints;
+          
+    GetCurrentROSAllPointCloud(allMapPoints, referenceMapPoints);
+    AllPointCloud_pub_.publish(allMapPoints);
+    RefPointCloud_pub_.publish(referenceMapPoints);
+    
+}
