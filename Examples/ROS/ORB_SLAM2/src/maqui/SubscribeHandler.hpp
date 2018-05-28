@@ -45,6 +45,7 @@ TODOs:
 
 // ORB-SLAM
 #include "System.h"
+#include "MapPoint.h"
 
 
 class SubscribeHandler{
@@ -70,7 +71,7 @@ private:
     void GrabImage(const sensor_msgs::ImageConstPtr &msg);
     void Publish_Orientation(cv::Mat Tcw, tf::StampedTransform T_w_c);
     void Publish_Tracking_State(int state);
-    void GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all_point_cloud, sensor_msgs::PointCloud2 &ref_point_cloud);
+    void GetCurrentROSAllPointCloud(sensor_msgs::PointCloud2 &all_point_cloud, sensor_msgs::PointCloud2 &ref_point_cloud);
     void PointCloudPub();
 
     cv::Mat tfToMat(const tf::StampedTransform& tfT);
@@ -79,6 +80,7 @@ private:
     std::vector<float> Normalize(std::vector<float> vect);
     g2o::SE3Quat toSE3Quat(const cv::Mat &cvT);
     cv::Mat toCvMat(const g2o::SE3Quat &SE3);
+    Eigen::Matrix4f toEigMat(const g2o::SE3Quat &SE3);
 
     // ROS
     ros::Subscriber subImage;
@@ -104,6 +106,9 @@ private:
     std::string baseFrameTopic;
     std::string cameraFrameNameToPublish;
     std::string worldFrameNameToPublish;
+
+    sensor_msgs::PointCloud2 allMapPoints;
+    sensor_msgs::PointCloud2 referenceMapPoints;
 
     // flags
     bool mbReferenceWorldFrame;

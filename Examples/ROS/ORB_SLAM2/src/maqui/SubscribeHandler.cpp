@@ -39,6 +39,12 @@ mbReferenceWorldFrame(false)
       maqui_orientation = mpNodeHandler->advertise<geometry_msgs::PoseStamped>("/maqui/odom_ORB", queueSize);
       tracking_state = mpNodeHandler->advertise<std_msgs::Int8>("/orb_slam_tracking_state", queueSize);
 
+
+      AllPointCloud_pub_ = mpNodeHandler->advertise<sensor_msgs::PointCloud2>("/orb_slam/point_cloud_all", queueSize);
+      RefPointCloud_pub_ = mpNodeHandler->advertise<sensor_msgs::PointCloud2>("/orb_slam/point_cloud_ref", queueSize);
+
+      //PointCloudPub();
+
       // Initialize ORB system
    // argument 4 boolean is user viewer
 }
@@ -77,6 +83,7 @@ void SubscribeHandler::GrabImage(const sensor_msgs::ImageConstPtr& msg)
 
     int TrackingState = mpSLAM->GetTrackingState();
     SubscribeHandler::Publish_Tracking_State(TrackingState);
+    PointCloudPub();
 }
 
 
@@ -173,6 +180,16 @@ cv::Mat SubscribeHandler::toCvMat(const g2o::SE3Quat &SE3)
 
     return cvMat.clone();
 }
+Eigen::Matrix4f SubscribeHandler::toEigMat(const g2o::SE3Quat &SE3)
+{
+    Eigen::Matrix<double,4,4> eigMat = SE3.to_homogeneous_matrix();
+    Eigen::Matrix4f matrix_eig;
+    for(int i=0;i<4;i++)
+        for(int j=0; j<4; j++)
+            matrix_eig(i,j)=eigMat(i,j);
+
+    return matrix_eig;
+}
 
 Eigen::Matrix<double,3,3> SubscribeHandler::toMatrix3d(const cv::Mat &cvMat3)
 {
@@ -232,10 +249,14 @@ void SubscribeHandler::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all
     pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_all( new pcl::PointCloud<pcl::PointXYZRGBA> );  
     pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_ref( new pcl::PointCloud<pcl::PointXYZRGBA> );     
     
-    const vector<MapPoint*> &vpMPs = mpSLAM->mpMap->GetAllMapPoints();
-    const vector<MapPoint*> &vpRefMPs = mpSLAM->mpMap->GetReferenceMapPoints();
+    const vector<ORB_SLAM2::MapPoint*> &vpMPs = mpSLAM->GetAllMapPoints();
+    const vector<ORB_SLAM2::MapPoint*> &vpRefMPs = mpSLAM->GetReferenceMapPoints();
+
+    g2o::SE3Quat O_wm_wo = mpSLAM->GetInitialPose();
+    Eigen::Matrix4f orb_world_pre = toEigMat(O_wm_wo);
+
     
-    set<MapPoint*> spRefMPs(vpRefMPs.begin(), vpRefMPs.end());
+    set<ORB_SLAM2::MapPoint*> spRefMPs(vpRefMPs.begin(), vpRefMPs.end());
 
     if(vpMPs.empty())
         return;
@@ -246,12 +267,15 @@ void SubscribeHandler::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all
             continue;
         cv::Mat pos = vpMPs[i]->GetWorldPos();
         pcl::PointXYZRGBA p1;
+        //g2o::SE3Quat pos_g2o = toSE3Quat(pos_cv.clone());
+        //cv::Mat pos_inv = toCvMat(pos_g2o  * O_wm_wo.inverse());
+        //cv::Mat pos = pos_inv.inv();
     Eigen::Vector4f p1_temp, p1_temp_t;
     p1_temp(0) = pos.at<float>(0);
     p1_temp(1) = pos.at<float>(1);
     p1_temp(2) = pos.at<float>(2);
     p1_temp(3) = 1; 
-    p1_temp_t = p1_temp;    
+    p1_temp_t = orb_world_pre * p1_temp;    
     p1.x = p1_temp_t(0);
     p1.y = p1_temp_t(1);
     p1.z = p1_temp_t(2);
@@ -267,7 +291,7 @@ void SubscribeHandler::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all
     all_point_cloud.header.frame_id = "map";  
     all_point_cloud.header.stamp = ros::Time::now();   
   
-    for(set<MapPoint*>::iterator sit=spRefMPs.begin(), send=spRefMPs.end(); sit!=send; sit++)
+    for(set<ORB_SLAM2::MapPoint*>::iterator sit=spRefMPs.begin(), send=spRefMPs.end(); sit!=send; sit++)
     {
         if((*sit)->isBad())
             continue;
@@ -296,10 +320,9 @@ void SubscribeHandler::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all
 
 }
 
-void SlamDataPub::PointCloudPub()
+void SubscribeHandler::PointCloudPub()
 {
-    sensor_msgs::PointCloud2 allMapPoints;
-    sensor_msgs::PointCloud2 referenceMapPoints;
+
           
     GetCurrentROSAllPointCloud(allMapPoints, referenceMapPoints);
     AllPointCloud_pub_.publish(allMapPoints);

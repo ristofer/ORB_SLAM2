@@ -131,6 +131,10 @@ public:
     // To odometry or not to odometry
     int useOdometry;
 
+    vector<MapPoint*> GetAllMapPoints();
+    vector<MapPoint*> GetReferenceMapPoints();
+    g2o::SE3Quat GetInitialPose();
+
 
 
 private:
@@ -151,8 +155,7 @@ private:
     // KeyFrame database for place recognition (relocalization and loop detection).
     KeyFrameDatabase* mpKeyFrameDatabase;
 
-    // Map structure that stores the pointers to all KeyFrames and MapPoints.
-    Map* mpMap;
+
 
     string mapfile;
     bool is_save_map;
@@ -202,6 +205,8 @@ public:
     // Local Mapper. It manages the local map and performs local bundle adjustment.
     //THIS THING HAS TO BE PRIVATE, NOW IT'S PUBLIC JUST FOR TESTING
     LocalMapping* mpLocalMapper;
+    // Map structure that stores the pointers to all KeyFrames and MapPoints.
+    Map* mpMap;
 };
 
 }// namespace ORB_SLAM

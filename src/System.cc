@@ -694,5 +694,17 @@ bool System::LoadMapXML(const string &filename)
         in.close();
         return true;
     }
+vector<MapPoint*> System::GetAllMapPoints()
+{
+    return mpMap->GetAllMapPoints();
+}
+vector<MapPoint*> System::GetReferenceMapPoints()
+{
+    return mpMap->GetReferenceMapPoints();
+}
+g2o::SE3Quat System::GetInitialPose()
+{
+    return mpMap->GetInitialPose();
+}
 
 } //namespace ORB_SLAM
