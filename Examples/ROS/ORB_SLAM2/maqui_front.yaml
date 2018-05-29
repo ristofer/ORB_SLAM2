@@ -93,4 +93,4 @@ Topic.OdomFrame: "/odom"
 Topic.TF: "tf"
 Topic.BaseFrame: "/base_link"
 
-Map.mapfile: file.xml
+Map.mapfile: file.bin
