@@ -306,7 +306,7 @@ void SubscribeHandler::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all
     p1_temp(1) = pos.at<float>(1);
     p1_temp(2) = pos.at<float>(2);
     p1_temp(3) = 1; 
-    p1_temp_t = orb_world_pre * p1_temp;    
+    p1_temp_t = offset_ * orb_world_pre * p1_temp;    
     p1.x = p1_temp_t(0);
     p1.y = p1_temp_t(1);
     p1.z = p1_temp_t(2);
@@ -333,7 +333,7 @@ void SubscribeHandler::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all
     p2_temp(1) = pos.at<float>(1);
     p2_temp(2) = pos.at<float>(2);
     p2_temp(3) = 1;
-    p2_temp_t = orb_world_pre * p2_temp;    
+    p2_temp_t = offset_ * orb_world_pre * p2_temp;    
     p2.x = p2_temp_t(0);
     p2.y = p2_temp_t(1);
     p2.z = p2_temp_t(2);
