@@ -28,6 +28,8 @@ mbReferenceWorldFrame(false)
       cameraFrameNameToPublish = (std::string) fsSettings["Topic.CameraFrameNameToPublish"];
       worldFrameNameToPublish = (std::string) fsSettings["Topic.WorldFrameNameToPublish"];
 
+      _is_on = false;
+
       mpSLAM = new ORB_SLAM2::System(strVocFile, strSettingsFile, ORB_SLAM2::System::MONOCULAR,true,true);
 
       if(useBaseFrame)
@@ -42,6 +44,13 @@ mbReferenceWorldFrame(false)
 
       AllPointCloud_pub_ = mpNodeHandler->advertise<sensor_msgs::PointCloud2>("/orb_slam/point_cloud_all", queueSize);
       RefPointCloud_pub_ = mpNodeHandler->advertise<sensor_msgs::PointCloud2>("/orb_slam/point_cloud_ref", queueSize);
+
+      m_initPoseSub_ = mpNodeHandler->subscribe("initialpose",1,&SubscribeHandler::InitPoseReceived,this);
+
+      active_server = mpNodeHandler->advertiseService("/maqui/orb/active", &SubscribeHandler::Active,this);
+
+      offset_.setIdentity();
+
 
       //PointCloudPub();
 
@@ -137,6 +146,28 @@ void SubscribeHandler::Publish_Tracking_State(int state)
     return;
 }
 cv::Mat SubscribeHandler::tfToMat(const tf::StampedTransform& tfT)
+{
+    cv::Mat cvT = cv::Mat::eye(4, 4, CV_32F);
+
+    cvT.at<float>(0,3) = tfT.getOrigin().x();
+    cvT.at<float>(1,3) = tfT.getOrigin().y();
+    cvT.at<float>(2,3) = tfT.getOrigin().z();
+    cvT.at<float>(3,3) = 1.0;
+
+    cvT.at<float>(0,0) = tfT.getBasis().getColumn(0).x();
+    cvT.at<float>(1,0) = tfT.getBasis().getColumn(0).y();
+    cvT.at<float>(2,0) = tfT.getBasis().getColumn(0).z();
+    cvT.at<float>(0,1) = tfT.getBasis().getColumn(1).x();
+    cvT.at<float>(1,1) = tfT.getBasis().getColumn(1).y();
+    cvT.at<float>(2,1) = tfT.getBasis().getColumn(1).z();
+    cvT.at<float>(0,2) = tfT.getBasis().getColumn(2).x();
+    cvT.at<float>(1,2) = tfT.getBasis().getColumn(2).y();
+    cvT.at<float>(2,2) = tfT.getBasis().getColumn(2).z();
+
+    return cvT;
+}
+
+cv::Mat SubscribeHandler::tfToMat(const tf::Transform& tfT)
 {
     cv::Mat cvT = cv::Mat::eye(4, 4, CV_32F);
 
@@ -328,4 +359,49 @@ void SubscribeHandler::PointCloudPub()
     AllPointCloud_pub_.publish(allMapPoints);
     RefPointCloud_pub_.publish(referenceMapPoints);
     
+}
+
+
+void SubscribeHandler::InitPoseReceived(const geometry_msgs::PoseWithCovarianceStampedConstPtr &msg){
+    tf::Pose pose;
+    tf::poseMsgToTF(msg->pose.pose, pose);
+
+    if (msg->header.frame_id != "map"){
+        ROS_WARN("Frame ID of \"initialpose\" (%s) is different from the global frame map", msg->header.frame_id.c_str());
+    }
+
+    // set offset so that current pose is set to "initialpose"
+    tf::StampedTransform baseInMap;
+    try{
+        // just get the latest
+        mpTFlistener->lookupTransform("base_footprint", "map", ros::Time(0), baseInMap);
+    } catch(tf::TransformException){
+        ROS_WARN("Failed to lookup transform!");
+        return;
+    }
+
+    tf::Transform delta = pose * baseInMap;
+    cv::Mat delta_cv = tfToMat(delta);
+    offset_ = toEigMat(toSE3Quat(delta_cv));
+
+}
+
+ bool SubscribeHandler::Active(uchile_srvs::Onoff::Request  &req, uchile_srvs::Onoff::Response &res) {
+
+    if(req.select == true) {
+        if (!_is_on) {
+            subImage = mpNodeHandler->subscribe(cameraTopic, 1, &SubscribeHandler::GrabImage, this);
+            _is_on = true;
+          
+            ROS_INFO_STREAM("Turning on "+cameraTopic+" . . . OK");
+        } else ROS_DEBUG_STREAM("Already turned on");
+    }
+    else{
+        if (_is_on) {
+              subImage.shutdown();
+              _is_on = false;
+              ROS_INFO_STREAM(" Turning off "+cameraTopic+" . . . OK");
+        } else  ROS_DEBUG_STREAM("Already turned off"); 
+    }
+    return true;
 }

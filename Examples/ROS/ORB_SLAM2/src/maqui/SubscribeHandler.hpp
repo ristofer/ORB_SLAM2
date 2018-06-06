@@ -20,6 +20,7 @@ TODOs:
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
 #include <geometry_msgs/PoseStamped.h>
+#include <uchile_srvs/Onoff.h>
 #include <std_msgs/Int8.h>
 
 // TF
@@ -33,6 +34,7 @@ TODOs:
 
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
@@ -73,8 +75,11 @@ private:
     void Publish_Tracking_State(int state);
     void GetCurrentROSAllPointCloud(sensor_msgs::PointCloud2 &all_point_cloud, sensor_msgs::PointCloud2 &ref_point_cloud);
     void PointCloudPub();
+    void InitPoseReceived(const geometry_msgs::PoseWithCovarianceStampedConstPtr &msg);
+    bool Active(uchile_srvs::Onoff::Request &req, uchile_srvs::Onoff::Response &res);
 
     cv::Mat tfToMat(const tf::StampedTransform& tfT);
+    cv::Mat tfToMat(const tf::Transform& tfT);
     Eigen::Matrix<double,3,3> toMatrix3d(const cv::Mat &cvMat3);
     std::vector<float> toQuaternion(const Eigen::Matrix<double, 3, 3> &M);
     std::vector<float> Normalize(std::vector<float> vect);
@@ -84,8 +89,11 @@ private:
 
     // ROS
     ros::Subscriber subImage;
+    ros::Subscriber m_initPoseSub_;
     ros::Publisher maqui_orientation;
     ros::Publisher tracking_state;
+
+    ros::ServiceServer active_server;
 
     ros::Publisher AllPointCloud_pub_;
     ros::Publisher RefPointCloud_pub_; 
@@ -110,8 +118,11 @@ private:
     sensor_msgs::PointCloud2 allMapPoints;
     sensor_msgs::PointCloud2 referenceMapPoints;
 
+    Eigen::Matrix4f offset_;
+
     // flags
     bool mbReferenceWorldFrame;
+    bool _is_on;
 
     int useBaseFrame;
 };
