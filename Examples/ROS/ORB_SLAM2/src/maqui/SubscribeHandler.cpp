@@ -45,7 +45,7 @@ mbReferenceWorldFrame(false)
       AllPointCloud_pub_ = mpNodeHandler->advertise<sensor_msgs::PointCloud2>("/orb_slam/point_cloud_all", queueSize);
       RefPointCloud_pub_ = mpNodeHandler->advertise<sensor_msgs::PointCloud2>("/orb_slam/point_cloud_ref", queueSize);
 
-      m_initPoseSub_ = mpNodeHandler->subscribe("initialpose",1,&SubscribeHandler::InitPoseReceived,this);
+      m_initPoseSub_ = mpNodeHandler->subscribe("/maqui/nav/initialpose",1,&SubscribeHandler::InitPoseReceived,this);
 
       active_server = mpNodeHandler->advertiseService("/maqui/orb/active", &SubscribeHandler::Active,this);
 
