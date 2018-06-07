@@ -88,11 +88,12 @@ void SubscribeHandler::GrabImage(const sensor_msgs::ImageConstPtr& msg)
     if(!Twc.empty())
     {
         SubscribeHandler::Publish_Orientation(Twc.clone(), T_o_c);
+        PointCloudPub(Twc.clone());
     }
 
     int TrackingState = mpSLAM->GetTrackingState();
     SubscribeHandler::Publish_Tracking_State(TrackingState);
-    PointCloudPub();
+
 }
 
 
@@ -275,7 +276,7 @@ void SubscribeHandler::Shutdown(){
 
 
 
-void SubscribeHandler::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all_point_cloud, sensor_msgs::PointCloud2 &ref_point_cloud)
+void SubscribeHandler::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all_point_cloud, sensor_msgs::PointCloud2 &ref_point_cloud, cv::Mat matriz)
 {
     pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_all( new pcl::PointCloud<pcl::PointXYZRGBA> );  
     pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_ref( new pcl::PointCloud<pcl::PointXYZRGBA> );     
@@ -285,6 +286,7 @@ void SubscribeHandler::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all
 
     g2o::SE3Quat O_wm_wo = mpSLAM->GetInitialPose();
     Eigen::Matrix4f orb_world_pre = toEigMat(O_wm_wo);
+    Eigen::Matrix4f world_to_camera = toEigMat(toSE3Quat(matriz.clone()));
 
     
     set<ORB_SLAM2::MapPoint*> spRefMPs(vpRefMPs.begin(), vpRefMPs.end());
@@ -306,7 +308,7 @@ void SubscribeHandler::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all
     p1_temp(1) = pos.at<float>(1);
     p1_temp(2) = pos.at<float>(2);
     p1_temp(3) = 1; 
-    p1_temp_t = offset_ * orb_world_pre * p1_temp;    
+    p1_temp_t = world_to_camera * orb_world_pre * p1_temp;    
     p1.x = p1_temp_t(0);
     p1.y = p1_temp_t(1);
     p1.z = p1_temp_t(2);
@@ -319,7 +321,7 @@ void SubscribeHandler::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all
     pcl::PCLPointCloud2 pcl_pc1;
     pcl::toPCLPointCloud2(*cloud_all, pcl_pc1);    // pcl::PointXYZRGBA -> pcl::PCLPointCloud2
     pcl_conversions::fromPCL(pcl_pc1, all_point_cloud);  // pcl::PCLPointCloud2 -> sensor_msgs::PointCloud2
-    all_point_cloud.header.frame_id = "map";  
+    all_point_cloud.header.frame_id = "CameraTop_optical_frame";  
     all_point_cloud.header.stamp = ros::Time::now();   
   
     for(set<ORB_SLAM2::MapPoint*>::iterator sit=spRefMPs.begin(), send=spRefMPs.end(); sit!=send; sit++)
@@ -351,11 +353,11 @@ void SubscribeHandler::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all
 
 }
 
-void SubscribeHandler::PointCloudPub()
+void SubscribeHandler::PointCloudPub(cv::Mat matriz)
 {
 
           
-    GetCurrentROSAllPointCloud(allMapPoints, referenceMapPoints);
+    GetCurrentROSAllPointCloud(allMapPoints, referenceMapPoints, matriz.clone());
     AllPointCloud_pub_.publish(allMapPoints);
     RefPointCloud_pub_.publish(referenceMapPoints);
     
