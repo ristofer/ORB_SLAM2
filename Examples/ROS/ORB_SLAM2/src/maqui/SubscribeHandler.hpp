@@ -73,8 +73,8 @@ private:
     void GrabImage(const sensor_msgs::ImageConstPtr &msg);
     void Publish_Orientation(cv::Mat Tcw, tf::StampedTransform T_w_c);
     void Publish_Tracking_State(int state);
-    void GetCurrentROSAllPointCloud(sensor_msgs::PointCloud2 &all_point_cloud, sensor_msgs::PointCloud2 &ref_point_cloud);
-    void PointCloudPub();
+    void GetCurrentROSAllPointCloud(sensor_msgs::PointCloud2 &all_point_cloud, sensor_msgs::PointCloud2 &ref_point_cloud, cv::Mat matriz);
+    void PointCloudPub(cv::Mat matriz);
     void InitPoseReceived(const geometry_msgs::PoseWithCovarianceStampedConstPtr &msg);
     bool Active(uchile_srvs::Onoff::Request &req, uchile_srvs::Onoff::Response &res);
 
