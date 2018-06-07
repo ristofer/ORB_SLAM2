@@ -286,7 +286,8 @@ void SubscribeHandler::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all
 
     g2o::SE3Quat O_wm_wo = mpSLAM->GetInitialPose();
     Eigen::Matrix4f orb_world_pre = toEigMat(O_wm_wo);
-    Eigen::Matrix4f world_to_camera = toEigMat(toSE3Quat(matriz.clone()));
+    g2o::SE3Quat test = toSE3Quat(matriz.clone());
+    Eigen::Matrix4f world_to_camera = toEigMat(test.inverse());
 
     
     set<ORB_SLAM2::MapPoint*> spRefMPs(vpRefMPs.begin(), vpRefMPs.end());
@@ -303,12 +304,13 @@ void SubscribeHandler::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all
         //g2o::SE3Quat pos_g2o = toSE3Quat(pos_cv.clone());
         //cv::Mat pos_inv = toCvMat(pos_g2o  * O_wm_wo.inverse());
         //cv::Mat pos = pos_inv.inv();
-    Eigen::Vector4f p1_temp, p1_temp_t;
+    Eigen::Vector4f p1_temp, p1_temp_t, p1_temp_pre;
     p1_temp(0) = pos.at<float>(0);
     p1_temp(1) = pos.at<float>(1);
     p1_temp(2) = pos.at<float>(2);
     p1_temp(3) = 1; 
-    p1_temp_t = world_to_camera * orb_world_pre * p1_temp;    
+    p1_temp_pre = orb_world_pre * p1_temp;
+    p1_temp_t = world_to_camera * p1_temp_pre;    
     p1.x = p1_temp_t(0);
     p1.y = p1_temp_t(1);
     p1.z = p1_temp_t(2);
@@ -335,7 +337,7 @@ void SubscribeHandler::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all
     p2_temp(1) = pos.at<float>(1);
     p2_temp(2) = pos.at<float>(2);
     p2_temp(3) = 1;
-    p2_temp_t = offset_ * orb_world_pre * p2_temp;    
+    p2_temp_t = world_to_camera * orb_world_pre * p2_temp;    
     p2.x = p2_temp_t(0);
     p2.y = p2_temp_t(1);
     p2.z = p2_temp_t(2);
@@ -348,7 +350,7 @@ void SubscribeHandler::GetCurrentROSAllPointCloud( sensor_msgs::PointCloud2 &all
     pcl::PCLPointCloud2 pcl_pc2;
     pcl::toPCLPointCloud2(*cloud_ref, pcl_pc2); // pcl::PointXYZRGBA -> pcl::PCLPointCloud2
     pcl_conversions::fromPCL(pcl_pc2, ref_point_cloud);  // pcl::PCLPointCloud2 -> sensor_msgs::PointCloud2
-    ref_point_cloud.header.frame_id = "map";
+    ref_point_cloud.header.frame_id = "CameraTop_optical_frame";
     ref_point_cloud.header.stamp = ros::Time::now();   
 
 }
